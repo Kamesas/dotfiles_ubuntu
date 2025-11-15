@@ -1,0 +1,16 @@
+{
+  "Console log": {
+    "prefix": "cl",
+    "body": ["console.log($1);"],
+    "description": "Insert console.log()"
+  },
+  "Comment block": {
+    "prefix": "cmtblock",
+    "body": [
+      "// ====================================================================",
+      "// ${1:Comment}",
+      "// ===================================================================="
+    ],
+    "description": "Comment block separator"
+  }
+}
