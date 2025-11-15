@@ -49,6 +49,6 @@ vim.keymap.set("n", "<C-z>", "<nop>")
 vim.keymap.set("n", "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP Document Symbols" })
 
 -- Console log word under cursor (inserts line below)
-vim.keymap.set("n", "<leader>cl", fn.console_log, { desc = "Console log word under cursor" })
+vim.keymap.set("n", "<leader>l", fn.console_log, { desc = "Console log" })
 vim.keymap.set("n", "<leader>cj", fn.console_log_json, { desc = "Console log JSON" })
-vim.keymap.set("n", "<leader>cc", ":%g/console.log/d<CR>", { desc = "Clear all console.logs" })
+vim.keymap.set("n", "<leader>cx", ":%g/console.log/d<CR>", { desc = "Clear all console.logs" })

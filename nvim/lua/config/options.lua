@@ -21,3 +21,6 @@ vim.diagnostic.config({
   -- Sort diagnostics by severity: errors first, then warnings, then info, etc.
   severity_sort = true,
 })
+
+-- Disable inlay hints globally
+vim.lsp.inlay_hint.enable(false)
