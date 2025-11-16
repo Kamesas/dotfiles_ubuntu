@@ -40,7 +40,7 @@ vim.keymap.set({ "n", "x", "o" }, "gh", "^", { desc = "Go to beginning of line" 
 vim.keymap.set({ "n", "x", "o" }, "gl", "$", { desc = "Go to end of line" })
 
 vim.keymap.set("n", "<leader>qw", function()
-  require("persistence").save()
+	require("persistence").save()
 end, { desc = "Write Session" })
 
 vim.keymap.set("n", "<C-z>", "<nop>")
