@@ -118,6 +118,33 @@ return {
               },
             })
           end, "Add Missing Imports")
+
+          -- Rename File with Auto-Update Imports (TypeScript/JavaScript only)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client.name == "ts_ls" then
+            map("<leader>cR", function()
+              local source_file = vim.api.nvim_buf_get_name(event.buf)
+              vim.ui.input({
+                prompt = "New file path: ",
+                default = source_file,
+                completion = "file",
+              }, function(target_file)
+                if target_file and target_file ~= source_file then
+                  local params = {
+                    command = "_typescript.applyRenameFile",
+                    arguments = {
+                      {
+                        sourceUri = vim.uri_from_fname(source_file),
+                        targetUri = vim.uri_from_fname(target_file),
+                      },
+                    },
+                  }
+                  vim.lsp.buf.execute_command(params)
+                  vim.cmd("e " .. target_file)
+                end
+              end)
+            end, "Rename File (Update Imports)")
+          end
         end,
       })
     end,
