@@ -15,12 +15,8 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 vim.keymap.set("i", "jj", "<esc>", { desc = "escape insert mode" })
 
--- LSP keymaps
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
-vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
-vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go to implementation" })
-vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
+-- LSP keymaps are configured in lua/plugins/custom.lua via LspAttach autocmd
+-- This prevents duplicate keybindings and ensures they're only set when LSP is available
 
 -- Add empty line below/above (like VSCode)
 vim.keymap.set("n", "<C-m>", "o<Esc>", { desc = "Add line below" })

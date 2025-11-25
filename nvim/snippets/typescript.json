@@ -3,13 +3,6 @@
     "prefix": "cl",
     "body": ["console.log($1);"],
     "description": "Insert console.log()"
-  }
-}
-{
-  "Console log": {
-    "prefix": "cl",
-    "body": ["console.log($1);"],
-    "description": "Insert console.log()"
   },
   "Comment block": {
     "prefix": "cmtblock",
@@ -19,5 +12,23 @@
       "// ===================================================================="
     ],
     "description": "Comment block separator"
+  },
+  "Fastify Route": {
+    "prefix": "fr",
+    "body": [
+      "import { FastifyPluginAsync } from 'fastify';",
+      "import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';",
+      "",
+      "const ${1:routesName}Routes: FastifyPluginAsync = async (fastify): Promise<void> => {",
+      "  const f = fastify.withTypeProvider<JsonSchemaToTsProvider>();",
+      "",
+      "  f.get('/${2:path}', { schema: ${3:schemaName} }, async function (_request, reply) {",
+      "    return reply.code(200).send({ data: ${4:dataName} });",
+      "  });",
+      "};",
+      "",
+      "export default ${1:routesName}Routes;"
+    ],
+    "description": "Fastify route with TypeProvider"
   }
 }

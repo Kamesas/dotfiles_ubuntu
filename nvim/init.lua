@@ -2,3 +2,4 @@
 require("config.options")
 require("config.lazy")
 require("db_connections")
+require("config.debug")
