@@ -45,6 +45,17 @@ return {
         local explain = require("opencode.config").opts.prompts.explain
         require("opencode").prompt(explain.prompt, explain)
       end, { desc = "Explain this code" })
+
+      -- Terminal mode mappings for easier copying
+      vim.api.nvim_create_autocmd("TermOpen", {
+        pattern = "*",
+        callback = function()
+          -- Easy escape from terminal mode
+          vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { buffer = true, desc = "Exit terminal mode" })
+          -- Copy visual selection to clipboard in normal mode
+          vim.keymap.set("v", "<C-c>", [["+y]], { buffer = true, desc = "Copy to clipboard" })
+        end,
+      })
     end,
   },
 }
