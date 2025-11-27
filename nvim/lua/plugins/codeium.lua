@@ -9,7 +9,7 @@ return {
 		virtual_text = {
 			enabled = true,
 		key_bindings = {
-			accept = "<CR>",
+			accept = "<M-CR>",
 			next = "<M-]>",
 			prev = "<M-[>",
 			clear = "<C-]>",
