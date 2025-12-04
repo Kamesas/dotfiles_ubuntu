@@ -28,7 +28,7 @@ return {
 			-- Disable LazyVim's default LSP keybindings to prevent duplicates
 			opts.diagnostics = opts.diagnostics or {}
 			opts.diagnostics.update_in_insert = false
-			
+
 			-- Configure servers
 			opts.servers = opts.servers or {}
 			opts.servers.tailwindcss = {
@@ -48,7 +48,7 @@ return {
 					},
 				},
 			}
-			
+
 			return opts
 		end,
 		keys = function()
@@ -58,7 +58,7 @@ return {
 		init = function()
 			-- Track which buffers already have keybindings set to prevent duplicates
 			local keymaps_set = {}
-			
+
 			-- Set up keybindings when LSP attaches
 			vim.api.nvim_create_autocmd("LspAttach", {
 				callback = function(event)
@@ -67,7 +67,7 @@ return {
 						return
 					end
 					keymaps_set[event.buf] = true
-					
+
 					-- Clean up tracking when buffer is deleted
 					vim.api.nvim_create_autocmd("BufDelete", {
 						buffer = event.buf,
@@ -76,16 +76,31 @@ return {
 							keymaps_set[event.buf] = nil
 						end,
 					})
-					
+
 					local map = function(keys, func, desc)
 						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
 					-- LSP Navigation with explicit buffer-only mappings
-					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = event.buf, desc = "LSP: Go to Declaration" })
-					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "LSP: Go to Implementation" })
-					vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "LSP: Hover Documentation" })
-					
+					vim.keymap.set(
+						"n",
+						"gD",
+						vim.lsp.buf.declaration,
+						{ buffer = event.buf, desc = "LSP: Go to Declaration" }
+					)
+					vim.keymap.set(
+						"n",
+						"gi",
+						vim.lsp.buf.implementation,
+						{ buffer = event.buf, desc = "LSP: Go to Implementation" }
+					)
+					vim.keymap.set(
+						"n",
+						"K",
+						vim.lsp.buf.hover,
+						{ buffer = event.buf, desc = "LSP: Hover Documentation" }
+					)
+
 					-- Custom gd and gr with deduplication
 					vim.keymap.set("n", "gd", function()
 						vim.lsp.buf.definition({
@@ -94,22 +109,23 @@ return {
 								local items = options.items or {}
 								local seen = {}
 								local unique_items = {}
-								
+
 								for _, item in ipairs(items) do
-									local key = string.format("%s:%d:%d", item.filename or "", item.lnum or 0, item.col or 0)
+									local key =
+										string.format("%s:%d:%d", item.filename or "", item.lnum or 0, item.col or 0)
 									if not seen[key] then
 										seen[key] = true
 										table.insert(unique_items, item)
 									end
 								end
-								
+
 								options.items = unique_items
-								vim.fn.setqflist({}, ' ', options)
-								vim.cmd('Telescope quickfix')
-							end
+								vim.fn.setqflist({}, " ", options)
+								vim.cmd("Telescope quickfix")
+							end,
 						})
 					end, { buffer = event.buf, desc = "LSP: Go to Definition" })
-					
+
 					vim.keymap.set("n", "gr", function()
 						vim.lsp.buf.references(nil, {
 							on_list = function(options)
@@ -117,19 +133,20 @@ return {
 								local items = options.items or {}
 								local seen = {}
 								local unique_items = {}
-								
+
 								for _, item in ipairs(items) do
-									local key = string.format("%s:%d:%d", item.filename or "", item.lnum or 0, item.col or 0)
+									local key =
+										string.format("%s:%d:%d", item.filename or "", item.lnum or 0, item.col or 0)
 									if not seen[key] then
 										seen[key] = true
 										table.insert(unique_items, item)
 									end
 								end
-								
+
 								options.items = unique_items
-								vim.fn.setqflist({}, ' ', options)
-								vim.cmd('Telescope quickfix')
-							end
+								vim.fn.setqflist({}, " ", options)
+								vim.cmd("Telescope quickfix")
+							end,
 						})
 					end, { buffer = event.buf, desc = "LSP: Go to References" })
 

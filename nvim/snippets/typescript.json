@@ -1,7 +1,7 @@
 {
   "Console log": {
     "prefix": "cl",
-    "body": ["console.log($1);"],
+    "body": ["console.log($1, );"],
     "description": "Insert console.log()"
   },
   "Comment block": {
@@ -30,5 +30,18 @@
       "export default ${1:routesName}Routes;"
     ],
     "description": "Fastify route with TypeProvider"
+  },
+  "Fastify Plugin": {
+    "prefix": "fp",
+    "body": [
+      "import fp from 'fastify-plugin';",
+      "",
+      "async function routes(fastify: FastifyInstance) {",
+      "  $1",
+      "}",
+      "",
+      "export default fp(routes);"
+    ],
+    "description": "Fastify plugin wrapper"
   }
 }

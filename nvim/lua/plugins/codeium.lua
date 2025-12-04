@@ -8,12 +8,12 @@ return {
 		enable_cmp_source = false,
 		virtual_text = {
 			enabled = true,
-		key_bindings = {
-			accept = "<M-CR>",
-			next = "<M-]>",
-			prev = "<M-[>",
-			clear = "<C-]>",
-		},
+			key_bindings = {
+				accept = "<M-Space>",
+				next = "<M-]>",
+				prev = "<M-[>",
+				clear = "<C-]>",
+			},
 		},
 	},
 }

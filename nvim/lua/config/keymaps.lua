@@ -2,18 +2,22 @@ local fn = require("config.functions")
 
 vim.keymap.set("i", "<A-j>", "<Down>", { desc = "Move cursor down" })
 vim.keymap.set("i", "<A-k>", "<Up>", { desc = "Move cursor up" })
-vim.keymap.set("i", "<A-h>", "<Left>", { desc = "Move cursor left" })
+vim.keymap.set("i", "<A-h>", "<Left>", { desc = "move cursor left" })
 vim.keymap.set("i", "<A-l>", "<Right>", { desc = "Move cursor right" })
 
 -- Move lines up/down in normal and visual mode
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
 vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 
 -- Fast escape from insert mode
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 vim.keymap.set("i", "jj", "<esc>", { desc = "escape insert mode" })
+
+-- Save file
+vim.keymap.set("n", "<A-s>", "<cmd>w<CR>", { desc = "Save file" })
+vim.keymap.set("i", "<A-s>", "<Esc><cmd>w<CR>", { desc = "Save file and stay in normal mode" })
 
 -- LSP keymaps are configured in lua/plugins/custom.lua via LspAttach autocmd
 -- This prevents duplicate keybindings and ensures they're only set when LSP is available
@@ -48,3 +52,6 @@ vim.keymap.set("n", "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", { d
 vim.keymap.set("n", "<leader>l", fn.console_log, { desc = "Console log" })
 vim.keymap.set("n", "<leader>cj", fn.console_log_json, { desc = "Console log JSON" })
 vim.keymap.set("n", "<leader>cx", ":%g/console.log/d<CR>", { desc = "Clear all console.logs" })
+
+-- Copy selection to clipboard for Claude Code
+vim.keymap.set("v", "<leader>cs", fn.copy_for_claude, { desc = "Copy for Claude Code (Send)" })
