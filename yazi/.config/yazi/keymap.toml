@@ -1,0 +1,31 @@
+# [[mgr.prepend_keymap]]
+# on   = [ "g", "d" ]
+# run  = "cd ~/Downloads"
+# desc = "Cd to ~/Downloads"
+#
+# [[mgr.prepend_keymap]]
+# on   = [ "g", "p" ]
+# run  = "cd ~/Pictures"
+# desc = "Cd to ~/Pictures"
+#
+[[mgr.prepend_keymap]]
+on   = [ "g", "n" ]
+run  = "cd ~/Documents/ObsidianVault"
+desc = "Cd to ~/Documents/ObsidianVault"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "w" ]
+run  = "cd ~/code"
+desc = "Cd to ~/code"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "d" ]
+run = "cd /mnt/data"
+desc = "Go to data partition"
+
+
+[[manager.prepend_keymap]]
+on   = [ "z" ]
+run  = "shell --block --confirm 'result=$(zoxide query -i) && ya pub dds-cd --str \"$result\"'"
+desc = "Jump to directory with zoxide"
+

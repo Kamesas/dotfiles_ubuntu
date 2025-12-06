@@ -1,0 +1,19 @@
+[/]
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
+screensaver=['<Super>q']
+terminal=['<Super>t']
+www=['<Super>b']
+
+[custom-keybindings/custom0]
+binding='Print'
+command='flameshot gui'
+name='FlameShot'
+
+[custom-keybindings/custom1]
+binding='<Alt>6'
+command='tilix --quake'
+name='Toggle Tilix'
+
+[custom-keybindings/custom2]
+command='wezterm'
+name='Wezterm'

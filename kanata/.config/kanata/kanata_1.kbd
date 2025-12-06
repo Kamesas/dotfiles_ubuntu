@@ -1,0 +1,83 @@
+(defcfg
+  linux-dev /dev/input/by-path/platform-i8042-serio-0-event-kbd
+  process-unmapped-keys yes
+)
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    scln '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(defvar
+  left-hand-keys (q w e r t a s d f g z x c v b)
+  right-hand-keys (y u i o p h j k l scln ' n m , . /)
+  tap-time 200
+  hold-time 200
+)
+
+(deffakekeys to-base (layer-switch base))
+
+(defalias
+  ;; Tap action switches to typing layer, returns to base after 50ms idle
+  tap (multi 
+    (layer-switch typing) 
+    (on-idle-fakekey to-base tap 50)
+  )
+  
+  ;; Home row mods with typing-layer integration
+  a-gui (tap-hold-release-keys $tap-time $hold-time (multi a @tap) lmet $left-hand-keys)
+  s-alt (tap-hold-release-keys $tap-time $hold-time (multi s @tap) lalt $left-hand-keys)
+  d-sft (tap-hold-release-keys $tap-time $hold-time (multi d @tap) lsft $left-hand-keys)
+  f-ctl (tap-hold-release-keys $tap-time $hold-time (multi f @tap) lctl $left-hand-keys)
+  
+  j-ctl (tap-hold-release-keys $tap-time $hold-time (multi j @tap) rctl $right-hand-keys)
+  k-sft (tap-hold-release-keys $tap-time $hold-time (multi k @tap) rsft $right-hand-keys)
+  l-alt (tap-hold-release-keys $tap-time $hold-time (multi l @tap) ralt $right-hand-keys)
+  ;-gui (tap-hold-release-keys $tap-time $hold-time (multi scln @tap) rmet $right-hand-keys)
+  
+  esc-l2 (tap-hold 200 200 esc (layer-toggle layer2))
+  spc-l1 (tap-hold 200 200 spc (layer-toggle layer1))
+  ralt-l2 (layer-toggle layer2)
+  
+  undo C-z
+  cut C-x
+  copy C-c
+  termv C-S-v
+  paste C-v
+)
+
+(deflayer base
+  grv     1      2      3      4      5      6      7      8      9      0      -      =      bspc
+  tab     q      w      e      r      t      y      u      i      o      p      [      ]      \
+  @esc-l2 @a-gui @s-alt @d-sft @f-ctl g      h      @j-ctl @k-sft @l-alt @;-gui '      ret
+  lsft    z      x      c      v      b      n      m      ,      .      /      rsft
+  lctl    lmet   lalt                 @spc-l1              @ralt-l2 rmet   rctl
+)
+
+;; Typing layer: no mods, just regular keys
+(deflayer typing
+  _       _      _      _      _      _      _      _      _      _      _      _      _      _
+  _       _      _      _      _      _      _      _      _      _      _      _      _      _
+  _       a      s      d      f      _      _      j      k      l      scln   _      _
+  _       _      _      _      _      _      _      _      _      _      _      _
+  _       _      _                    _                    _      _      _
+)
+
+(deflayer layer1
+  _       f1     f2     f3     f4     f5     f6     f7     f8     f9     f10    f11    f12    _
+  _       _      _      _      _      _      _      _      _      _      _      _      _      _
+  _       lmet   lalt   lsft   lctl   _      left   down   up     rght   _      _      _
+  _       @undo  @cut   @copy  @termv @paste _      _      _      _      _      _
+  _       _      _                    _                    _      _      _
+)
+
+(deflayer layer2
+  _       _      _      _      _      _      _      7      8      9      0      -      =      _
+  _       _      _      _      _      _      _      7      8      9      S-8    _      _      _
+  _       _      _      _      _      _      _      4      5      6      S-=    _      _
+  _       _      _      _      _      _      _      1      2      3      /      _
+  _       _      _                    0                    _      _      _
+)

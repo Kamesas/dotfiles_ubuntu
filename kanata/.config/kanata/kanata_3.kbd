@@ -1,0 +1,114 @@
+;; ZUOYA GMK70 - Exact conversion from VIA config
+;; No additions or removals - direct translation
+
+(defcfg
+  linux-dev /dev/input/by-path/platform-i8042-serio-0-event-kbd
+  process-unmapped-keys yes
+)
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    del  bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    scln '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft up   prnt
+  lctl lmet lalt henk      spc            ralt rmet      left down rght
+)
+
+(defalias
+  ;; ============================================
+  ;; LAYER 0 - Special Keys
+  ;; ============================================
+  ;; MT(MOD_LCTL,KC_ESC) - Caps position: tap=ESC, hold=LCTL
+  esc-ctl (tap-hold 200 200 esc lctl)
+  
+  ;; OSM(MOD_LSFT) - One-shot left shift
+  os-sft (one-shot 2000 lsft)
+  
+  ;; MT(MOD_LALT,KC_BSPC) - Left alt position: tap=BSPC, hold=LALT
+  bspc-alt (tap-hold 200 200 bspc lalt)
+  
+  ;; LT(2,KC_ESC) - tap=ESC, hold=Layer2
+  esc-l2 (tap-hold 200 200 esc (layer-toggle layer2))
+  
+  ;; LT(2,KC_SPC) - Space: tap=SPC, hold=Layer2
+  spc-l2 (tap-hold 100 100 spc (layer-toggle layer2))
+  
+  ;; LT(1,KC_BSPC) - tap=BSPC, hold=Layer1
+  bspc-l1 (tap-hold 200 200 bspc (layer-toggle layer1))
+
+  ;; ============================================
+  ;; LAYER 1 - Symbols & Shortcuts
+  ;; ============================================
+  ;; Shifted keys
+  tilde S-grv      ;; ~
+  excl  S-1        ;; !
+  at    S-2        ;; @
+  hash  S-3        ;; #
+  dllr  S-4        ;; $
+  pct   S-5        ;; %
+  caret S-6        ;; ^
+  amp   S-7        ;; &
+  star  S-8        ;; *
+  lprn  S-9        ;; (
+  rprn  S-0        ;; )
+  under S--        ;; _
+  lbrc  S-[        ;; {
+  rbrc  S-]        ;; }
+  stab  S-tab      ;; Shift+Tab
+  sent  S-ret      ;; Shift+Enter
+  termv C-S-v      ;; Ctrl+Shift+V
+
+  ;; ============================================
+  ;; LAYER 2 - Editing & Numbers
+  ;; ============================================
+  c-y   C-y        ;; Ctrl+Y (redo)
+  c-s   C-s        ;; Ctrl+S (save)
+  c-a   C-a        ;; Ctrl+A (select all)
+  c-z   C-z        ;; Ctrl+Z (undo)
+  c-x   C-x        ;; Ctrl+X (cut)
+  c-c   C-c        ;; Ctrl+C (copy)
+  c-v   C-v        ;; Ctrl+V (paste)
+  c-bspc C-bspc    ;; Ctrl+Backspace
+  c-ret C-ret      ;; Ctrl+Enter
+
+  ;; Mouse movement (from VIA KC_MS_UP, KC_MS_DOWN, etc.)
+  ms-up   (movemouse-up 1 1)
+  ms-down (movemouse-down 1 1)
+  ms-left (movemouse-left 1 1)
+  ms-rght (movemouse-right 1 1)
+)
+
+;; ============================================
+;; LAYER 0: BASE (from VIA layer 0)
+;; ============================================
+(deflayer base
+  grv       1      2      3      4      5      6      7      8      9      0      -      =      del    bspc
+  tab       q      w      e      r      t      y      u      i      o      p      [      ]      \
+  @esc-ctl  a      s      d      f      g      h      j      k      l      scln   '      ret
+  @os-sft   z      x      c      v      b      n      m      ,      .      /      rsft   up     prnt
+  lctl      lmet   @bspc-alt @esc-l2   @spc-l2          @bspc-l1 rmet      left   down   rght
+)
+
+;; ============================================
+;; LAYER 1: SYMBOLS (from VIA layer 1)
+;; Hold the right backspace key to activate
+;; ============================================
+(deflayer layer1
+  _         f1     f2     f3     f4     f5     f6     f7     f8     f9     f10    f11    f12    prnt   _
+  @tilde    @excl  @at    @hash  @dllr  @pct   @caret @amp   @star  @lprn  @rprn  -      bspc   del
+  @stab     @tilde del    bspc   ret    @sent  left   down   up     rght   =      @tilde end
+  _         _      _      _      @termv _      @under [      ]      @lbrc  @rbrc  mlft   @ms-up mrgt
+  _         _      _      spc           spc            _      _      @ms-left @ms-down @ms-rght
+)
+
+;; ============================================
+;; LAYER 2: EDITING & NUMPAD (from VIA layer 2)
+;; Hold Space or left ESC key to activate
+;; ============================================
+(deflayer layer2
+  esc       grv    1      2      3      4      5      6      7      8      9      0      -      =      bspc
+  tab       @c-y   @c-s   up     [      ]      grv    7      8      9      0      [      ]      \
+  caps      @c-a   left   down   rght   bspc   \      4      5      6      -      ret    ret
+  lsft      @c-z   @c-x   @c-c   @c-v   @c-bspc del   1      2      3      =      mlft   @ms-up mrgt
+  lctl      _      lmet   bspc          ret            @c-ret ralt   @ms-left @ms-down @ms-rght
+)

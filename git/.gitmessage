@@ -1,0 +1,15 @@
+# <type>(<ticket-id>): <subject>
+#
+# <body>
+#
+# Jira: https://krasnyanskyv.atlassian.net/browse/<ticket-id>
+#
+# Common Types:
+# feat:     New feature
+# fix:      Bug fix
+# chore:    Maintenance/Config
+# refactor: Code restructure
+# docs:     Documentation
+# style:    Formatting
+# test:     Tests
+# perf:     Performance

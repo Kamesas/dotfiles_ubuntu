@@ -1,0 +1,97 @@
+;; Kanata Configuration - Converted from VIA layout
+;; Version: 1.10.0
+
+(defcfg
+  process-unmapped-keys yes
+  concurrent-tap-hold yes
+)
+
+;; Define source layout - your physical keyboard
+(defsrc
+  esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft up
+  lctl lmet lalt           spc            ralt rmet      left down rght
+)
+
+;; Layer 0 - Base layer (your main typing layer)
+(deflayer base
+  esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
+  @tb2 q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @cec a    s    d    f    g    h    j    k    l    @scl '    ret
+  @sbk @cz  @ax  c    v    b    n    m    @ac  @cd  @sf  rsft up
+  lctl lmet @abk           @sp1           ralt @dl2      left down rght
+)
+
+;; Layer 1 - Numbers and Navigation (activated by holding Space)
+(deflayer layer1
+  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _    _
+  S-tab 1   2    3    4    5    6    7    8    9    0    -    =    \
+  ret  _    C-s  _    @lm2 f12  left down up   rght bspc C-bspc end
+  _    _    _    _    _    _    _    _    [    ]    S-ret _   _
+  _    _    @lm3           _              _    @lm3      _    _    _
+)
+
+;; Layer 2 - Symbols and Editing (activated by Tab or Del hold)
+(deflayer layer2
+  C-0  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  S-tab C-y C-s  up   @lm3 ]    S-=  7    8    9    _    _    _    \
+  A-ret C-a left down rght f12  =    4    5    6    0    _    ret
+  lsft C-z C-x  C-c  C-v  C-S-v -    1    2    3    _    _    _
+  lctl _    lmet           C-bspc          C-ret ralt      _    _    _
+)
+
+;; Layer 3 - System layer (activated by special key combos)
+(deflayer layer3
+  _    _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    @l0  _    _    _    _    home end  pgup pgdn _    _    end
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  @l0  _    lmet           _              _    _              _    _    _
+)
+
+;; Aliases - defining all the special behaviors
+(defalias
+  ;; Caps Lock: tap=Escape, hold=Control (you already use this)
+  cec (tap-hold 200 200 esc lctl)
+  
+  ;; NEW: Semicolon: tap=Backspace, hold=Semicolon
+  scl (tap-hold 200 200 bspc ;)
+  
+  ;; Tab: tap=Tab, hold=Layer 2
+  tb2 (tap-hold 200 200 tab (layer-toggle layer2))
+  
+  ;; Space: tap=Space, hold=Layer 1
+  sp1 (tap-hold 200 200 spc (layer-toggle layer1))
+  
+  ;; Delete: tap=Delete, hold=Layer 2
+  dl2 (tap-hold 200 200 del (layer-toggle layer2))
+  
+  ;; Left Shift: tap=Backspace, hold=Shift
+  sbk (tap-hold 200 200 bspc lsft)
+  
+  ;; Alt+Backspace combo
+  abk (tap-hold 200 200 bspc lalt)
+  
+  ;; Bottom row mod-taps (left side)
+  cz (tap-hold 200 200 z lctl)
+  ax (tap-hold 200 200 x lalt)
+  
+  ;; Bottom row mod-taps (right side)
+  ac (tap-hold 200 200 , lalt)
+  cd (tap-hold 200 200 . lctl)
+  sf (tap-hold 200 200 / lsft)
+  
+  ;; Layer momentary toggles
+  lm2 (layer-toggle layer2)
+  lm3 (layer-toggle layer3)
+  
+  ;; Layer switch (go to base)
+  l0 (layer-switch base)
+)
+
+;; NEW: KL Combo for Backspace
+(defchordsv2
+  (k l) bspc 50 first-release ()
+)

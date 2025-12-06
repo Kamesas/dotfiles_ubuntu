@@ -1,0 +1,92 @@
+;; ZUOYA GMK70 - Kanata Config
+;; LAYERS ONLY - No Home Row Mods (maximum typing speed)
+;; 
+;; Modifiers: Use regular keys (Ctrl, Alt, Shift, Meta)
+;; Layers: Space=Layer1, Caps=Layer2
+
+(defcfg
+  linux-dev /dev/input/by-path/platform-i8042-serio-0-event-kbd
+  process-unmapped-keys yes
+)
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    scln '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(defalias
+  ;; ============================================
+  ;; LAYER KEYS (these have minimal impact)
+  ;; ============================================
+  ;; Caps: tap=Esc, hold=Layer2 (numpad)
+  esc-l2 (tap-hold 200 200 esc (layer-toggle layer2))
+  
+  ;; Space: tap=Space, hold=Layer1 (symbols/nav)
+  spc-l1 (tap-hold 200 200 spc (layer-toggle layer1))
+  
+  ;; Right Alt: momentary Layer2
+  mo-l2 (layer-toggle layer2)
+
+  ;; ============================================
+  ;; LAYER 1 SHORTCUTS
+  ;; ============================================
+  tilde S-grv
+  excl  S-1
+  at    S-2
+  hash  S-3
+  dllr  S-4
+  pct   S-5
+  caret S-6
+  amp   S-7
+  star  S-8
+  lprn  S-9
+  rprn  S-0
+  under S--
+  lbrc  S-[
+  rbrc  S-]
+  stab  S-tab
+  sent  S-ret
+  termv C-S-v
+  undo  C-z
+  cut   C-x
+  copy  C-c
+  paste C-v
+)
+
+;; ============================================
+;; LAYER 0: BASE (pure QWERTY - no delays!)
+;; ============================================
+(deflayer base
+  grv     1      2      3      4      5      6      7      8      9      0      -      =      bspc
+  tab     q      w      e      r      t      y      u      i      o      p      [      ]      \
+  @esc-l2 a      s      d      f      g      h      j      k      l      scln   '      ret
+  lsft    z      x      c      v      b      n      m      ,      .      /      rsft
+  lctl    lmet   lalt                 @spc-l1              @mo-l2 rmet   rctl
+)
+
+;; ============================================
+;; LAYER 1: SYMBOLS & NAVIGATION (Hold Space)
+;; ============================================
+;; Left hand: Symbols + Editing
+;; Right hand: Arrow keys + More symbols
+(deflayer layer1
+  _       f1     f2     f3     f4     f5     f6     f7     f8     f9     f10    f11    f12    _
+  @tilde  @excl  @at    @hash  @dllr  @pct   @caret @amp   @star  @lprn  @rprn  -      bspc   del
+  @stab   @tilde del    bspc   ret    @sent  left   down   up     rght   home   end    _
+  _       @undo  @cut   @copy  @termv @paste @under [      ]      @lbrc  @rbrc  _
+  _       _      _                    spc                  _      _      _
+)
+
+;; ============================================
+;; LAYER 2: NUMPAD (Hold Caps/Esc)
+;; ============================================
+(deflayer layer2
+  esc     grv    1      2      3      4      5      6      7      8      9      0      -      bspc
+  tab     q      w      e      r      t      kp+    kp7    kp8    kp9    kp*    _      _      _
+  caps    a      s      d      f      g      kp0    kp4    kp5    kp6    kp=    _      ret
+  lsft    z      x      c      v      b      kp-    kp1    kp2    kp3    kp/    rsft
+  lctl    _      lmet                 spc                  rmet   ralt   rctl
+)

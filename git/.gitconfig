@@ -1,0 +1,11 @@
+[user]
+	name = AlexSemak
+	email = semakaleksandr2014@gmail.com
+[init]
+	defaultBranch = main
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[commit]
+	template = /home/alex/.gitmessage
+[core]
+	editor = nvim

@@ -1,0 +1,24 @@
+[[manager.prepend_keymap]]
+on   = [ "g", "d" ]
+run  = "cd ~/Downloads"
+desc = "Cd to ~/Downloads"
+
+[[manager.prepend_keymap]]
+on   = [ "g", "p" ]
+run  = "cd ~/Pictures"
+desc = "Cd to ~/Pictures"
+
+[[manager.prepend_keymap]]
+on   = [ "g", "n" ]
+run  = "cd ~/Documents/ObsidianVault"
+desc = "Cd to ~/Documents/ObsidianVault"
+
+[[manager.prepend_keymap]]
+on   = [ "g", "w" ]
+run  = "cd ~/code"
+desc = "Cd to ~/code"
+
+[[manager.prepend_keymap]]
+on   = [ "z" ]
+run  = "shell --interactive --block 'zi'"
+desc = "Jump to directory with zoxide"
