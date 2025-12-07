@@ -1,0 +1,18 @@
+# Hyprland - Generated and cache files
+.config/hypr/.initial_startup_done
+
+# Wallpaper effects - exclude generated wallpapers (they're large and auto-generated)
+.config/hypr/wallpaper_effects/.wallpaper_current
+.config/hypr/wallpaper_effects/.wallpaper_modified
+
+# Keep the directory structure but ignore cached/generated wallpapers
+.config/hypr/wallpaper_effects/*.jpg
+.config/hypr/wallpaper_effects/*.png
+.config/hypr/wallpaper_effects/*.jpeg
+
+# Wallust cache (auto-generated color schemes)
+.config/hypr/wallust/wallust-*
+
+# Monitor configs might be machine-specific - uncomment if needed
+# .config/hypr/monitors.conf
+# .config/hypr/workspaces.conf
