@@ -14,6 +14,11 @@ run  = "cd ~/Documents/ObsidianVault"
 desc = "Cd to ~/Documents/ObsidianVault"
 
 [[mgr.prepend_keymap]]
+on   = [ "g", "c" ]
+run  = "cd ~/donfiles"
+desc = "Cd to ~/dotfiles/"
+
+[[mgr.prepend_keymap]]
 on   = [ "g", "w" ]
 run  = "cd ~/code"
 desc = "Cd to ~/code"
