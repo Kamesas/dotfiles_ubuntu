@@ -1,4 +1,4 @@
-# Hyprland Configuration
+ Hyprland Configuration
 
 Omarchy-inspired Hyprland setup for Ubuntu 24.04 with Waybar.
 
