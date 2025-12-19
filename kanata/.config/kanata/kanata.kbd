@@ -36,7 +36,7 @@
 ;; Layer 2 - Symbols and Editing (activated by Tab or Del hold)
 (deflayer layer2
   C-0  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  S-tab C-y C-s  up   @lm3 ]    S-=  7    8    9    _    _    _    \
+  S-tab C-y C-s  up   @lm3 ]    +    7    8    9    _    _    _    \
   A-ret C-a left down rght f12  =    4    5    6    0    _    ret
   lsft C-z C-x  C-c  C-v  C-S-v -    1    2    3    _    _    _
   lctl _    lmet           C-bspc          C-ret ralt      _    _    _

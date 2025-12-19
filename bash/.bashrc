@@ -119,7 +119,7 @@ fi
 # NEOVIM CONFIGURATIONS
 # ============================================================================
 # LazyVim distribution (default 'v' command)
-alias v='NVIM_APPNAME="nvim-lazyvim" command nvim'
+alias v='NVIM_APPNAME="lvim" command nvim'
 # Custom Neovim config
 alias nv='NVIM_APPNAME="nvim-custom" command nvim'
 # Default Neovim (lazy.nvim based)

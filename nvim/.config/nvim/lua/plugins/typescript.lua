@@ -9,6 +9,21 @@ return {
       -- Disable code lens
       code_lens = "off",
       
+      -- Filter out Next.js TypeScript plugin warnings that don't appear in VSCode
+      handlers = {
+        ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+          if result and result.diagnostics then
+            -- Filter out diagnostic code 71007 (Next.js INVALID_CLIENT_ENTRY_PROP)
+            -- This warning flags function props in "use client" components that don't end with "Action"
+            -- VSCode doesn't show this warning, so we filter it to match VSCode behavior
+            result.diagnostics = vim.tbl_filter(function(diagnostic)
+              return diagnostic.code ~= 71007
+            end, result.diagnostics)
+          end
+          vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+        end,
+      },
+      
       settings = {
         -- Completely disable all inlay hints
         typescript_inlay_hints = {

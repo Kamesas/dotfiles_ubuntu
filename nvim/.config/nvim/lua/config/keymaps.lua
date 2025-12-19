@@ -19,6 +19,10 @@ vim.keymap.set("i", "jj", "<esc>", { desc = "escape insert mode" })
 vim.keymap.set("n", "<A-s>", "<cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("i", "<A-s>", "<Esc><cmd>w<CR>", { desc = "Save file and stay in normal mode" })
 
+-- Buffer reordering
+vim.keymap.set("n", "<leader>bh", "<cmd>BufferLineMovePrev<CR>", { desc = "Move Buffer Left" })
+vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineMoveNext<CR>", { desc = "Move Buffer Right" })
+
 -- LSP keymaps are configured in lua/plugins/custom.lua via LspAttach autocmd
 -- This prevents duplicate keybindings and ensures they're only set when LSP is available
 
