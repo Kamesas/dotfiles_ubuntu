@@ -1,5 +1,5 @@
 ;; Kanata Configuration - Converted from VIA layout
-;; Version: 1.10.0
+;; Version: 1.10.0 
 
 (defcfg
   process-unmapped-keys yes
@@ -18,19 +18,19 @@
 ;; Layer 0 - Base layer (your main typing layer)
 (deflayer base
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
-  @tb2 q    w    e    r    t    y    u    i    o    p    [    @rbk  \
+  @tb2 q    w    e    r    t    y    u    i    o    p    [    ]    \
   @cec a    s    d    f    g    h    j    k    l    ;    '    ret
   lsft @cz  @ax  c    v    b    n    m    @ac  @cd  @sf  rsft up
   lctl lmet @abk           @sp1           ralt @dl2      left down rght
 )
 
-;; Layer 1 - Numbers and Navigation (activated by holding Space)
+;; Layer 1 - Numbers, Symbols and Navigation (activated by holding Space)
 (deflayer layer1
-  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _    _
-  S-tab 1   2    3    4    5    6    7    8    9    0    -    =    \
-  ret  _    C-s  _    @lm2 f12  left down up   rght bspc C-bspc end
-  lsft _    _    _    _    _    _    _    [    ]    S-ret _   _
-  _    _    @lm3           _              _    @lm3      _    _    _
+  _     f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _    _
+  S-grv 1    2    3    4    5    6    7    8    9    0    -    =    \
+  grv   S-1  S-2  S-3  S-4  S-5  left down up   rght bspc C-bspc end
+  del   S-6  S-7  S-8  S-9  S-0  S--  S-=  S-\  \    S-ret _   _
+  _     _    _              _              _    _         _    _    _
 )
 
 ;; Layer 2 - Symbols and Editing (activated by Tab or Del hold)
@@ -53,11 +53,11 @@
 
 ;; Aliases - defining all the special behaviors
 (defalias
-  ;; Caps Lock: tap=Escape, hold=Control (you already use this)
-  cec (tap-hold 200 200 esc lctl)
+  ;; Caps Lock: tap=Escape, hold=Win
+  cec (tap-hold 200 200 esc lmet)
   
   ;; Right Bracket: tap=Backspace, hold=Right Bracket
-  rbk (tap-hold 200 200 bspc ])
+  ;; rbk (tap-hold 200 200 bspc ])
   
   ;; Tab: tap=Tab, hold=Layer 2
   tb2 (tap-hold 200 200 tab (layer-toggle layer2))

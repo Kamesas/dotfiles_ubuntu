@@ -21,6 +21,7 @@ sudo systemctl stop kanata
 sudo killall kanata
 
 ## Home Row Mods (Miryoku Setup)
+LT(1,KC_SPC) - space or layer one
 
 Left Hand:
 A (Super/Win): MT(MOD_LGUI, KC_A)
@@ -38,7 +39,6 @@ C(KC_BSPC) Ctrl + Backspace - x
 C(S(KC_V)) Ctrl+Shift+V - v
 S(KC_ENT) Shift + Enter - g
 
-3960v - 20R
 3740v - 10R
 
 # 1. Create the folder in your user config
