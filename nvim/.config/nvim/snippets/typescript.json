@@ -43,5 +43,18 @@
       "export default fp(routes);"
     ],
     "description": "Fastify plugin wrapper"
+  },
+  "React Function Component": {
+    "prefix": "rfc",
+    "body": [
+      "type ${1:Props} = {};",
+      "",
+      "export const ${2:Component} = ({}: ${1:Props}) => {",
+      "  return (",
+      "    <div>${2:Component}</div>",
+      "  );",
+      "};"
+    ],
+    "description": "React Function Component"
   }
 }
