@@ -14,7 +14,7 @@ M.console_log_json = function()
 	vim.api.nvim_put({ line }, "l", true, true)
 end
 
--- Copy selection to clipboard with file context for Claude Code
+-- Copy selection to clipboard with file context
 M.copy_for_claude = function()
 	-- Get file info
 	local filepath = vim.fn.expand("%:.")
@@ -31,6 +31,14 @@ M.copy_for_claude = function()
 	vim.cmd([[execute "normal! \<Esc>"]])
 	-- Notify user
 	vim.notify("Copied to clipboard for Claude Code!", vim.log.levels.INFO)
+end
+
+-- Add TODO comment with your name and date
+M.add_todo = function()
+	local date = os.date("%Y-%m-%d")
+	local line = string.format("// TODO: (Alex %s): ", date)
+	vim.api.nvim_put({ line }, "c", false, true)
+	vim.cmd("startinsert!")
 end
 
 return M
