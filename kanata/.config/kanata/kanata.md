@@ -21,6 +21,7 @@ sudo systemctl stop kanata
 sudo killall kanata
 
 ## Home Row Mods (Miryoku Setup)
+
 LT(1,KC_SPC) - space or layer one
 
 Left Hand:

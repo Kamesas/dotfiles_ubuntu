@@ -20,7 +20,7 @@
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
   @tb2 q    w    e    r    t    y    u    i    o    p    [    ]    \
   @cec a    s    d    f    g    h    j    k    l    ;    '    ret
-  lsft @cz  @ax  c    v    b    n    m    @ac  @cd  @sf  rsft up
+  @bs  @cz  @ax  c    v    b    n    m    @ac  @cd  @sf  rsft up
   lctl lmet @al2           @sp1           @ar2 @dl2      left down rght
 )
 
@@ -81,6 +81,7 @@
   ar2 (tap-hold 200 200 ralt (layer-toggle layer2))
   
   ;; Bottom row mod-taps (left side
+  bs (tap-hold 200 200 bspc lsft)
   cz (tap-hold 200 200 z lctl)
   ax (tap-hold 200 200 x lalt)
   
