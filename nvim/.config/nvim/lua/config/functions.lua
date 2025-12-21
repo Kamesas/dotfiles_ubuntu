@@ -20,17 +20,15 @@ M.copy_for_claude = function()
 	local filepath = vim.fn.expand("%:.")
 	local line_start = vim.fn.line("'<")
 	local line_end = vim.fn.line("'>")
-
 	-- Get selected lines
 	local lines = vim.fn.getline(line_start, line_end)
 	local code = table.concat(lines, "\n")
-
 	-- Format with context
 	local output = string.format("File: %s:%d-%d\n---\n%s", filepath, line_start, line_end, code)
-
 	-- Copy to system clipboard
 	vim.fn.setreg("+", output)
-
+	-- Exit visual mode
+	vim.cmd([[execute "normal! \<Esc>"]])
 	-- Notify user
 	vim.notify("Copied to clipboard for Claude Code!", vim.log.levels.INFO)
 end
