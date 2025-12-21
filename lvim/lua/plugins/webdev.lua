@@ -67,13 +67,6 @@ return {
     end,
   },
 
-  -- Auto close/rename HTML tags
-  {
-    "windwp/nvim-ts-autotag",
-    event = "InsertEnter",
-    opts = {},
-  },
-
   -- Package.json version info
   {
     "vuki656/package-info.nvim",
