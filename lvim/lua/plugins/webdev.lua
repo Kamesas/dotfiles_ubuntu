@@ -25,9 +25,9 @@ return {
           settings = {
             typescript = {
               inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
+                includeInlayParameterNameHints = "none",
+                includeInlayFunctionParameterTypeHints = false,
+                includeInlayVariableTypeHints = false,
               },
             },
           },

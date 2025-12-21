@@ -2,6 +2,9 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 local fn = require("config.functions")
+-- 1. Fast escape from insert mode
+vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
+
 -- Move lines up/down in normal and visual mode
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
