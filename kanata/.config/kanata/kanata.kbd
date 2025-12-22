@@ -18,10 +18,10 @@
 ;; Layer 0 - Base layer (your main typing layer)
 (deflayer base
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
-  @tb2 q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @tb2 q    w    e    r    t    y    u    i    o    p    [    ]    @cbs
   @cec a    s    d    f    g    h    j    k    l    ;    '    ret
   @bs  @cz  @ax  c    v    b    n    m    @ac  @cd  @sf  rsft up
-  lctl lmet @al2           @sp1           @ar2 @dl2      left down rght
+  lctl lmet lalt           @sp1           @ar2 @dl2      left down rght
 )
 
 ;; Layer 1 - Numbers, Symbols and Navigation (activated by holding Space)
@@ -36,9 +36,9 @@
 ;; Layer 2 - Workspace and Tmux Navigation (activated by Tab/Alt hold)
 (deflayer layer2
   _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    M-1  M-2  M-3  M-4  M-5  A-1  A-2  A-3  A-4  A-5  _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    M-1  M-2  M-3  M-4  M-5  +    7    8    9    0    _    _    _
+  _    A-1  A-2  A-3  A-4  A-5  =    4    5    6    _    _    _
+  _    _    _    _    _    _    -    1    2    3    _    _    _
   _    _    _              _              _    _         _    _    _
 )
 
@@ -62,6 +62,9 @@
   ;; Tab: tap=Tab, hold=Layer 2
   tb2 (tap-hold 200 200 tab (layer-toggle layer2))
   
+  ;; Click backspace and hold \
+  cbs (tap-hold 200 200 bspc \)
+
   ;; Space: tap=Space, hold=Layer 1
   sp1 (tap-hold 200 200 spc (layer-toggle layer1))
   

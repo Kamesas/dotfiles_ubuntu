@@ -1,7 +1,6 @@
 local fn = require("config.functions")
 -- candidates for removing:
 -- 1. Fast escape from insert mode
-vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 vim.keymap.set("i", "jj", "<esc>", { desc = "escape insert mode" })
 -- 2.Save file
 vim.keymap.set("n", "<A-s>", "<cmd>w<CR>", { desc = "Save file" })
@@ -14,6 +13,8 @@ vim.keymap.set({ "n", "x", "o" }, "gh", "^", { desc = "Go to beginning of line" 
 vim.keymap.set({ "n", "x", "o" }, "gl", "$", { desc = "Go to end of line" })
 -- TODO: end of candidates for removing list.
 
+-- 1. Fast escape from insert mode
+vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 -- Move lines up/down in normal and visual mode
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
@@ -25,8 +26,8 @@ vim.keymap.set("n", "<leader>bh", "<cmd>BufferLineMovePrev<CR>", { desc = "Move 
 vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineMoveNext<CR>", { desc = "Move Buffer Right" })
 
 -- Add empty line below/above
-vim.keymap.set("n", "<C-j>", "o<Esc>", { desc = "Add line below" })
-vim.keymap.set("n", "<C-k>", "O<Esc>", { desc = "Add line above" })
+vim.keymap.set("n", "<C-m>", "o<Esc>", { desc = "Add line below" })
+-- vim.keymap.set("n", "<C-k>", "O<Esc>", { desc = "Add line above" })
 
 -- Delete without saving to register
 vim.keymap.set({ "n", "x" }, "d", '"_d', { desc = "Delete without yanking" })
