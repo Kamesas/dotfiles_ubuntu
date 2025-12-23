@@ -8,9 +8,19 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+-- Disable inlay hints completely
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("disable_inlay_hints", { clear = true }),
   callback = function(args)
-    vim.lsp.inlay_hint.enable(false, { bufnr = args.buf })
+    local bufnr = args.buf
+    -- Disable immediately
+    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+
+    -- Also disable after a short delay to catch any LSPs that enable it later
+    vim.defer_fn(function()
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+      end
+    end, 100)
   end,
 })
