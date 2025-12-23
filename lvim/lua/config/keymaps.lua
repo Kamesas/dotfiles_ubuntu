@@ -5,6 +5,9 @@ local fn = require("config.functions")
 -- 1. Fast escape from insert mode
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 
+vim.keymap.set({ "n", "x", "o" }, "gh", "^", { desc = "Go to beginning of line" })
+vim.keymap.set({ "n", "x", "o" }, "gl", "$", { desc = "Go to end of line" })
+
 -- Move lines up/down in normal and visual mode
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
