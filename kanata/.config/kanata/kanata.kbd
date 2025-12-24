@@ -18,9 +18,9 @@
 ;; Layer 0 - Base layer (your main typing layer)
 (deflayer base
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
-  @tb2 q    w    e    r    t    y    u    i    o    p    [    ]    @cbs
-  @cec a    s    d    f    g    h    j    k    l    ;    '    ret
-  @bs  @cz  @ax  c    v    b    n    m    @ac  @cd  @sf  rsft up
+  @tb2 @ql2 w    e    r    t    y    u    i    o    p    [    ]    @cbs
+  @cec @a_s @s_c @d_a @f_w g    h    @j_w @k_a @l_c @sc_s '    ret
+  @bs  @cz  @ax  c    @vw  b    n    m    @ac  @cd  @sf  rsft up
   lctl lmet lalt           @sp1           @ar2 @dl2      left down rght
 )
 
@@ -53,15 +53,18 @@
 
 ;; Aliases - defining all the special behaviors
 (defalias
+  ;; Q: tap=q, hold=Layer 2
+  ql2 (tap-hold 200 200 q (layer-toggle layer2))
+
+  ;; V: tap=v, hold=Win
+  vw (tap-hold 200 200 v lmet)
+
   ;; Caps Lock: tap=Escape, hold=Win
   cec (tap-hold 200 200 esc lmet)
-  
-  ;; Right Bracket: tap=Backspace, hold=Right Bracket
-  ;; rbk (tap-hold 200 200 bspc ])
-  
+
   ;; Tab: tap=Tab, hold=Layer 2
   tb2 (tap-hold 200 200 tab (layer-toggle layer2))
-  
+
   ;; Click backspace and hold \
   cbs (tap-hold 200 200 bspc \)
 
@@ -83,6 +86,18 @@
   ;; Right Alt: tap=Alt, hold=Layer 2
   ar2 (tap-hold 200 200 ralt (layer-toggle layer2))
   
+  ;; Home row mods - left hand (asdf)
+  a_s (tap-hold 200 200 a lsft)
+  s_c (tap-hold 200 200 s lctl)
+  d_a (tap-hold 200 200 d lalt)
+  f_w (tap-hold 200 200 f lmet)
+
+  ;; Home row mods - right hand (jkl;)
+  j_w (tap-hold 200 200 j lmet)
+  k_a (tap-hold 200 200 k lalt)
+  l_c (tap-hold 200 200 l lctl)
+  sc_s (tap-hold 200 200 ; lsft)
+
   ;; Bottom row mod-taps (left side
   bs (tap-hold 200 200 bspc lsft)
   cz (tap-hold 200 200 z lctl)
