@@ -1,0 +1,2 @@
+COMBO_ENABLE = yes
+SPLIT_KEYBOARD = yes
