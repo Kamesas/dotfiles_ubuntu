@@ -18,9 +18,9 @@
 ;; Layer 0 - Base layer (your main typing layer)
 (deflayer base
   esc  1    2    3    4    5    6    7     8     9     0     -     =     bspc  del
-  @tb2 @ql2 w    e    r    t    y    u     i     @o_ch @p_ch [     ]     @cbs
+  tab  @ql2 w    e    r    t    y    u     i     o     p     [     ]     @cbs
   @cec a    s    d    f    g    h    @j_ch @k_ch @l_ch ;     '     ret
-  @bs  @z_s @x_c @c_a @v_w b    n    @m_w  @co_a @dt_c @sl_s rsft  up
+  lsft @z_s @x_c @c_a @v_w b    n    m     @co_a @dt_c @sl_s rsft  up
   lctl lmet lalt           @sp1            @ar2  @dl2        left  down  rght
 )
 
@@ -61,9 +61,6 @@
 
   ;; Caps Lock: tap=Escape, hold=Win
   cec (tap-hold 200 200 esc lmet)
-
-  ;; Tab: tap=Tab, hold=Layer 2
-  tb2 (tap-hold 200 200 tab (layer-toggle layer2))
 
   ;; Click backspace and hold \
   cbs (tap-hold 200 200 bspc \)
@@ -113,17 +110,6 @@
   ;; Layer switch (go to base)
   l0 (layer-switch base)
 
-  ;; Chord keys
-  o_ch (chord op_chords o)
-  p_ch (chord op_chords p)
-)
-
-;; 3. Define the chord behavior
-;; Syntax: (defchords group-name timeout (key_list) action)
-(defchords op_chords 50
-  (o)    o      ;; Pressing o alone outputs o
-  (p)    p      ;; Pressing p alone outputs p
-  (o p)  bspc   ;; Pressing o and p together outputs Backspace
 )
 
 ;; JKL chord configuration
