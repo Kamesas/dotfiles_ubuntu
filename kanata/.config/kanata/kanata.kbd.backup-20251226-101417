@@ -19,8 +19,8 @@
 (deflayer base
   esc  1    2    3    4    5    6    7     8     9     0     -     =     bspc  del
   @tb2 @ql2 w    e    r    t    y    u     i     @o_ch @p_ch [     ]     @cbs
-  @cec a    s    d    f    g    h    @j_ch @k_ch @l_ch ;     '     ret
-  @bs  @z_s @x_c @c_a @v_w b    n    @m_w  @co_a @dt_c @sl_s rsft  up
+  @cec @a_s @s_c @d_a @f_w g    h    @j_ch @k_ch @l_ch @sc_s '     ret
+  @bs  @cz  @ax  c    @vw  b    n    m     @ac   @cd   @sf   rsft  up
   lctl lmet lalt           @sp1            @ar2  @dl2        left  down  rght
 )
 
@@ -86,25 +86,28 @@
   ;; Right Alt: tap=Alt, hold=Layer 2
   ar2 (tap-hold 200 200 ralt (layer-toggle layer2))
   
-  ;; Chord-participating aliases for jkl (chords only, no tap-hold)
+  ;; Home row mods - left hand (asdf)
+  a_s (tap-hold 200 200 a lsft)
+  s_c (tap-hold 200 200 s lctl)
+  d_a (tap-hold 200 200 d lalt)
+  f_w (tap-hold 200 200 f lmet)
+
+  ;; Home row mods - right hand (jkl;)
+  ;; Chord-participating aliases (replaced old j_w, k_a, l_c)
   j_ch (chord jkl_chords j)
   k_ch (chord jkl_chords k)
   l_ch (chord jkl_chords l)
+  sc_s (tap-hold 200 200 ; lsft)
 
-  ;; Bottom row mod-taps - left hand (zxcv)
-  z_s (tap-hold 200 200 z lsft)
-  x_c (tap-hold 200 200 x lctl)
-  c_a (tap-hold 200 200 c lalt)
-  v_w (tap-hold 200 200 v lmet)
-
-  ;; Bottom row mod-taps - right hand (m,./)
-  m_w (tap-hold 200 200 m lmet)
-  co_a (tap-hold 200 200 , lalt)
-  dt_c (tap-hold 200 200 . lctl)
-  sl_s (tap-hold 200 200 / lsft)
-
-  ;; Left Shift: tap=Backspace, hold=Shift
+  ;; Bottom row mod-taps (left side
   bs (tap-hold 200 200 bspc lsft)
+  cz (tap-hold 200 200 z lctl)
+  ax (tap-hold 200 200 x lalt)
+  
+  ;; Bottom row mod-taps (right side)
+  ac (tap-hold 200 200 , lalt)
+  cd (tap-hold 200 200 . lctl)
+  sf (tap-hold 200 200 / lsft)
   
   ;; Layer momentary toggles
   lm2 (layer-toggle layer2)
@@ -128,9 +131,9 @@
 
 ;; JKL chord configuration
 (defchords jkl_chords 50
-  (j)     j          ;; j alone → just j
-  (k)     k          ;; k alone → just k
-  (l)     l          ;; l alone → just l
-  (j k)   esc        ;; j+k together → escape
-  (k l)   bspc       ;; k+l together → backspace
+  (j)     (tap-hold 200 200 j lmet)   ;; j alone → original tap-hold behavior
+  (k)     (tap-hold 200 200 k lalt)   ;; k alone → original tap-hold behavior
+  (l)     (tap-hold 200 200 l lctl)   ;; l alone → original tap-hold behavior
+  (j k)   esc                          ;; j+k together → escape
+  (k l)   bspc                         ;; k+l together → backspace
 )
