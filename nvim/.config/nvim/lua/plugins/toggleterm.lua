@@ -1,8 +1,8 @@
 return {
 	"akinsho/toggleterm.nvim",
 	keys = {
-		{ "<A-.>", "<cmd>1ToggleTerm direction=float<cr>", desc = "Toggle floating terminal", mode = { "n", "t" } },
-		{ "<A-/>", "<cmd>2ToggleTerm direction=float<cr>", desc = "Toggle floating terminal", mode = { "n", "t" } },
+		{ "<C-.>", "<cmd>1ToggleTerm direction=float<cr>", desc = "Toggle floating terminal", mode = { "n", "t" } },
+		{ "<C-,>", "<cmd>2ToggleTerm direction=float<cr>", desc = "Toggle floating terminal", mode = { "n", "t" } },
 	},
 	opts = {
 		size = function(term)
