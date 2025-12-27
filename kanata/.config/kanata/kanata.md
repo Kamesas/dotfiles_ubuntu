@@ -1,4 +1,5 @@
-# Kanata
+Clicking keys: Tab Esc Del Enter Space Backspace
+Holding keys: Shift Ctrl Win Alt
 
 - To Enable: sudo systemctl start kanata
 - To Disable: sudo systemctl stop kanata
