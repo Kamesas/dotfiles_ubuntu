@@ -1,5 +1,20 @@
-Clicking keys: Tab Esc Del Enter Space Backspace
-Holding keys: Shift Ctrl Win Alt
+# Kanata 
+
+
+Clicking keys: Tab Esc   Del Enter   Space Backspace
+
+cp ~/qmk_firmware/ferris_sweep_alex_rp2040_ce.uf2 /media/alex/RPI-RP2/
+
+Working combos:
+  - J + K = ESC ✓
+  - K + L = Backspace ✓
+  - D + F = CAPS LOCK ✓
+  - E + R = [ ✓
+  - U + I = ] ✓
+  - C + V = { ✓
+  - M + , = } ✓
+  - Space + Backspace = Layer 5 ✓
+
 
 - To Enable: sudo systemctl start kanata
 - To Disable: sudo systemctl stop kanata

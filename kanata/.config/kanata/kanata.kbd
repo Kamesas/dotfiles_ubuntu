@@ -4,6 +4,9 @@
 (defcfg
   process-unmapped-keys yes
   concurrent-tap-hold yes
+  linux-dev-names-exclude (
+    "DPB Ferris sweep"
+  )
 )
 
 ;; Define source layout - your physical keyboard
