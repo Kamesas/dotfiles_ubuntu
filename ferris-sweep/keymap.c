@@ -20,24 +20,24 @@ enum custom_keycodes {
  const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [_LAYER0] = LAYOUT(
-         KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P,
-         LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F), KC_G, KC_H, RSFT_T(KC_J), RCTL_T(KC_K), LALT_T(KC_L), RGUI_T(KC_SCLN),
-         KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, RALT_T(KC_DOT), KC_SLSH,
-         LT(4,KC_ENT), LT(3,KC_BSPC), LT(1,KC_SPC), LT(2,KC_TAB)
+         LT(3,KC_Q), KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P,
+         KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN,
+         LSFT_T(KC_Z), LCTL_T(KC_X), LALT_T(KC_C), LGUI_T(KC_V), KC_B, KC_N, KC_M, LALT_T(KC_COMM), LCTL_T(KC_DOT), LSFT_T(KC_SLSH),
+         LT(2,KC_DEL), LT(1,KC_ENT), LT(1,KC_SPC), LT(2,KC_BSPC)
          ),
 
 [_LAYER1] = LAYOUT(
-        KC_EQL, KC_7, KC_8, KC_9, KC_0, KC_HOME, KC_PGDN, KC_PGUP, KC_END, KC_INS,
-        KC_MINS, KC_4, KC_5, KC_6, KC_QUOT, KC_LEFT, LSFT_T(KC_DOWN), LCTL_T(KC_UP), LALT_T(KC_RGHT), LGUI_T(KC_DEL),
-        KC_GRV, KC_1, KC_2, KC_3, KC_BSLS, KC_PIPE, KC_LBRC, KC_RBRC, RALT(KC_LCBR), KC_RCBR,
-        KC_ENT, KC_BSPC, KC_NO, KC_TRNS
+        KC_PSCR, KC_TRNS, KC_DEL, KC_GRV, KC_TILD, KC_CIRC, KC_LPRN, KC_RPRN, KC_LBRC, KC_RBRC,
+        KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, KC_QUOT,
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_BSLS, KC_PIPE, KC_AMPR, KC_LCBR, KC_RCBR,
+        KC_TAB, KC_ESC, KC_QUOT, KC_DQUO
         ),
 
 [_LAYER2] = LAYOUT(
-        KC_PLUS, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-        KC_UNDS, KC_DLR, KC_PERC, KC_CIRC, KC_DQUO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-        KC_TILD, KC_EXLM, KC_AT, KC_HASH, KC_PIPE, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-        KC_ENT, KC_BSPC, KC_SPC, KC_NO
+        LGUI(KC_1), LGUI(KC_2), LGUI(KC_3), LGUI(KC_4), LGUI(KC_5), KC_PLUS, KC_7, KC_8, KC_9, KC_0,
+        LALT(KC_1), LALT(KC_2), LALT(KC_3), LALT(KC_4), LALT(KC_5), KC_EQL, KC_4, KC_5, KC_6, KC_PAST,
+        KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_MINS, KC_1, KC_2, KC_3, KC_UNDS,
+        KC_TRNS, KC_NO, KC_TRNS, KC_TRNS
         ),
 
 [_LAYER3] = LAYOUT(
@@ -65,12 +65,13 @@ enum custom_keycodes {
 
 const uint16_t PROGMEM lbrc_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM rbrc_combo[] = {KC_U, KC_I, COMBO_END};
-const uint16_t PROGMEM lcbr_combo[] = {KC_C, KC_V, COMBO_END};
-const uint16_t PROGMEM rcbr_combo[] = {KC_M, KC_COMM, COMBO_END};
+const uint16_t PROGMEM lcbr_combo[] = {LALT_T(KC_C), LGUI_T(KC_V), COMBO_END};
+const uint16_t PROGMEM rcbr_combo[] = {KC_M, LALT_T(KC_COMM), COMBO_END};
 
-const uint16_t PROGMEM esc_combo[] = {RSFT_T(KC_J), RCTL_T(KC_K), COMBO_END};
-const uint16_t PROGMEM caps_combo[] = {LCTL_T(KC_D), LSFT_T(KC_F), COMBO_END};
-const uint16_t PROGMEM layer5_combo[] = {LT(1,KC_SPC), LT(2,KC_TAB), COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {KC_J, KC_K, COMBO_END};
+const uint16_t PROGMEM bspc_combo[] = {KC_K, KC_L, COMBO_END};
+const uint16_t PROGMEM caps_combo[] = {KC_D, KC_F, COMBO_END};
+const uint16_t PROGMEM layer5_combo[] = {LT(1,KC_SPC), LT(2,KC_BSPC), COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(lbrc_combo, KC_LBRC),
@@ -78,6 +79,7 @@ combo_t key_combos[] = {
     COMBO(lcbr_combo, KC_LCBR),
     COMBO(rcbr_combo, KC_RCBR),
     COMBO(esc_combo, KC_ESC),
+    COMBO(bspc_combo, KC_BSPC),
     COMBO(caps_combo, KC_CAPS),
     COMBO(layer5_combo, LT(5,KC_0)),
 };
