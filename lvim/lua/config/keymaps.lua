@@ -20,7 +20,7 @@ vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineMoveNext<CR>", { desc = "Move 
 
 -- Add empty line below/above
 -- vim.keymap.set("n", "<C-m>", "O<Esc>", { desc = "Add line above" })
-vim.keymap.set("n", "<C-m>", "o<Esc>", { desc = "Add line below" })
+vim.keymap.set("n", "<C-Enter>", "o<Esc>", { desc = "Add line below" })
 
 -- Delete without saving to register
 vim.keymap.set({ "n", "x" }, "d", '"_d', { desc = "Delete without yanking" })
