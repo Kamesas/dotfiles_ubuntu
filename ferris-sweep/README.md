@@ -1,5 +1,20 @@
 # Ferris Sweep QMK Configuration
 
+cd ~/qmk_firmware && qmk compile -e CONVERT_TO=rp2040_ce -kb ferris/sweep -km alex
+cp ~/qmk_firmware/ferris_sweep_alex_rp2040_ce.uf2 /media/alex/RPI-RP2/
+
+Clicking keys: Tab Esc   Del Backspace   Space Enter 
+
+Working combos:
+  - J + K = ESC ✓
+  - K + L = Backspace ✓
+  - D + F = CAPS LOCK ✓
+  - E + R = [ ✓
+  - U + I = ] ✓
+  - C + V = { ✓
+  - M + , = } ✓
+  - Space + Backspace = Layer 5 ✓
+
 Custom keymap for the Ferris Sweep keyboard with home row mods, layers, and combos.
 
 ## Installation & Setup
@@ -18,6 +33,7 @@ This clones the QMK firmware repository to `~/qmk_firmware` and sets up the buil
 ### 3. Create Symlink to Dotfiles
 ```bash
 ln -s ~/dotfiles/ferris-sweep ~/qmk_firmware/keyboards/ferris/keymaps/alex
+
 ```
 This links your dotfiles configuration to the QMK firmware directory, so any changes you make in your dotfiles are automatically available for compilation.
 

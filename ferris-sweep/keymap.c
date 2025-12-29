@@ -23,7 +23,7 @@ enum custom_keycodes {
          LT(3,KC_Q), KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P,
          KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN,
          LSFT_T(KC_Z), LCTL_T(KC_X), LALT_T(KC_C), LGUI_T(KC_V), KC_B, KC_N, KC_M, LALT_T(KC_COMM), LCTL_T(KC_DOT), LSFT_T(KC_SLSH),
-         LT(2,KC_DEL), LT(1,KC_ENT), LT(1,KC_SPC), LT(2,KC_BSPC)
+         LT(2,KC_DEL), LT(1,KC_BSPC), LT(1,KC_SPC), LT(2,KC_ENT)
          ),
 
 [_LAYER1] = LAYOUT(
@@ -71,7 +71,9 @@ const uint16_t PROGMEM rcbr_combo[] = {KC_M, LALT_T(KC_COMM), COMBO_END};
 const uint16_t PROGMEM esc_combo[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM bspc_combo[] = {KC_K, KC_L, COMBO_END};
 const uint16_t PROGMEM caps_combo[] = {KC_D, KC_F, COMBO_END};
-const uint16_t PROGMEM layer5_combo[] = {LT(1,KC_SPC), LT(2,KC_BSPC), COMBO_END};
+const uint16_t PROGMEM tab_combo[] = {KC_S, KC_D, COMBO_END};
+const uint16_t PROGMEM dquo_combo[] = {KC_L, KC_SCLN, COMBO_END};
+const uint16_t PROGMEM layer5_combo[] = {LT(1,KC_SPC), LT(2,KC_ENT), COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(lbrc_combo, KC_LBRC),
@@ -81,5 +83,7 @@ combo_t key_combos[] = {
     COMBO(esc_combo, KC_ESC),
     COMBO(bspc_combo, KC_BSPC),
     COMBO(caps_combo, KC_CAPS),
+    COMBO(tab_combo, KC_TAB),
+    COMBO(dquo_combo, KC_DQUO),
     COMBO(layer5_combo, LT(5,KC_0)),
 };
