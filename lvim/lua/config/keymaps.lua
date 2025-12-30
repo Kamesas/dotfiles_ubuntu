@@ -52,3 +52,6 @@ vim.keymap.set("v", "<leader>cs", fn.copy_for_claude, { desc = "Copy for Claude 
 
 -- Add TODO comment with your name and date
 vim.keymap.set("n", "<leader>ct", fn.add_todo, { desc = "Add TODO" })
+
+-- Zoom/maximize current window (toggle)
+vim.keymap.set("n", "<leader>wz", fn.zoom_toggle, { desc = "Toggle zoom window" })

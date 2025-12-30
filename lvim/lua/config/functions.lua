@@ -41,4 +41,16 @@ M.add_todo = function()
   vim.cmd("startinsert!")
 end
 
+-- Toggle window zoom (maximize/restore)
+M.zoom_toggle = function()
+  if vim.t.zoomed then
+    vim.cmd("wincmd =")
+    vim.t.zoomed = false
+  else
+    vim.cmd("wincmd _")
+    vim.cmd("wincmd |")
+    vim.t.zoomed = true
+  end
+end
+
 return M
