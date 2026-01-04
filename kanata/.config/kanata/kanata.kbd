@@ -6,6 +6,7 @@
   concurrent-tap-hold yes
   linux-dev-names-exclude (
     "DPB Ferris sweep"
+    "Corne Handwired"
   )
 )
 
