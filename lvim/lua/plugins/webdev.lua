@@ -21,6 +21,16 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
+        -- Disable VTSLS from LazyVim TypeScript extras - using typescript-tools.nvim instead
+        vtsls = {
+          enabled = false,
+        },
+        -- Disable ts_ls as well
+        ts_ls = {
+          enabled = false,
+        },
+        -- Keep old ts_ls settings in case needed
+        --[[
         ts_ls = {
           settings = {
             typescript = {
@@ -49,6 +59,7 @@ return {
             },
           },
         },
+        ]]
         tailwindcss = {
           settings = {
             tailwindCSS = {
@@ -64,6 +75,54 @@ return {
         cssls = {},
         emmet_ls = {
           filetypes = { "html", "typescriptreact", "javascriptreact", "css" },
+        },
+      },
+      setup = {
+        -- Skip setup for these servers (using typescript-tools.nvim instead)
+        vtsls = function()
+          return true
+        end,
+        ts_ls = function()
+          return true
+        end,
+      },
+    },
+  },
+
+  -- TypeScript Tools - replacement for VTSLS with willRenameFiles support
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+    opts = {
+      settings = {
+        -- Disable inlay hints (keep them off)
+        typescript = {
+          inlayHints = {
+            includeInlayParameterNameHints = "none",
+            includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+            includeInlayFunctionParameterTypeHints = false,
+            includeInlayVariableTypeHints = false,
+            includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+            includeInlayPropertyDeclarationTypeHints = false,
+            includeInlayFunctionLikeReturnTypeHints = false,
+            includeInlayEnumMemberValueHints = false,
+          },
+        },
+        javascript = {
+          inlayHints = {
+            includeInlayParameterNameHints = "none",
+            includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+            includeInlayFunctionParameterTypeHints = false,
+            includeInlayVariableTypeHints = false,
+            includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+            includeInlayPropertyDeclarationTypeHints = false,
+            includeInlayFunctionLikeReturnTypeHints = false,
+            includeInlayEnumMemberValueHints = false,
+          },
         },
       },
     },
