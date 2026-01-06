@@ -6,7 +6,11 @@
   concurrent-tap-hold yes
   linux-dev-names-exclude (
     "DPB Ferris sweep"
+    "DPB Ferris sweep Mouse"
+    "DPB Ferris sweep System Control"
+    "DPB Ferris sweep Consumer Control"
     "Corne Handwired"
+    "ZMK Project Corne Handwired Keyboard"
   )
 )
 
