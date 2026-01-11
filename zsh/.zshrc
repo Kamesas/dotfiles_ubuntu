@@ -92,3 +92,11 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 # Rust environment
 . "$HOME/.cargo/env"
+
+# ============================================================================
+# KEY BINDINGS
+# ============================================================================
+# Ctrl+Backspace to delete whole word backward
+bindkey '^H' backward-kill-word
+# Ctrl+Delete to delete whole word forward
+bindkey '^[[3;5~' kill-word
