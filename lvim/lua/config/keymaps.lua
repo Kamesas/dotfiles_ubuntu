@@ -55,3 +55,7 @@ vim.keymap.set("n", "<leader>ct", fn.add_todo, { desc = "Add TODO" })
 
 -- Zoom/maximize current window (toggle)
 vim.keymap.set("n", "<leader>wz", fn.zoom_toggle, { desc = "Toggle zoom window" })
+
+-- Ctrl+Backspace to delete word backward in insert mode
+vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })
+vim.keymap.set("i", "<C-H>", "<C-w>", { desc = "Delete word backward" })

@@ -25,6 +25,9 @@ return {
     },
     on_open = function(term)
       vim.cmd("startinsert!")
+      -- Ctrl+Backspace to delete word in terminal mode
+      vim.keymap.set("t", "<C-BS>", "<C-w>", { buffer = term.bufnr, desc = "Delete word backward" })
+      vim.keymap.set("t", "<C-H>", "<C-w>", { buffer = term.bufnr, desc = "Delete word backward" })
     end,
     env = { TERM = "xterm-256color" },
   },
