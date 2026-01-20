@@ -74,7 +74,7 @@ export NVM_DIR="$HOME/.nvm"
 # ============================================================================
 # API KEYS & CLOUD CONFIGURATION
 # ============================================================================
-export GOOGLE_CLOUD_PROJECT="gemini-cli-471506"
+# export GOOGLE_CLOUD_PROJECT="gemini-cli-471506"
 export OPENAI_API_KEY="your-new-api-key-here"
 
 # ============================================================================
