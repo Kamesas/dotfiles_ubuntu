@@ -59,3 +59,12 @@ vim.keymap.set("n", "<leader>wz", fn.zoom_toggle, { desc = "Toggle zoom window" 
 -- Ctrl+Backspace to delete word backward in insert mode
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })
 vim.keymap.set("i", "<C-H>", "<C-w>", { desc = "Delete word backward" })
+
+-- Neotest keymaps
+vim.keymap.set("n", "<leader>tr", function() require("neotest").run.run() end, { desc = "Run Nearest Test" })
+vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, { desc = "Run File Tests" })
+vim.keymap.set("n", "<leader>ts", function() require("neotest").summary.toggle() end, { desc = "Toggle Test Summary" })
+vim.keymap.set("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, { desc = "Show Test Output" })
+vim.keymap.set("n", "<leader>tp", function() require("neotest").output_panel.toggle() end, { desc = "Toggle Output Panel" })
+vim.keymap.set("n", "<leader>tl", function() require("neotest").run.run_last() end, { desc = "Run Last Test" })
+vim.keymap.set("n", "<leader>tx", function() require("neotest").run.stop() end, { desc = "Stop Test" })
