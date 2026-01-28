@@ -3,7 +3,7 @@ return {
     "jakewvincent/mkdnflow.nvim",
     ft = "markdown", -- only load for markdown files
     keys = {
-      { "<leader>ww", mode = "n", desc = "Open daily note" },
+      { "<leader>wn", mode = "n", desc = "Open daily note" },
     },
     opts = {
       modules = {
@@ -115,7 +115,7 @@ return {
       end
 
       -- Keybinding for daily notes (similar to vimwiki)
-      vim.keymap.set("n", "<leader>ww", open_daily_note, { desc = "Open daily note" })
+      vim.keymap.set("n", "<leader>wn", open_daily_note, { desc = "Open daily note" })
     end,
   },
 }
