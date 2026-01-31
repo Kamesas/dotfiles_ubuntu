@@ -32,12 +32,12 @@ alias lt='ls --tree'
 # ============================================================================
 # NEOVIM CONFIGURATIONS
 # ============================================================================
-# LazyVim distribution (default 'v' command)
-alias v='NVIM_APPNAME="lvim" command nvim'
+# LazyVim is now the default nvim config
+alias v='nvim'
 # Custom Neovim config
 alias nv='NVIM_APPNAME="nvim-custom" command nvim'
-# Default Neovim (lazy.nvim based)
-alias lv='NVIM_APPNAME="nvim" command nvim'
+# Old Neovim config
+alias vo='NVIM_APPNAME="nvim-old" command nvim'
 
 # ============================================================================
 # UTILITY ALIASES
