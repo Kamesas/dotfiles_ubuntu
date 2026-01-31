@@ -7,6 +7,19 @@ M.console_log = function()
   vim.api.nvim_put({ line }, "l", true, true)
 end
 
+-- Insert comment block separator
+M.comment_block = function()
+  local lines = {
+    "// ====================================================================",
+    "// ",
+    "// ====================================================================",
+  }
+  vim.api.nvim_put(lines, "l", true, true)
+  -- Move cursor to middle line and position at end for typing
+  vim.cmd("normal! k$")
+  vim.cmd("startinsert!")
+end
+
 -- JSON.stringify for objects
 M.console_log_json = function()
   local word = vim.fn.expand("<cword>")
@@ -18,8 +31,11 @@ end
 M.copy_for_claude = function()
   -- Get file info
   local filepath = vim.fn.expand("%:.")
-  local line_start = vim.fn.line("'<")
-  local line_end = vim.fn.line("'>")
+  -- Use "v" and "." to get current visual selection (not '< '> which update after leaving visual mode)
+  local pos1 = vim.fn.line("v")
+  local pos2 = vim.fn.line(".")
+  local line_start = math.min(pos1, pos2)
+  local line_end = math.max(pos1, pos2)
   -- Get selected lines
   local lines = vim.fn.getline(line_start, line_end)
   local code = table.concat(lines, "\n")
