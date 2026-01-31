@@ -97,6 +97,8 @@
   // TERMINAL
   // ═══════════════════════════════════════════════════════════════════════════
   { "key": "ctrl+j", "command": "workbench.action.terminal.toggleTerminal", "when": "(editorTextFocus && neovim.mode == 'normal') || terminalFocus" },
+  { "key": "ctrl+/", "command": "workbench.action.terminal.toggleTerminal" },
+  { "key": "ctrl+.", "command": "workbench.action.toggleMaximizedPanel" },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // LEAP (like flash.nvim)
@@ -146,5 +148,16 @@
   },
   { "key": "space z", "command": "workbench.action.toggleZenMode", "when": "editorTextFocus && neovim.mode == 'normal'" },
   { "key": "space m", "command": "workbench.action.toggleMenuBar", "when": "editorTextFocus && neovim.mode == 'normal'" },
-  { "key": "space a", "command": "workbench.action.toggleActivityBarVisibility", "when": "editorTextFocus && neovim.mode == 'normal'" }
+  { "key": "space a", "command": "workbench.action.toggleActivityBarVisibility", "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+  // Buffer commands
+  { "key": "space b d", "command": "workbench.action.closeActiveEditor", "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+  // Outline/panels
+  { "key": "space o a", "command": "workbench.action.toggleAuxiliaryBar", "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+  // Window/split commands
+  { "key": "space w v", "command": "workbench.action.splitEditorRight", "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "space w s", "command": "workbench.action.splitEditorDown", "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "space w d", "command": "workbench.action.closeEditorsInGroup", "when": "editorTextFocus && neovim.mode == 'normal'" }
 ]

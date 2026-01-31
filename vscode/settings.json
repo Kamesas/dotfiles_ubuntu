@@ -36,7 +36,6 @@
   "workbench.colorTheme": "Default Dark+",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorCustomizations": {},
-  "workbench.activityBar.location": "hidden",
   "workbench.startupEditor": "none",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.customLabels.patterns": {
@@ -56,7 +55,8 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // TERMINAL
   // ═══════════════════════════════════════════════════════════════════════════
-  "terminal.integrated.fontFamily": "monospace",
+  "terminal.integrated.fontFamily": "FiraCode Nerd Font",
+  "terminal.integrated.fontSize": 16,
   "terminal.integrated.gpuAcceleration": "off",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.defaultProfile.windows": "Git Bash",
@@ -248,4 +248,5 @@
   "settingsSync.ignoredExtensions": ["pkief.material-icon-theme"],
   "remote.autoForwardPortsSource": "hybrid",
   "redhat.telemetry.enabled": true,
+  "workbench.activityBar.location": "hidden",
 }
