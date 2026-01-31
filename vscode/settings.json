@@ -1,0 +1,186 @@
+{
+  // "editor.lineNumbers": "relative",
+  "editor.fontFamily": "Fira Code",
+  "editor.fontSize": 15,
+  "window.zoomLevel": 1.25,
+  // "editor.fontSize": 15,
+  // "window.zoomLevel": 1,
+  "explorer.compactFolders": false,
+  "workbench.tree.enableStickyScroll": false,
+  "editor.fontLigatures": true,
+  "terminal.integrated.fontFamily": "monospace",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.wordWrapColumn": 100,
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.multiCursorModifier": "ctrlCmd",
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.renderWhitespace": "all",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "chat.editor.fontSize": 15,
+  "workbench.colorTheme": "Default Dark+",
+  "console-ninja.featureSet": "Community",
+  "sqltools.results.reuseTabs": "connection",
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.suggest.insertMode": "replace",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports.ts": "always",
+    "source.organizeImports": "always"
+  },
+  "vscode-neovim.neovimExecutablePaths.linux": "/home/alex/.local/bin/vscode-neovim/nvim",
+  "vscode-neovim.neovimInitVimPaths.linux": "/home/alex/.config/nvim-vscode/init.lua",
+  // "vscode-neovim.useCtrlKeysForYank": true,
+  "vscode-neovim.useCtrlKeysForInsertMode": false,
+  "vscode-neovim.compositeKeys": {
+    "jk": {
+      "command": "vscode-neovim.escape"
+    }
+  },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "css",
+    "scss"
+  ],
+
+  "cSpell.userWords": [
+    "chartjs",
+    "chegg",
+    "Contentful",
+    "craco",
+    "daisyui",
+    "esnext",
+    "ETQB",
+    "gmail",
+    "heroicons",
+    "kysely",
+    "Phonendoscope",
+    "scrollbar",
+    "Slava",
+    "submenu",
+    "testid"
+  ],
+  "json.maxItemsComputed": 11000,
+  "editor.linkedEditing": true,
+  "git.suggestSmartCommit": false,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": { "path": "/usr/bin/bash", "icon": "terminal-bash" },
+    "fish": { "path": "/usr/bin/fish" },
+    "tmux": { "path": "/usr/bin/tmux", "icon": "terminal-tmux" }
+  },
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.fontWeight": "500",
+  "better-comments.tags": [
+    {
+      "tag": "!",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "FIXME",
+      "color": "red",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "TODO",
+      "color": "green",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "info",
+      "color": "orange",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    }
+  ],
+  "workbench.colorCustomizations": {},
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "git.autofetch": true,
+  "zenMode.hideLineNumbers": false,
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "editor.maxTokenizationLineLength": 9e26,
+  "git.confirmSync": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.suggest.matchOnWordStartOnly": false,
+  "editor.suggest.showStatusBar": true,
+  "terminal.integrated.gpuAcceleration": "off",
+  "workbench.startupEditor": "none",
+  "code-runner.runInTerminal": true,
+  "editor.inlineSuggest.showToolbar": "always",
+  "redhat.telemetry.enabled": true,
+  "workbench.editor.empty.hint": "hidden",
+  "workbench.editor.customLabels.patterns": {
+    "**/{layout,page}.tsx": "${dirname} ${filename}"
+  },
+  "gitlens.views.commitDetails.files.layout": "tree",
+  "diffEditor.maxComputationTime": 0,
+  "terminal.integrated.env.windows": {},
+  "settingsSync.ignoredExtensions": ["pkief.material-icon-theme"],
+  "remote.autoForwardPortsSource": "hybrid",
+  "chat.commandCenter.enabled": false,
+  "workbench.experimental.share.enabled": true,
+  "editor.minimap.enabled": false,
+  "docker.extension.enableComposeLanguageServer": false,
+  "terminal.integrated.profiles.windows": {
+    "Moddable ESP32": {
+      "path": "cmd.exe",
+      "args": ["/k", "F:\\Coding\\esp_32\\moddable_env.bat"],
+      "icon": "chip"
+    }
+  },
+  "diffEditor.codeLens": true,
+  "codeium.enableConfig": {
+    "*": true,
+    "ignore": true,
+    "properties": true
+  },
+  "yaml.schemas": {
+    "file:///home/alex/.vscode/extensions/continue.continue-1.0.23-linux-x64/config-yaml-schema.json": [
+      ".continue/**/*.yaml"
+    ]
+  },
+  "chat.mcp.serverSampling": {
+    "Global in Code: huggingface": {
+      "allowedModels": []
+    }
+  },
+  "zenMode.hideActivityBar": false,
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  }
+}
