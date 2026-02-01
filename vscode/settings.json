@@ -13,7 +13,7 @@
   "editor.linkedEditing": true,
   "editor.unicodeHighlight.ambiguousCharacters": false,
   "editor.maxTokenizationLineLength": 9e26,
-
+  "editor.cursorBlinking": "solid",
   // ═══════════════════════════════════════════════════════════════════════════
   // EDITOR - Behavior
   // ═══════════════════════════════════════════════════════════════════════════
@@ -248,5 +248,4 @@
   "settingsSync.ignoredExtensions": ["pkief.material-icon-theme"],
   "remote.autoForwardPortsSource": "hybrid",
   "redhat.telemetry.enabled": true,
-  "workbench.activityBar.location": "hidden",
 }
