@@ -12,6 +12,7 @@ return {
         "eslint-lsp",
         "prettierd",
         "eslint_d",
+        "js-debug-adapter",
       },
     },
   },

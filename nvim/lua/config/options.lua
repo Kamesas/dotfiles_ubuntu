@@ -5,3 +5,5 @@
 
 -- Disable inlay hints by default (LazyVim setting)
 vim.g.lazyvim_inlay_hints_enabled = false
+
+vim.o.relativenumber = false
