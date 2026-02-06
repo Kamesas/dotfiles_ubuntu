@@ -89,7 +89,7 @@ return {
         MkdnNewListItemAboveInsert = { "n", "O" },
         MkdnExtendList = false,
         MkdnUpdateNumbering = { "n", "<leader>mn" },
-        MkdnTableNextCell = false, -- disabled to avoid conflict with Codeium
+        MkdnTableNextCell = false,
         MkdnTablePrevCell = false,
         MkdnTableNextRow = false,
         MkdnTablePrevRow = false,
