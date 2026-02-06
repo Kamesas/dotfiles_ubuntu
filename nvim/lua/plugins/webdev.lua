@@ -99,6 +99,10 @@ return {
     },
     ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
     opts = {
+      on_attach = function(_, bufnr)
+        vim.keymap.set("n", "<leader>ci", "<cmd>TSToolsAddMissingImports<cr>",
+          { buffer = bufnr, desc = "Add All Missing Imports" })
+      end,
       settings = {
         -- Disable inlay hints (keep them off)
         typescript = {
