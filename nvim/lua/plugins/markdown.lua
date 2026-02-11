@@ -2,9 +2,6 @@ return {
   {
     "jakewvincent/mkdnflow.nvim",
     ft = "markdown", -- only load for markdown files
-    keys = {
-      { "<leader>wn", mode = "n", desc = "Open daily note" },
-    },
     opts = {
       modules = {
         bib = false,
