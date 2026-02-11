@@ -1,4 +1,5 @@
-# Kanata 
+# Kanata
+
 - To Enable: sudo systemctl start kanata
 - To Disable: sudo systemctl stop kanata
 - To Check Status: systemctl status kanata

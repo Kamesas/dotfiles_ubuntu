@@ -1,5 +1,5 @@
-;; Kanata Configuration
-;; Version: 1.10.0 
+;; Kanata Configuration - matched to Corne Handwired ZMK layout
+;; Version: 1.10.0
 
 (defcfg
   process-unmapped-keys yes
@@ -23,49 +23,52 @@
   lctl lmet lalt           spc            ralt rctl      left down rght
 )
 
-;; Layer 0 - Base layer (your main typing layer)
+;; Layer 0 - Base layer (matched to Corne default_layer)
 (deflayer base
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
-  tab  @ql2 w    e    r    t    y    u     i     o     p       [     ]     \
-  @cec a    s    d    f    g    h    @j_ch @k_ch @l_ch @sc_ap  '     ret
-  lsft @z_c @x_a c    @v_w b    n    m     @co_a @dt_c @sl_s   rsft  up
+  tab  @qm  w    @e_ch @r_ch t    y    @u_ch @i_ch o     @pm     [     ]     \
+  @cec a    @s_ch @d_ch @f_ch g    h    @j_ch @k_ch @l_ch @sc_ch  '     ret
+  lsft @z_s @x_c @c_a  @v_g  b    n    @m_g  @co_a @dt_c @sl_s   rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
-;; Layer 1 - Symbols and Navigation (activated by holding Space)
+;; Layer 1 - Symbols and Navigation (Corne layer1, activated by holding Space)
 (deflayer layer1
   _     f1   f2    f3   f4   f5    f6   f7   f8   f9   f10  f11  f12  _    _
-  _     _    _    del   grv  S-grv S-6  S-9  S-0  [    ]    [    ]    \
-  _     S-1  S-2   S-3  S-4  S-5   left down up   rght bspc '    ret
-  _     _    _     _    _    _     \    S-\ S-7  S-[  S-]  _    _
+  _     prnt _    del   grv  S-grv S-6  S-9  S-0  [    ]    [    ]    \
+  _     S-1  S-2   S-3  S-4  S-5   left down up   rght '    '    ret
+  _     _    _     _    _    _     \    S-\  S-7  S-[  S-]  _    _
   _     _    _               _               _    _         _    _    _
 )
 
-;; Layer 2 - Workspace, Tmux Navigation and Numbers (activated by Tab/Alt hold)
+;; Layer 2 - Workspace, Tmux Navigation and Numbers (Corne layer2, activated by Alt hold)
 (deflayer layer2
   _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    M-1  M-2  M-3  M-4  M-5  +    7    8    9    S-8  _    _    _
-  _    A-1  A-2  A-3  A-4  A-5  0    4    5    6    =    _    _
+  _    M-1  M-2  M-3  M-4  M-5  +    7    8    9    0    _    _    _
+  _    A-1  A-2  A-3  A-4  A-5  =    4    5    6    S-8  _    _
   _    lsft _    _    _    _    -    1    2    3    S--  _    _
   _    _    _              _              _    _         _    _    _
 )
 
-;; Layer 3 - Function keys layer
-(deflayer layer3
-  _    _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _              _              _    _              _    _    _
+;; Layer 3 - Media (Corne layer3, activated by Q/P hold)
+(deflayer media
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    brup _    _    next volu _    _    _    _    _    _    _    _
+  _    lmet lalt lctl lsft mute _    lsft lctl lalt lmet _    _
+  _    brdn _    _    prev vold _    _    _    _    _    _    _
+  _    _    _              pp             _    _         _    _    _
 )
 
-;; Aliases - defining all the special behaviors
+;; Aliases
 (defalias
-  ;; Q: tap=q, hold=Layer 2
-  ql2 (tap-hold 200 200 q (layer-toggle layer2))
+  ;; Q: tap=q, hold=media layer (matching Corne lt LAYER3 Q)
+  qm (tap-hold 200 200 q (layer-toggle media))
 
-  ;; Caps Lock: tap=Escape, hold=Win
-  cec (tap-hold 200 200 esc lmet)
+  ;; P: tap=p, hold=media layer (matching Corne lt LAYER3 P)
+  pm (tap-hold 200 200 p (layer-toggle media))
+
+  ;; Caps Lock: tap=Escape, hold=Ctrl (matching Corne mt LCTRL ESC)
+  cec (tap-hold 200 200 esc lctl)
 
   ;; Space: tap=Space, hold=Layer 1
   sp1 (tap-hold 200 200 spc (layer-toggle layer1))
@@ -76,30 +79,71 @@
   ;; Right Alt: tap=Alt, hold=Layer 2
   ar2 (tap-hold 200 200 ralt (layer-toggle layer2))
 
-  ;; Chord-participating aliases for jkl (chords only, no tap-hold)
-  j_ch (chord jkl_chords j)
-  k_ch (chord jkl_chords k)
-  l_ch (chord jkl_chords l)
+  ;; Bottom row mod-taps - left hand (matching Corne: SHFT/Z, CTRL/X, ALT/C, GUI/V)
+  z_s (tap-hold 200 200 z lsft)
+  x_c (tap-hold 200 200 x lctl)
+  c_a (tap-hold 200 200 c lalt)
+  v_g (tap-hold 200 200 v lmet)
 
-  ;; Bottom row mod-taps - left hand (zxv)
-  z_c (tap-hold 200 200 z lctl)
-  x_a (tap-hold 200 200 x lalt)
-  v_w (tap-hold 200 200 v lmet)
-
-  ;; Bottom row mod-taps - right hand (,./)
+  ;; Bottom row mod-taps - right hand (matching Corne: GUI/M, ALT/,, CTRL/., SHFT//)
+  m_g (tap-hold 200 200 m lmet)
   co_a (tap-hold 200 200 , lalt)
   dt_c (tap-hold 200 200 . lctl)
   sl_s (tap-hold 200 200 / lsft)
 
-  ;; Semicolon: tap=;, hold='
-  sc_ap (tap-hold 200 200 ; ')
+  ;; Chord participants - right home row (j, k, l, ;)
+  j_ch (chord jkl_chords j)
+  k_ch (chord jkl_chords k)
+  l_ch (chord jkl_chords l)
+  sc_ch (chord jkl_chords semi)
+
+  ;; Chord participants - left home row (s, d, f)
+  s_ch (chord sdf_chords s)
+  d_ch (chord sdf_chords d)
+  f_ch (chord sdf_chords f)
+
+  ;; Chord participants - top row (e, r / u, i)
+  e_ch (chord er_chords e)
+  r_ch (chord er_chords r)
+  u_ch (chord ui_chords u)
+  i_ch (chord ui_chords i)
 )
 
-;; JKL chord configuration
+;; Right home row chords: j, k, l, ; (matching Corne combos)
 (defchords jkl_chords 50
-  (j)     j          ;; j alone → just j
-  (k)     k          ;; k alone → just k
-  (l)     l          ;; l alone → just l
-  (j k)   esc        ;; j+k together → escape
-  (k l)   bspc       ;; k+l together → backspace
+  (j)      j          ;; j alone
+  (k)      k          ;; k alone
+  (l)      l          ;; l alone
+  (semi)   ;          ;; ; alone
+  (j k)    esc        ;; j+k → escape (combo_esc)
+  (k l)    bspc       ;; k+l → backspace (combo_bspc)
+  (l semi) S-'        ;; l+; → double quote (combo_dquo)
+  (j l)    ret        ;; j+l → enter (combo_enter)
 )
+
+;; Left home row chords: s, d, f (matching Corne combos)
+(defchords sdf_chords 50
+  (s)     s          ;; s alone
+  (d)     d          ;; d alone
+  (f)     f          ;; f alone
+  (s d)   tab        ;; s+d → tab (combo_tab)
+  (d f)   caps       ;; d+f → caps lock (combo_caps)
+)
+
+;; Top row left chords: e, r (matching Corne combo_lbrc)
+(defchords er_chords 50
+  (e)     e          ;; e alone
+  (r)     r          ;; r alone
+  (e r)   [          ;; e+r → [
+)
+
+;; Top row right chords: u, i (matching Corne combo_rbrc)
+(defchords ui_chords 50
+  (u)     u          ;; u alone
+  (i)     i          ;; i alone
+  (u i)   ]          ;; u+i → ]
+)
+
+;; NOTE: Corne combos for { (X+C) and } (M+,) are not included because
+;; those keys have mod-tap behavior and nesting chords inside tap-hold
+;; causes timing issues. Use Layer 1 for { (S-[) and } (S-]).
