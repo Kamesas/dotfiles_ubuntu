@@ -26,9 +26,9 @@
 ;; Layer 0 - Base layer (matched to Corne default_layer)
 (deflayer base
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
-  tab  @qm  w    @e_ch @r_ch t    y    @u_ch @i_ch o     @pm     [     ]     \
-  @cec a    @s_ch @d_ch @f_ch g    h    @j_ch @k_ch @l_ch @sc_ch  '     ret
-  lsft @z_s @x_c @c_a  @v_g  b    n    @m_g  @co_a @dt_c @sl_s   rsft  up
+  tab  @qm  @w_ch @e_ch @r_ch t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
+  @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
+  lsft @z_s @x_c @c_a  @v_g  b    @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
@@ -91,59 +91,98 @@
   dt_c (tap-hold 200 200 . lctl)
   sl_s (tap-hold 200 200 / lsft)
 
-  ;; Chord participants - right home row (j, k, l, ;)
-  j_ch (chord jkl_chords j)
-  k_ch (chord jkl_chords k)
-  l_ch (chord jkl_chords l)
-  sc_ch (chord jkl_chords semi)
+  ;; Fat arrow macro
+  fat (macro = S-.)
 
-  ;; Chord participants - left home row (s, d, f)
-  s_ch (chord sdf_chords s)
-  d_ch (chord sdf_chords d)
-  f_ch (chord sdf_chords f)
+  ;; Chord participants - right home row (h, j, k, l, ;)
+  h_ch (chord hjkl_chords h)
+  j_ch (chord hjkl_chords j)
+  k_ch (chord hjkl_chords k)
+  l_ch (chord hjkl_chords l)
+  sc_ch (chord hjkl_chords semi)
 
-  ;; Chord participants - top row (e, r / u, i)
-  e_ch (chord er_chords e)
-  r_ch (chord er_chords r)
-  u_ch (chord ui_chords u)
-  i_ch (chord ui_chords i)
+  ;; Chord participants - left home row (s, d, f, g)
+  s_ch (chord sdfg_chords s)
+  d_ch (chord sdfg_chords d)
+  f_ch (chord sdfg_chords f)
+  g_ch (chord sdfg_chords g)
+
+  ;; Chord participants - top row left (w, e, r)
+  w_ch (chord wer_chords w)
+  e_ch (chord wer_chords e)
+  r_ch (chord wer_chords r)
+
+  ;; Chord participants - top row right (y, u, i, o, p)
+  y_ch (chord yuiop_chords y)
+  u_ch (chord yuiop_chords u)
+  i_ch (chord yuiop_chords i)
+  o_ch (chord yuiop_chords o)
+  p_ch (chord yuiop_chords p)
+
+  ;; Chord participants - bottom row right (n, m, comma, dot)
+  n_ch (chord nm_chords n)
+  m_ch (chord nm_chords m)
+  co_ch (chord codot_chords comma)
+  dt_ch (chord codot_chords dot)
 )
 
-;; Right home row chords: j, k, l, ; (matching Corne combos)
-(defchords jkl_chords 50
+;; Right home row chords: h, j, k, l, ;
+(defchords hjkl_chords 50
+  (h)      h          ;; h alone
   (j)      j          ;; j alone
   (k)      k          ;; k alone
   (l)      l          ;; l alone
   (semi)   ;          ;; ; alone
-  (j k)    esc        ;; j+k → escape (combo_esc)
-  (k l)    bspc       ;; k+l → backspace (combo_bspc)
-  (l semi) S-'        ;; l+; → double quote (combo_dquo)
-  (j l)    ret        ;; j+l → enter (combo_enter)
+  (h j)    =          ;; h+j → equal
+  (j k)    esc        ;; j+k → escape
+  (k l)    bspc       ;; k+l → backspace
+  (l semi) '          ;; l+; → single quote
+  (j l)    ret        ;; j+l → enter
 )
 
-;; Left home row chords: s, d, f (matching Corne combos)
-(defchords sdf_chords 50
+;; Left home row chords: s, d, f, g
+(defchords sdfg_chords 50
   (s)     s          ;; s alone
   (d)     d          ;; d alone
   (f)     f          ;; f alone
-  (s d)   tab        ;; s+d → tab (combo_tab)
-  (d f)   caps       ;; d+f → caps lock (combo_caps)
+  (g)     g          ;; g alone
+  (s d)   tab        ;; s+d → tab
+  (d f)   caps       ;; d+f → caps lock
+  (f g)   @fat       ;; f+g → =>
 )
 
-;; Top row left chords: e, r (matching Corne combo_lbrc)
-(defchords er_chords 50
+;; Top row left chords: w, e, r
+(defchords wer_chords 50
+  (w)     w          ;; w alone
   (e)     e          ;; e alone
   (r)     r          ;; r alone
+  (w e)   S-9        ;; w+e → (
   (e r)   [          ;; e+r → [
 )
 
-;; Top row right chords: u, i (matching Corne combo_rbrc)
-(defchords ui_chords 50
+;; Top row right chords: y, u, i, o, p
+(defchords yuiop_chords 50
+  (y)     y          ;; y alone
   (u)     u          ;; u alone
   (i)     i          ;; i alone
+  (o)     o          ;; o alone
+  (p)     @pm        ;; p alone → tap-hold for media layer
+  (y u)   S-=        ;; y+u → +
   (u i)   ]          ;; u+i → ]
+  (i o)   S-0        ;; i+o → )
+  (o p)   S-'        ;; o+p → "
 )
 
-;; NOTE: Corne combos for { (X+C) and } (M+,) are not included because
-;; those keys have mod-tap behavior and nesting chords inside tap-hold
-;; causes timing issues. Use Layer 1 for { (S-[) and } (S-]).
+;; Bottom row right chords: n, m
+(defchords nm_chords 50
+  (n)     n          ;; n alone
+  (m)     @m_g       ;; m alone → tap-hold for GUI
+  (n m)   -          ;; n+m → minus
+)
+
+;; Bottom row right chords: comma, dot
+(defchords codot_chords 50
+  (comma) @co_a      ;; , alone → tap-hold for ALT
+  (dot)   @dt_c      ;; . alone → tap-hold for CTRL
+  (comma dot) S--    ;; ,+. → underscore
+)
