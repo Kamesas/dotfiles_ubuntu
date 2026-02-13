@@ -67,25 +67,53 @@ const uint16_t PROGMEM lbrc_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM rbrc_combo[] = {KC_U, KC_I, COMBO_END};
 const uint16_t PROGMEM lcbr_combo[] = {LALT_T(KC_C), LGUI_T(KC_V), COMBO_END};
 const uint16_t PROGMEM rcbr_combo[] = {KC_M, LALT_T(KC_COMM), COMBO_END};
+const uint16_t PROGMEM lpar_combo[] = {KC_W, KC_E, COMBO_END};
+const uint16_t PROGMEM rpar_combo[] = {KC_I, KC_O, COMBO_END};
 
 const uint16_t PROGMEM esc_combo[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM bspc_combo[] = {KC_K, KC_L, COMBO_END};
 const uint16_t PROGMEM caps_combo[] = {KC_D, KC_F, COMBO_END};
 const uint16_t PROGMEM tab_combo[] = {KC_S, KC_D, COMBO_END};
-const uint16_t PROGMEM dquo_combo[] = {KC_L, KC_SCLN, COMBO_END};
+const uint16_t PROGMEM squo_combo[] = {KC_L, KC_SCLN, COMBO_END};
+const uint16_t PROGMEM dquo_combo[] = {KC_O, LT(3,KC_P), COMBO_END};
 const uint16_t PROGMEM enter_combo[] = {KC_J, KC_L, COMBO_END};
 const uint16_t PROGMEM layer5_combo[] = {LT(1,KC_SPC), LT(2,KC_ENT), COMBO_END};
 
+const uint16_t PROGMEM equal_combo[] = {KC_H, KC_J, COMBO_END};
+const uint16_t PROGMEM plus_combo[] = {KC_Y, KC_U, COMBO_END};
+const uint16_t PROGMEM minus_combo[] = {KC_N, KC_M, COMBO_END};
+const uint16_t PROGMEM under_combo[] = {LALT_T(KC_COMM), LCTL_T(KC_DOT), COMBO_END};
+const uint16_t PROGMEM fat_arrow_combo[] = {KC_F, KC_G, COMBO_END};
+
 combo_t key_combos[] = {
-    COMBO(lbrc_combo, KC_LBRC),
-    COMBO(rbrc_combo, KC_RBRC),
-    COMBO(lcbr_combo, KC_LCBR),
-    COMBO(rcbr_combo, KC_RCBR),
-    COMBO(esc_combo, KC_ESC),
-    COMBO(bspc_combo, KC_BSPC),
-    COMBO(caps_combo, KC_CAPS),
-    COMBO(tab_combo, KC_TAB),
-    COMBO(dquo_combo, KC_DQUO),
-    COMBO(enter_combo, KC_ENT),
-    COMBO(layer5_combo, LT(5,KC_0)),
+    COMBO(lbrc_combo, KC_LBRC),     // 0
+    COMBO(rbrc_combo, KC_RBRC),     // 1
+    COMBO(lcbr_combo, KC_LCBR),     // 2
+    COMBO(rcbr_combo, KC_RCBR),     // 3
+    COMBO(lpar_combo, KC_LPRN),     // 4
+    COMBO(rpar_combo, KC_RPRN),     // 5
+    COMBO(esc_combo, KC_ESC),       // 6
+    COMBO(bspc_combo, KC_BSPC),     // 7
+    COMBO(caps_combo, KC_CAPS),     // 8
+    COMBO(tab_combo, KC_TAB),       // 9
+    COMBO(squo_combo, KC_QUOT),     // 10
+    COMBO(dquo_combo, KC_DQUO),     // 11
+    COMBO(enter_combo, KC_ENT),     // 12
+    COMBO(layer5_combo, LT(5,KC_0)),// 13
+    COMBO(equal_combo, KC_EQL),     // 14
+    COMBO(plus_combo, KC_PLUS),     // 15
+    COMBO(minus_combo, KC_MINS),    // 16
+    COMBO(under_combo, KC_UNDS),    // 17
+    COMBO_ACTION(fat_arrow_combo),  // 18
 };
+
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    switch (combo_index) {
+        case 18: // fat_arrow
+            if (pressed) {
+                tap_code16(KC_EQL);
+                tap_code16(S(KC_DOT));
+            }
+            break;
+    }
+}

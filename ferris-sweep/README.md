@@ -1,43 +1,40 @@
 # Ferris Sweep QMK Configuration
 
+### first need to build with this command
+
 cd ~/qmk_firmware && qmk compile -e CONVERT_TO=rp2040_ce -kb ferris/sweep -km alex
+
+### then need to upload with this command but before need to unplug half from each other and from PC, press "q" for left and "p" for the right half. In the file should appears the keyboard the call the command below. It has to be done separately for each half.
+
 cp ~/qmk_firmware/ferris_sweep_alex_rp2040_ce.uf2 /media/alex/RPI-RP2/
-
-Clicking keys: Tab Esc   Del Backspace   Space Enter 
-
-Working combos:
-  - J + K = ESC ✓
-  - K + L = Backspace ✓
-  - D + F = CAPS LOCK ✓
-  - E + R = [ ✓
-  - U + I = ] ✓
-  - C + V = { ✓
-  - M + , = } ✓
-  - Space + Backspace = Layer 5 ✓
-
-Custom keymap for the Ferris Sweep keyboard with home row mods, layers, and combos.
 
 ## Installation & Setup
 
 ### 1. Install QMK CLI
+
 ```bash
 curl -fsSL https://install.qmk.fm | sh
 ```
 
 ### 2. Setup QMK Firmware Repository
+
 ```bash
 qmk setup
 ```
+
 This clones the QMK firmware repository to `~/qmk_firmware` and sets up the build environment.
 
 ### 3. Create Symlink to Dotfiles
+
 ```bash
 ln -s ~/dotfiles/ferris-sweep ~/qmk_firmware/keyboards/ferris/keymaps/alex
 
 ```
+
 This links your dotfiles configuration to the QMK firmware directory, so any changes you make in your dotfiles are automatically available for compilation.
 
 ### 4. Set QMK Defaults (Optional but Recommended)
+
 ```bash
 qmk config user.keyboard=ferris/sweep
 qmk config user.keymap=alex
@@ -46,11 +43,13 @@ qmk config user.keymap=alex
 **Purpose of defaults:** These settings save you from typing `-kb ferris/sweep -km alex` every time you compile. Without defaults, you need the full command; with defaults, you can use the shorter version.
 
 Without defaults:
+
 ```bash
 qmk compile -e CONVERT_TO=rp2040_ce -kb ferris/sweep -km alex
 ```
 
 With defaults:
+
 ```bash
 qmk compile -e CONVERT_TO=rp2040_ce
 ```
@@ -63,6 +62,7 @@ qmk compile -e CONVERT_TO=rp2040_ce
    - `rules.mk` - Feature flags (combos, split keyboard, etc.)
 
 2. **Compile the firmware** after making changes:
+
    ```bash
    # Short version (uses defaults configured in step 4)
    qmk compile -e CONVERT_TO=rp2040_ce
