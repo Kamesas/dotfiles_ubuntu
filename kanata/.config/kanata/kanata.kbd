@@ -28,7 +28,7 @@
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
   tab  @qm  @w_ch @e_ch @r_ch t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
-  lsft @z_s @x_c @c_a  @v_g  b    @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
+  lsft @z_s @x_ch @c_ch @v_g  b    @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
@@ -119,6 +119,10 @@
   o_ch (chord yuiop_chords o)
   p_ch (chord yuiop_chords p)
 
+  ;; Chord participants - bottom row left (x, c)
+  x_ch (chord xc_chords x)
+  c_ch (chord xc_chords c)
+
   ;; Chord participants - bottom row right (n, m, comma, dot)
   n_ch (chord nm_chords n)
   m_ch (chord nm_chords m)
@@ -171,6 +175,13 @@
   (u i)   ]          ;; u+i → ]
   (i o)   S-0        ;; i+o → )
   (o p)   S-'        ;; o+p → "
+)
+
+;; Bottom row left chords: x, c
+(defchords xc_chords 50
+  (x)     @x_c       ;; x alone → tap-hold for CTRL
+  (c)     @c_a       ;; c alone → tap-hold for ALT
+  (x c)   -          ;; x+c → minus
 )
 
 ;; Bottom row right chords: n, m

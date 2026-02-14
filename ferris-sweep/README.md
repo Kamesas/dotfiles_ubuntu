@@ -1,10 +1,10 @@
 # Ferris Sweep QMK Configuration
 
-### first need to build with this command
+### First need to build with this command
 
 cd ~/qmk_firmware && qmk compile -e CONVERT_TO=rp2040_ce -kb ferris/sweep -km alex
 
-### then need to upload with this command but before need to unplug half from each other and from PC, press "q" for left and "p" for the right half. In the file should appears the keyboard the call the command below. It has to be done separately for each half.
+### Then need to upload with this command but before need to unplug half from each other and from PC, press "q" for left and "p" for the right half. In the file should appears the keyboard the call the command below. It has to be done separately for each half.
 
 cp ~/qmk_firmware/ferris_sweep_alex_rp2040_ce.uf2 /media/alex/RPI-RP2/
 

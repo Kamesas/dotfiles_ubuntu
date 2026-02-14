@@ -83,6 +83,7 @@ const uint16_t PROGMEM equal_combo[] = {KC_H, KC_J, COMBO_END};
 const uint16_t PROGMEM plus_combo[] = {KC_Y, KC_U, COMBO_END};
 const uint16_t PROGMEM minus_combo[] = {KC_N, KC_M, COMBO_END};
 const uint16_t PROGMEM under_combo[] = {LALT_T(KC_COMM), LCTL_T(KC_DOT), COMBO_END};
+const uint16_t PROGMEM xc_minus_combo[] = {LCTL_T(KC_X), LALT_T(KC_C), COMBO_END};
 const uint16_t PROGMEM fat_arrow_combo[] = {KC_F, KC_G, COMBO_END};
 
 combo_t key_combos[] = {
@@ -103,13 +104,14 @@ combo_t key_combos[] = {
     COMBO(equal_combo, KC_EQL),     // 14
     COMBO(plus_combo, KC_PLUS),     // 15
     COMBO(minus_combo, KC_MINS),    // 16
-    COMBO(under_combo, KC_UNDS),    // 17
-    COMBO_ACTION(fat_arrow_combo),  // 18
+    COMBO(under_combo, KC_UNDS),     // 17
+    COMBO(xc_minus_combo, KC_MINS),  // 18
+    COMBO_ACTION(fat_arrow_combo),   // 19
 };
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
     switch (combo_index) {
-        case 18: // fat_arrow
+        case 19: // fat_arrow
             if (pressed) {
                 tap_code16(KC_EQL);
                 tap_code16(S(KC_DOT));
