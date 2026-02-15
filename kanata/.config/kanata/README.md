@@ -15,8 +15,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable kanata
 sudo systemctl start kanata
 
-systemctl status kanata
-
 sudo systemctl disable kanata - disable from autostrt
 sudo systemctl stop kanata
 

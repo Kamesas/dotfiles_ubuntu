@@ -28,7 +28,7 @@
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
   tab  @qm  @w_ch @e_ch @r_ch t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
-  lsft @z_s @x_ch @c_ch @v_g  b    @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
+  @z_s @x_ch @c_ch @v_g  b    b    @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
