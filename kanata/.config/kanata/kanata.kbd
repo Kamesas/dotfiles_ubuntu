@@ -73,11 +73,11 @@
   ;; Space: tap=Space, hold=Layer 1
   sp1 (tap-hold 200 200 spc (layer-toggle layer1))
 
-  ;; Left Alt: tap=Alt, hold=Layer 2
-  al2 (tap-hold 200 200 lalt (layer-toggle layer2))
+  ;; Left Alt: tap=Backspace, hold=Layer 2 (matching Corne lt LAYER1 BSPC)
+  al2 (tap-hold 200 200 bspc (layer-toggle layer2))
 
-  ;; Right Alt: tap=Alt, hold=Layer 2
-  ar2 (tap-hold 200 200 ralt (layer-toggle layer2))
+  ;; Right Alt: tap=Enter, hold=Layer 2 (matching Corne lt LAYER2 RET)
+  ar2 (tap-hold 200 200 ret (layer-toggle layer2))
 
   ;; Bottom row mod-taps - left hand (matching Corne: SHFT/Z, CTRL/X, ALT/C, GUI/V)
   z_s (tap-hold 200 200 z lsft)
