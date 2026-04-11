@@ -79,6 +79,14 @@ config.keys = {
 		mods = "ALT",
 		action = wezterm.action.DisableDefaultAssignment,
 	},
+	-- Ctrl+Backspace → Ctrl+w (delete word backward in shells).
+	-- Ctrl+Backspace and Ctrl+h send the same byte in traditional terminals,
+	-- and vim-tmux-navigator claims Ctrl+h for pane navigation.
+	{
+		key = "Backspace",
+		mods = "CTRL",
+		action = wezterm.action.SendKey({ key = "w", mods = "CTRL" }),
+	},
 	-- Send Alt+number keys through to tmux
 	{ key = "0", mods = "ALT", action = wezterm.action.SendKey({ key = "0", mods = "ALT" }) },
 	{ key = "1", mods = "ALT", action = wezterm.action.SendKey({ key = "1", mods = "ALT" }) },
