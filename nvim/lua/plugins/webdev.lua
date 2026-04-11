@@ -62,11 +62,24 @@ return {
         },
         ]]
         tailwindcss = {
+          on_attach = function(_, bufnr)
+            vim.lsp.document_color.enable(false, bufnr)
+          end,
           settings = {
             tailwindCSS = {
+              lint = {
+                suggestCanonicalClasses = "ignore",
+              },
               experimental = {
                 classRegex = {
                   { "cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+
+                  -- Base classes for cva
+                  { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]" },
+
+                  -- Variant classes inside cva's options object
+                  { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]" },
+                  { "cva\\(([^\\)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]" },
                 },
               },
             },
@@ -100,8 +113,12 @@ return {
     ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
     opts = {
       on_attach = function(_, bufnr)
-        vim.keymap.set("n", "<leader>ci", "<cmd>TSToolsAddMissingImports<cr>",
-          { buffer = bufnr, desc = "Add All Missing Imports" })
+        vim.keymap.set(
+          "n",
+          "<leader>ci",
+          "<cmd>TSToolsAddMissingImports<cr>",
+          { buffer = bufnr, desc = "Add All Missing Imports" }
+        )
       end,
       settings = {
         -- Disable inlay hints (keep them off)
@@ -163,8 +180,8 @@ return {
     opts = {
       filetypes = { "*" },
       user_default_options = {
-        tailwind = true,
-        css = true,
+        tailwind = false,
+        css = false,
       },
     },
   },

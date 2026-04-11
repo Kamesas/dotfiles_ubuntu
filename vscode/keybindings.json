@@ -94,6 +94,11 @@
   { "key": "ctrl+f", "command": "workbench.action.terminal.searchWorkspace", "when": "terminalFocus" },
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // NEOVIM - Insert mode escape
+  // ═══════════════════════════════════════════════════════════════════════════
+  { "key": "ctrl+s", "command": "runCommands", "args": { "commands": ["vscode-neovim.escape", "workbench.action.files.save"] }, "when": "editorTextFocus && neovim.mode == 'insert'" },
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // TERMINAL
   // ═══════════════════════════════════════════════════════════════════════════
   { "key": "ctrl+j", "command": "workbench.action.terminal.toggleTerminal", "when": "(editorTextFocus && neovim.mode == 'normal') || terminalFocus" },
@@ -135,16 +140,24 @@
   { "key": "g d", "command": "editor.action.revealDefinition", "when": "editorTextFocus && neovim.mode == 'normal'" },
   { "key": "g shift+d", "command": "editor.action.revealDefinitionAside", "when": "editorTextFocus && neovim.mode == 'normal'" },
   { "key": "g g", "command": "vscode-neovim.send", "args": "gg", "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "g h", "command": "-editor.action.showHover", "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "g h", "command": "vscode-neovim.send", "args": "gh", "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "g l", "command": "vscode-neovim.send", "args": "gl", "when": "editorTextFocus && neovim.mode == 'normal'" },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // NEOVIM - Leader (Space) Commands
   // ═══════════════════════════════════════════════════════════════════════════
-  { "key": "space e", "command": "workbench.files.action.focusFilesExplorer", "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "space l", "command": "editor.action.insertSnippet", "args": { "snippet": "\nconsole.log('${TM_CURRENT_WORD} --->:', ${TM_CURRENT_WORD});" }, "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "space c j", "command": "editor.action.insertSnippet", "args": { "snippet": "\nconsole.log('${TM_CURRENT_WORD} --->:', JSON.stringify(${TM_CURRENT_WORD}, null, 2));" }, "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "space c t", "command": "editor.action.insertSnippet", "args": { "snippet": "// TODO: (Alex ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}): $0" }, "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "g c b", "command": "editor.action.insertSnippet", "args": { "snippet": "\n// ====================================================================\n// $0\n// ====================================================================" }, "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "space e", "command": "revealInExplorer", "when": "editorTextFocus && neovim.mode == 'normal' && !sideBarVisible" },
+  { "key": "space e", "command": "workbench.action.toggleSidebarVisibility", "when": "editorTextFocus && neovim.mode == 'normal' && sideBarVisible" },
   {
     "key": "space e",
     "command": "runCommands",
     "args": { "commands": ["workbench.action.toggleSidebarVisibility", "workbench.action.focusActiveEditorGroup"] },
-    "when": "sideBarFocus && activeViewlet == 'workbench.view.explorer'"
+    "when": "sideBarFocus"
   },
   { "key": "space z", "command": "workbench.action.toggleZenMode", "when": "editorTextFocus && neovim.mode == 'normal'" },
   { "key": "space m", "command": "workbench.action.toggleMenuBar", "when": "editorTextFocus && neovim.mode == 'normal'" },
@@ -155,6 +168,9 @@
 
   // Outline/panels
   { "key": "space o a", "command": "workbench.action.toggleAuxiliaryBar", "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+  // Cursor AI inline composer
+  { "key": "space i", "command": "composer.startComposerPrompt", "when": "editorTextFocus && neovim.mode == 'normal'" },
 
   // Window/split commands
   { "key": "space w v", "command": "workbench.action.splitEditorRight", "when": "editorTextFocus && neovim.mode == 'normal'" },

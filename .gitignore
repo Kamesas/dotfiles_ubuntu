@@ -63,6 +63,9 @@ node_modules/
 nvim/.config/nvim/plugin/
 nvim/.config/nvim/.netrwhist
 
+# tmux plugins (managed by tpm)
+tmux/.config/tmux/plugins/
+
 # Fish shell
 fish/.config/fish/fish_variables
 

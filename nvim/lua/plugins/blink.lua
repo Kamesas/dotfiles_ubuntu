@@ -2,6 +2,18 @@ return {
   {
     "saghen/blink.cmp",
     opts = {
+      keymap = {
+        preset = "default",
+      },
+      completion = {
+        list = {
+          selection = {
+            preselect = false,
+            auto_insert = false,
+          },
+        },
+      },
+
       sources = {
         per_filetype = {
           sql = { inherit_defaults = true, "dadbod" },

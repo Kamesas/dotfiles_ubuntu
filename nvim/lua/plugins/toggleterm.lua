@@ -30,6 +30,7 @@ return {
       vim.keymap.set("t", "<C-H>", "<C-w>", { buffer = term.bufnr, desc = "Delete word backward" })
       vim.keymap.set("t", "<C-;>", [[<C-\><C-n>]], { buffer = term.bufnr, desc = "Exit terminal mode" })
     end,
+    scrollback = 1500,
     env = { TERM = "xterm-256color" },
   },
 }

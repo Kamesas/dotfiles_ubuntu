@@ -1,0 +1,85 @@
+{
+  "Console log": {
+    "prefix": "cl",
+    "body": ["console.log($1, );"],
+    "description": "console.log()"
+  },
+  "React Hook": {
+    "prefix": "rh",
+    "body": [
+      "type tProps = {};",
+      "",
+      "export const $TM_FILENAME_BASE = ({}: tProps) => {",
+      "  return {};",
+      "};"
+    ],
+    "description": "React hook with filename and empty tProps"
+  },
+  "Comment block": {
+    "prefix": "comb",
+    "body": [
+      "// ====================================================================",
+      "// ${1:Comment}",
+      "// ===================================================================="
+    ],
+    "description": "Comment block separator"
+  },
+  "Comment block CSS": {
+    "prefix": "combcss",
+    "body": [
+      "/* ====================================================================",
+      "   ${1:Comment}",
+      "   ==================================================================== */"
+    ],
+    "description": "Comment block separator (CSS style)"
+  },
+  "ESLint disable unused vars": {
+    "prefix": "esd",
+    "body": ["// eslint-disable-next-line @typescript-eslint/no-unused-vars"],
+    "description": "ESLint disable no-unused-vars"
+  },
+  "Fastify Route": {
+    "prefix": "fr",
+    "body": [
+      "import { FastifyPluginAsync } from 'fastify';",
+      "import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';",
+      "",
+      "const ${1:routesName}Routes: FastifyPluginAsync = async (fastify): Promise<void> => {",
+      "  const f = fastify.withTypeProvider<JsonSchemaToTsProvider>();",
+      "",
+      "  f.get('/${2:path}', { schema: ${3:schemaName} }, async function (_request, reply) {",
+      "    return reply.code(200).send({ data: ${4:dataName} });",
+      "  });",
+      "};",
+      "",
+      "export default ${1:routesName}Routes;"
+    ],
+    "description": "Fastify route with TypeProvider"
+  },
+  "Fastify Plugin": {
+    "prefix": "fp",
+    "body": [
+      "import fp from 'fastify-plugin';",
+      "",
+      "async function routes(fastify: FastifyInstance) {",
+      "  $1",
+      "}",
+      "",
+      "export default fp(routes);"
+    ],
+    "description": "Fastify plugin wrapper"
+  },
+  "React Function Component": {
+    "prefix": "rfc",
+    "body": [
+      "type ${1:Props} = {};",
+      "",
+      "export const ${2:Component} = ({}: ${1:Props}) => {",
+      "  return (",
+      "    <div>${2:Component}</div>",
+      "  );",
+      "};"
+    ],
+    "description": "React Function Component"
+  }
+}

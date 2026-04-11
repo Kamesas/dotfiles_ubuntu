@@ -39,6 +39,12 @@ end, { desc = "Write Session" })
 -- Disables the default Ctrl+z behavior which suspends Neovim and sends it to background (you'd need fg command to bring it back)
 vim.keymap.set("n", "<C-z>", "<nop>")
 
+-- Go to definition in vertical split
+vim.keymap.set("n", "gV", function()
+  vim.cmd("vsplit")
+  vim.lsp.buf.definition()
+end, { desc = "Go to Definition (vsplit)" })
+
 -- LSP document symbols
 vim.keymap.set("n", "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP Document Symbols" })
 
@@ -58,6 +64,34 @@ vim.keymap.set("n", "gcb", fn.comment_block, { desc = "Go Comment Block" })
 
 -- Zoom/maximize current window (toggle)
 vim.keymap.set("n", "<leader>wz", fn.zoom_toggle, { desc = "Toggle zoom window" })
+
+-- Enter in insert mode → call blink directly (bypasses nvim-autopairs stealing CR)
+vim.keymap.set("i", "<CR>", function()
+  local ok, blink = pcall(require, "blink.cmp")
+  if ok then
+    local handled = blink.accept()
+    if handled then return end
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, true, true), "n", true)
+end, { desc = "Accept completion or newline" })
+
+-- Arrow keys in insert mode → call blink directly so Enter still works
+vim.keymap.set("i", "<Down>", function()
+  local ok, blink = pcall(require, "blink.cmp")
+  if ok then
+    local handled = blink.select_next()
+    if handled then return end
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Down>", true, true, true), "n", true)
+end, { desc = "Next completion or move down" })
+vim.keymap.set("i", "<Up>", function()
+  local ok, blink = pcall(require, "blink.cmp")
+  if ok then
+    local handled = blink.select_prev()
+    if handled then return end
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Up>", true, true, true), "n", true)
+end, { desc = "Prev completion or move up" })
 
 -- Ctrl+Backspace to delete word backward in insert mode
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })

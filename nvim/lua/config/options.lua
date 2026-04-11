@@ -7,3 +7,5 @@
 vim.g.lazyvim_inlay_hints_enabled = false
 
 vim.o.relativenumber = false
+
+-- vim.o.exrc = true
