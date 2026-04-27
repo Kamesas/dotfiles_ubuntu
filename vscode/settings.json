@@ -33,7 +33,7 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // WORKBENCH - Theme & UI
   // ═══════════════════════════════════════════════════════════════════════════
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "Dark+",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorCustomizations": {},
   "workbench.startupEditor": "none",
