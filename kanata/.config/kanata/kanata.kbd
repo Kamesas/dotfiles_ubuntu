@@ -30,7 +30,7 @@
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
   tab  @qm  @w_ch @e_ch @r_ch t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
-  @z_s @x_ch @c_ch @v_g  b    b    @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
+  @z_s @x_ch @c_ch @v_g  b    @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
@@ -59,6 +59,24 @@
   _    lmet lalt lctl lsft mute _    lsft lctl lalt lmet _    _
   _    brdn _    _    prev vold _    _    _    _    _    _    _
   _    _    _              pp             _    _         _    _    _
+)
+
+;; Layer 4 - Plain mode (no tap-holds, no chords, no angled-b; b+n switches back)
+(deflayer plain
+  esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @pcec a   @ps_ch @pd_ch f    g    h    @pj_ch @pk_ch l    ;    '    ret
+  lsft z    x    c    v    @pb_ch @pn_ch m   ,    .    /    rsft  up
+  lctl lmet lalt           @psp           ralt rctl      left  down  rght
+)
+
+;; Layer 5 - Plain nav (active while space held in plain mode; hjkl → arrows)
+(deflayer plain_nav
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    left down up   rght _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _         _    _    _
 )
 
 ;; Aliases
@@ -125,11 +143,28 @@
   x_ch (chord xc_chords x)
   c_ch (chord xc_chords c)
 
-  ;; Chord participants - bottom row right (n, m, comma, dot)
-  n_ch (chord nm_chords n)
-  m_ch (chord nm_chords m)
+  ;; Chord participants - bottom row right (b for layer combo, n, m)
+  b_ch  (chord bnm_chords b)
+  n_ch  (chord bnm_chords n)
+  m_ch  (chord bnm_chords m)
   co_ch (chord codot_chords comma)
   dt_ch (chord codot_chords dot)
+
+  ;; Plain layer: caps tap=caps, hold=ctrl
+  pcec (tap-hold 200 200 caps lctl)
+
+  ;; Plain layer: space tap=space, hold=nav layer (hjkl arrows)
+  psp (tap-hold 200 200 spc (layer-toggle plain_nav))
+
+  ;; Plain layer chords: jk → esc, sd → tab
+  pj_ch (chord plain_jk_chords j)
+  pk_ch (chord plain_jk_chords k)
+  ps_ch (chord plain_sd_chords s)
+  pd_ch (chord plain_sd_chords d)
+
+  ;; Plain layer toggle-back combo (no other customizations in plain layer)
+  pb_ch (chord plain_toggle_chords b)
+  pn_ch (chord plain_toggle_chords n)
 )
 
 ;; Right home row chords: h, j, k, l, ;
@@ -186,11 +221,33 @@
   (x c)   -          ;; x+c → minus
 )
 
-;; Bottom row right chords: n, m
-(defchords nm_chords 50
-  (n)     n          ;; n alone
-  (m)     @m_g       ;; m alone → tap-hold for GUI
-  (n m)   -          ;; n+m → minus
+;; Bottom row right chords: b (for layer toggle), n, m
+(defchords bnm_chords 50
+  (b)     b                    ;; b alone
+  (n)     n                    ;; n alone
+  (m)     @m_g                 ;; m alone → tap-hold for GUI
+  (n m)   -                    ;; n+m → minus
+  (b n)   (layer-switch plain) ;; b+n → switch to plain layer
+)
+
+;; Plain layer chords
+(defchords plain_jk_chords 50
+  (j)   j
+  (k)   k
+  (j k) esc
+)
+
+(defchords plain_sd_chords 50
+  (s)   s
+  (d)   d
+  (s d) tab
+)
+
+;; Plain layer: b+n switches back to base (only customization in plain mode)
+(defchords plain_toggle_chords 50
+  (b)     b                   ;; b alone
+  (n)     n                   ;; n alone
+  (b n)   (layer-switch base) ;; b+n → switch back to base layer
 )
 
 ;; Bottom row right chords: comma, dot

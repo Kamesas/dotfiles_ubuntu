@@ -4,3 +4,7 @@ end
 bind \t accept-autosuggestion
 nvm use default
 set -x GOOGLE_CLOUD_PROJECT "gemini-cli-471506"
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/alex/.local/bin" $PATH

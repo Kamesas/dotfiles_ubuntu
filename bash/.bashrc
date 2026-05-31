@@ -125,6 +125,7 @@ alias nv='NVIM_APPNAME="nvim-custom" command nvim'
 # Old Neovim config
 alias vo='NVIM_APPNAME="nvim-old" command nvim'
 
+alias lgn='lazygains'
 # ============================================================================
 # UTILITY ALIASES
 # ============================================================================
@@ -173,3 +174,7 @@ eval "$(starship init bash)"
 eval "$(zoxide init bash)"
 # Rust environment
 . "$HOME/.cargo/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/alex/.local/bin:$PATH"

@@ -36,6 +36,13 @@ alias lt='ls --tree'
 alias v='nvim'
 # Minimal/custom Neovim config (for experimentation)
 alias n='NVIM_APPNAME="nvim-custom" command nvim'
+# Fresh LazyVim instance (parallel to main nvim, for debugging freezes)
+alias lv='NVIM_APPNAME="lazyvim" command nvim'
+alias lgn='lazygains'
+
+# Default editor (used by Claude Code Ctrl+G, git, etc.)
+export EDITOR='nvim'
+export VISUAL='nvim'
 
 # ============================================================================
 # UTILITY ALIASES
@@ -100,3 +107,7 @@ eval "$(zoxide init zsh)"
 bindkey '^H' backward-kill-word
 # Ctrl+Delete to delete whole word forward
 bindkey '^[[3;5~' kill-word
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/alex/.local/bin:$PATH"
