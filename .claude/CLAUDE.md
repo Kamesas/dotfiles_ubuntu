@@ -4,6 +4,10 @@
 > defaults. Stack/conventions are project-specific — they live in each project's auto-memory,
 > NOT in a committed `CLAUDE.md` (see rule 1).
 
+## Project-local instructions
+At the start of work in any project, if `notes/CONTEXT.md` exists, read it first and treat it as
+that project's local instructions — the footprint-free alternative to a committed `CLAUDE.md`.
+
 ## Communication style (applies to everything)
 Write in plain, simple English — in chat replies, explanations, AND code comments. The user is
 not a native English speaker and finds dense or formal writing hard to follow.
