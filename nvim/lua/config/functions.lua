@@ -29,8 +29,11 @@ end
 
 -- Copy selection to clipboard with file context
 M.copy_for_claude = function()
-  -- Get file info
-  local filepath = vim.fn.expand("%:.")
+  -- Get file info — always use the full absolute path so the file can be
+  -- resolved from anywhere (any repo, the Obsidian vault, scratch files),
+  -- regardless of nvim's cwd. `%:.` collapsed subfolders to a bare basename
+  -- (e.g. "DOCS.md" instead of the real location), which is ambiguous.
+  local filepath = vim.fn.expand("%:p")
   -- Use "v" and "." to get current visual selection (not '< '> which update after leaving visual mode)
   local pos1 = vim.fn.line("v")
   local pos2 = vim.fn.line(".")
