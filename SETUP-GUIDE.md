@@ -1,204 +1,108 @@
-# Quick Setup Guide
+# Setup Guide
 
-## Step-by-Step Instructions
+This repo holds my config files (dotfiles). It uses **GNU Stow** to make links from this repo
+into my home folder. So I edit a file here once, and it works everywhere.
 
-### Step 1: Install GNU Stow
+You can set things up two ways: **all at once**, or **one piece at a time**.
+
+---
+
+## First: install Stow and get the repo
 
 ```bash
 sudo apt install stow
+git clone git@github.com:Kamesas/dotfiles_ubuntu.git ~/dotfiles
+cd ~/dotfiles
 ```
 
-### Step 2: Migrate Your Existing Dotfiles
+---
 
-This will copy your current dotfiles into the proper Stow structure:
+## Option A — set up everything at once
 
 ```bash
 cd ~/dotfiles
-./migrate-to-stow.sh
-```
-
-**What this does:**
-- Creates a backup of all current dotfiles
-- Organizes your configs into Stow packages
-- Preserves all your existing configurations
-
-### Step 3: Review the Structure
-
-```bash
-cd ~/dotfiles
-ls -la
-```
-
-You should see packages like:
-- `bash/` - Your shell configs
-- `git/` - Git configuration
-- `nvim/` - Neovim setup
-- `tmux/` - Tmux configuration
-- etc.
-
-### Step 4: Install with Stow
-
-```bash
 ./install.sh
 ```
 
-**What this does:**
-- Creates a backup (stored in `~/.dotfiles-backups/`)
-- Removes your old dotfiles
-- Creates symlinks from `~/dotfiles/` to your home directory
+This makes a backup, links all Stow packages (bash, git, tmux, and the rest) into your home
+folder, and creates the manual links (nvim and Claude). One command does it all.
 
-### Step 5: Verify Installation
+---
 
-```bash
-./install.sh status
-```
+## Option B — set up one piece at a time
 
-Check that your dotfiles are now symlinks:
+Install just one package:
 
 ```bash
-ls -la ~/.bashrc
-# Should show: ~/.bashrc -> /home/alex/dotfiles/bash/.bashrc
+cd ~/dotfiles
+./install.sh install bash        # or git, tmux, ... any name from the list
+./install.sh list                # show all packages
 ```
 
-### Step 6: Commit to Git
+Or use Stow directly:
+
+```bash
+stow bash        # link it
+stow -D bash     # unlink it
+stow -R bash     # re-link it
+```
+
+---
+
+## Manual links (nvim and Claude)
+
+Two things are linked by hand, not by Stow:
+- `~/.config/nvim` → `nvim/` (the whole Neovim folder)
+- `~/.claude/CLAUDE.md` → `.claude/CLAUDE.md` (the Claude Code rules)
+
+`./install.sh` already creates these. To make just these links on their own:
+
+```bash
+./install.sh links
+```
+
+If a real file is already in the way, remove it first, then run the command again.
+
+**On a second laptop:**
+
+```bash
+cd ~/dotfiles && git pull
+./install.sh            # or just the links: ./install.sh links
+```
+
+After that, Claude on that laptop uses the same rules. Your private Claude files (chat history,
+tokens, saved memory) stay out of git on purpose.
+
+---
+
+## Edit and save your changes
+
+Edit any file inside `~/dotfiles/`. Because of the links, the change is live right away.
+
+To save and sync to git:
 
 ```bash
 cd ~/dotfiles
 git add -A
-git commit -m "Restructure dotfiles for GNU Stow"
+git commit -m "Update configs"
 git push
 ```
 
-## How to Use After Setup
-
-### Edit Your Configs
-
-Just edit files in `~/dotfiles/` as normal:
-
-```bash
-cd ~/dotfiles
-nvim bash/.bashrc
-# Changes are immediately active because of symlinks!
-```
-
-### Sync to Another Machine
-
-```bash
-# On the new machine
-git clone <your-repo-url> ~/dotfiles
-cd ~/dotfiles
-./install.sh
-```
-
-### Add New Configs
-
-```bash
-# Example: Add alacritty config
-cd ~/dotfiles
-mkdir -p alacritty/.config/alacritty
-cp ~/.config/alacritty/alacritty.yml alacritty/.config/alacritty/
-stow alacritty
-git add alacritty
-git commit -m "Add alacritty config"
-```
-
-## Daily Workflow
-
-1. **Make changes:**
-   ```bash
-   nvim ~/dotfiles/nvim/.config/nvim/init.lua
-   ```
-
-2. **Test changes:**
-   Changes are live immediately due to symlinks
-
-3. **Commit:**
-   ```bash
-   cd ~/dotfiles
-   git add -A
-   git commit -m "Update nvim config"
-   git push
-   ```
-
-## Backup System
-
-### Create Backup Before Major Changes
-
-```bash
-./backup.sh create
-```
-
-### List All Backups
-
-```bash
-./backup.sh list
-```
-
-### Restore from Backup
-
-```bash
-./backup.sh restore backup_20240101_120000
-```
-
-## Troubleshooting
-
-### Problem: Stow Shows Conflicts
-
-**Solution:**
-```bash
-./backup.sh create
-rm ~/.bashrc  # Remove conflicting file
-stow bash     # Try again
-```
-
-### Problem: Changes Not Reflected
-
-**Check if symlink exists:**
-```bash
-ls -la ~/.bashrc
-```
-
-If not a symlink:
-```bash
-cd ~/dotfiles
-stow -R bash  # Restow
-```
-
-### Problem: Want to Undo Everything
-
-**Restore original files:**
-```bash
-./backup.sh list
-./backup.sh restore backup_YYYYMMDD_HHMMSS
-```
-
-Or uninstall all:
-```bash
-./install.sh uninstall
-```
-
-## For Niri Installation
-
-When you install Niri later:
-
-1. **Your dotfiles will keep working** - Stow symlinks work with any window manager
-
-2. **Add Niri config to dotfiles:**
-   ```bash
-   mkdir -p ~/dotfiles/niri/.config/niri
-   # Copy your Niri config when ready
-   stow niri
-   ```
-
-3. **All your terminal/shell configs stay the same** - No changes needed!
-
-## Tips
-
-- Backup before major changes: `./backup.sh`
-- Check symlink status: `./install.sh status`
-- Commit often to track changes
-- Test configs before pushing to Git
-
 ---
 
-Need help? Check the main [README.md](README.md) for detailed documentation.
+## If something breaks
+
+- **Stow says "conflict":** a real file is in the way. Back it up, remove it, link again.
+  ```bash
+  ./backup.sh create
+  rm ~/.bashrc
+  stow bash
+  ```
+- **A change is not showing:** check the link, then re-link.
+  ```bash
+  ls -la ~/.bashrc      # should point into ~/dotfiles
+  stow -R bash
+  ```
+- **Undo everything:** `./install.sh uninstall`
+
+More detail is in [README.md](README.md).
