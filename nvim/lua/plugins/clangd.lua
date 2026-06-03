@@ -14,7 +14,13 @@ return {
           "clangd",
           "--background-index",
           "--clang-tidy",
-          "--header-insertion=iwyu",
+          -- Header auto-insertion: with "iwyu" (include-what-you-use), clangd
+          -- auto-adds the granular header for each symbol you autocomplete
+          -- (e.g. HardwareSerial.h for `Serial`, esp32-hal-gpio.h for
+          -- `pinMode`). In Arduino/ESP32 code that's redundant noise, since
+          -- `#include <Arduino.h>` is the umbrella header that already pulls
+          -- them all in. "never" disables it so we manage includes ourselves.
+          "--header-insertion=never",
           "--completion-style=detailed",
           "--function-arg-placeholders",
           "--fallback-style=llvm",
