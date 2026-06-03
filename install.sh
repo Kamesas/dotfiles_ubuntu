@@ -19,9 +19,18 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-# Available packages
+# Available packages (managed by Stow)
 CORE_PACKAGES=("bash" "git")
-OPTIONAL_PACKAGES=("nvim" "tmux" "wezterm" "misc" "fish" "btop" "flameshot" "kanata")
+OPTIONAL_PACKAGES=("tmux" "wezterm" "misc" "fish" "btop" "flameshot" "kanata")
+
+# Manual links — configs Stow can't manage:
+#  - nvim: a whole-folder link (the package is not laid out for Stow)
+#  - CLAUDE.md: one file inside ~/.claude, which also holds private files
+# Format: "source:destination"
+MANUAL_LINKS=(
+    "$DOTFILES_DIR/nvim:$HOME/.config/nvim"
+    "$DOTFILES_DIR/.claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
+)
 
 print_header() {
     echo -e "${BLUE}========================================${NC}"
@@ -138,6 +147,32 @@ uninstall_package() {
     fi
 }
 
+# Create the manual links (nvim, Claude). Safe to run many times:
+# it skips links that already exist and never overwrites a real file.
+link_manual() {
+    echo ""
+    echo -e "${CYAN}Creating manual links (nvim, Claude)...${NC}"
+    for pair in "${MANUAL_LINKS[@]}"; do
+        local src="${pair%%:*}"
+        local dest="${pair##*:}"
+        if [ ! -e "$src" ]; then
+            print_warning "Source missing, skip: $src"
+            continue
+        fi
+        if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+            print_success "Already linked: $dest"
+            continue
+        fi
+        if [ -e "$dest" ] || [ -L "$dest" ]; then
+            print_warning "Something is in the way: $dest (remove it, then re-run)"
+            continue
+        fi
+        mkdir -p "$(dirname "$dest")"
+        ln -s "$src" "$dest"
+        print_success "Linked: $dest -> $src"
+    done
+}
+
 install_all() {
     local mode=${1:-"interactive"}
     
@@ -187,7 +222,10 @@ install_all() {
             fi
         fi
     done
-    
+
+    # Manual links (nvim, Claude) — not handled by Stow
+    link_manual
+
     echo ""
     print_header "Installation Summary"
     echo ""
@@ -305,6 +343,7 @@ Commands:
   uninstall [package] Uninstall all or specific package
   list                List available packages
   status              Show current symlink status
+  links               Create manual links (nvim, Claude)
   help                Show this help message
 
 Examples:
@@ -369,6 +408,9 @@ case "${1:-install}" in
         ;;
     status)
         show_status
+        ;;
+    links)
+        link_manual
         ;;
     help|--help|-h)
         show_help
