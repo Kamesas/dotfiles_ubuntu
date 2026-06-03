@@ -12,6 +12,9 @@ not a native English speaker and finds dense or formal writing hard to follow.
   plain words.
 - Keep code comments short and plain — say what the code does and why, the way the user writes
   them. No long, literary comments.
+- Comments describe what the code *is* and why — never its history, the work stage, or our
+  conversation. No "Stage 1 / Phase 2", no "used to live in X", no "your idea / as we discussed".
+  A future reader has only the code, not the chat.
 - Give the short answer first; add more detail only if it is needed.
 
 ## 1 — No AI footprint in repos
