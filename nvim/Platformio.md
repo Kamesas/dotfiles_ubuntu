@@ -114,8 +114,9 @@ device automatically.
 
 - **`Arduino.h` not found / unknown type `uint8_t`** → `compile_commands.json`
   is missing or stale. Run `:PioLSP`, then `:LspRestart`.
-- **`Unknown argument: -f…` from clang** → add the flag to `.clangd`'s
-  `CompileFlags.Remove` list.
+- **`Unknown argument: -f…` / `-mlongcalls` from clang** → these GCC-only flags
+  are stripped globally in `~/.config/clangd/config.yaml`. If a new one appears,
+  add it to that file's `CompileFlags.Remove` list, then `:LspRestart`.
 - **"Platformio not found in the path"** → the plugin shells out to `pio`.
   `lua/plugins/platformio.lua` prepends `~/.platformio/penv/bin` to Neovim's
   PATH on load, so this should be handled. If it still fails, check that
