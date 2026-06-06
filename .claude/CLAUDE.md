@@ -19,7 +19,22 @@ not a native English speaker and finds dense or formal writing hard to follow.
 - Comments describe what the code *is* and why — never its history, the work stage, or our
   conversation. No "Stage 1 / Phase 2", no "used to live in X", no "your idea / as we discussed".
   A future reader has only the code, not the chat.
+- Write code comments impersonally — no "we" or "I". Name the actor (the hook, the section, the
+  page) or use the imperative ("Hold the page at the midpoint"). It says clearly what acts and keeps
+  one voice across the codebase.
 - Give the short answer first; add more detail only if it is needed.
+- Name functions and variables for what they do or hold — not by metaphor. A reader should know
+  the job from the name alone. Prefer a literal verb (`captureScroll`, `exitPinnedSection`) over a
+  vague one (`engage`, `handle`, `process`). Booleans start with `is`/`has` and name their subject
+  (`isScrollCaptured`, not `engaged`; `isStepLocked`, not `locked`). If a name needs a comment to
+  explain what it is, the name is probably the thing to fix.
+- Keep related names consistent — a variable and the function that uses it, or a group of functions
+  on the same thing, should share the same root word so they read as a set (`scrollAnchorY` /
+  `holdScrollAnchor`; `pinTrigger` / `pinTriggerRef`). When you rename one, rename its partners. A
+  `useRef` keeps the `Ref` suffix; the value it holds drops it.
+- Group the lines that do one thing together, and separate distinct steps with one blank line, so a
+  block reads as a unit. Declare a variable right where it is first used, not early out of habit —
+  declare-near-use keeps each group self-contained.
 
 ## 1 — No AI footprint in repos
 Leave zero assistant trace in any repository: no `.claude/` folder, no "claude"/AI mentions in
