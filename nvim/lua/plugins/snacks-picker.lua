@@ -16,6 +16,11 @@ return {
     -- `allow-passthrough on` (set in ~/.config/tmux/tmux.conf).
     image = { enabled = true },
     picker = {
+      -- Start every picker with the preview pane hidden. This stops images
+      -- (and other files) from being previewed as you move the cursor.
+      -- Press <a-p> (Alt+p) inside the picker to show the preview when you
+      -- actually want it.
+      layout = { hidden = { "preview" } },
       sources = {
         -- explorer = { hidden = true, ignored = true },
         -- files = { hidden = true, ignored = true },
