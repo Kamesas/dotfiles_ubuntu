@@ -1,0 +1,4 @@
+# Lets `keyb` run the root helper without a password prompt.
+# Install to /etc/sudoers.d/kbdtoggle  (must be owned by root, mode 0440).
+# Change "alex" if the username differs.
+alex ALL=(ALL) NOPASSWD: /usr/local/sbin/laptop-kbd

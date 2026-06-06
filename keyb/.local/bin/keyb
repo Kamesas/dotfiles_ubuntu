@@ -1,0 +1,33 @@
+#!/bin/bash
+# keyb — toggle the laptop's built-in keyboard on/off.
+#
+# Useful when resting an external split keyboard (Ferris/Corne) on top of the
+# laptop, so the laptop keys don't fire by accident.
+#
+# How it works: it flips the kernel "inhibited" flag on the laptop keyboard
+# (the actual write is done as root by /usr/local/sbin/laptop-kbd). External
+# keyboards (USB / Bluetooth / Ferris) are NOT touched — only the built-in one.
+#
+# To change which keyboard this targets, edit NAME below. Find the name with:
+#   xinput list           (or)   grep -i keyboard /proc/bus/input/devices
+
+NAME="AT Translated Set 2 keyboard"
+
+# The input node number changes over time, so find the node by name each run.
+node=""
+for d in /sys/class/input/input*; do
+    if [ "$(cat "$d/name" 2>/dev/null)" = "$NAME" ]; then
+        node="$d"
+        break
+    fi
+done
+[ -z "$node" ] && { notify-send "Keyboard" "Laptop keyboard not found"; exit 1; }
+
+# Read the real state, then flip it. inhibited: 0 = working, 1 = disabled.
+if [ "$(cat "$node/inhibited")" = "0" ]; then
+    sudo /usr/local/sbin/laptop-kbd off
+    notify-send "Keyboard" "Laptop keyboard DISABLED" --icon=input-keyboard
+else
+    sudo /usr/local/sbin/laptop-kbd on
+    notify-send "Keyboard" "Laptop keyboard ENABLED" --icon=input-keyboard
+fi

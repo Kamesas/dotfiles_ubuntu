@@ -1,0 +1,25 @@
+#!/bin/bash
+# Root helper for `keyb`. Enables/disables the built-in laptop keyboard via the
+# kernel "inhibited" attribute. This stops the device at the input layer WITHOUT
+# unbinding it, so a keypress cannot re-detect it, and kanata keeps its grab
+# (remapping resumes by itself on enable).
+#
+# Install to /usr/local/sbin/laptop-kbd (root-owned). See ../README.md.
+#
+# Keep NAME in sync with ~/.local/bin/keyb.
+
+NAME="AT Translated Set 2 keyboard"
+
+node=""
+for d in /sys/class/input/input*; do
+    if [ "$(cat "$d/name" 2>/dev/null)" = "$NAME" ]; then
+        node="$d"
+        break
+    fi
+done
+[ -z "$node" ] && exit 1
+
+case "$1" in
+    off) echo 1 > "$node/inhibited" ;;
+    on)  echo 0 > "$node/inhibited" ;;
+esac
