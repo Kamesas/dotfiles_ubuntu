@@ -6,7 +6,7 @@ return {
       {
         "<leader>fw",
         function()
-          Snacks.picker.files({ cwd = vim.fn.expand("~/Documents/ObsidianVault") })
+          Snacks.picker.files({ cwd = vim.fn.expand("~/Documents/notes") })
         end,
         desc = "Find Wiki Files",
       },

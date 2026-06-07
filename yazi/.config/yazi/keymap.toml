@@ -10,8 +10,8 @@
 #
 [[mgr.prepend_keymap]]
 on   = [ "g", "n" ]
-run  = "cd ~/Documents/ObsidianVault"
-desc = "Cd to ~/Documents/ObsidianVault"
+run  = "cd ~/Documents/notes"
+desc = "Cd to ~/Documents/notes"
 
 [[mgr.prepend_keymap]]
 on   = [ "g", "c" ]

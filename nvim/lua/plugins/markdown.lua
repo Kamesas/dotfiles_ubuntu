@@ -110,7 +110,7 @@ return {
     init = function()
       -- Daily notes functionality - set up in init so it's always available
       local function open_daily_note()
-        local notes_dir = vim.fn.expand("~/Documents/ObsidianVault/diary")
+        local notes_dir = vim.fn.expand("~/Documents/notes/diary")
         vim.fn.mkdir(notes_dir, "p")
         local date = os.date("%Y-%m-%d")
         local filename = notes_dir .. "/" .. date .. ".md"
