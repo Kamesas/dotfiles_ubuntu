@@ -27,7 +27,10 @@ return {
       perspective = {
         priority = "root", -- use root directory perspective
         fallback = "current",
-        root_tell = false,
+        -- Vault root = the folder that holds .git. mkdnflow searches up for this
+        -- marker, so [[full/path]] links resolve from the root in every note,
+        -- not just the top-level index.
+        root_tell = ".git",
         nvim_wd_heel = false,
       },
       wrap = false,
