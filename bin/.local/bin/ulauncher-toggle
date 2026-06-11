@@ -1,0 +1,11 @@
+#!/bin/bash
+# Move Ulauncher's window to the current workspace before showing it,
+# so GNOME doesn't switch back to workspace 1 where the window originally lives.
+WID=$(xdotool search --classname "ulauncher" 2>/dev/null | head -1)
+if [ -n "$WID" ]; then
+    xdotool set_desktop_for_window "$WID" "$(xdotool get_desktop)"
+fi
+gdbus call --session \
+    --dest net.launchpad.ulauncher \
+    --object-path /net/launchpad/ulauncher \
+    --method net.launchpad.ulauncher.toggle_window

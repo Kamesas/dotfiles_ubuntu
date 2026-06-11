@@ -7,5 +7,11 @@ env GDK_BACKEND=x11 /usr/bin/ulauncher --hide-window &
 for i in $(seq 20); do
     sleep 0.5
     WID=$(xdotool search --classname "ulauncher" 2>/dev/null | head -1)
-    [ -n "$WID" ] && wmctrl -i -r "$WID" -b add,sticky && break
+    if [ -n "$WID" ]; then
+        # wmctrl only works on visible windows; xprop sets the property directly
+        # on the hidden window so GNOME honors it when the window is shown.
+        xprop -id "$WID" -f _NET_WM_STATE 32a -set _NET_WM_STATE "_NET_WM_STATE_STICKY"
+        xprop -id "$WID" -f _NET_WM_DESKTOP 32c -set _NET_WM_DESKTOP 4294967295
+        break
+    fi
 done
