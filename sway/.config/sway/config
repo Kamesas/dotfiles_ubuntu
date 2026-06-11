@@ -9,6 +9,25 @@ set $right l
 set $term kitty
 set $menu wofi --show run
 
+### Catppuccin Mocha colors
+set $base   #1e1e2e
+set $mantle #181825
+set $text   #cdd6f4
+set $blue   #89b4fa
+set $surface1 #45475a
+set $red    #f38ba8
+
+# Window colors:        border    background  text    indicator  child_border
+client.focused          $blue     $base       $text   $blue      $blue
+client.unfocused        $surface1 $base       $text   $surface1  $surface1
+client.focused_inactive $surface1 $base       $text   $surface1  $surface1
+client.urgent           $red      $base       $text   $red       $red
+
+default_border pixel 2
+default_floating_border pixel 2
+gaps inner 6
+gaps outer 3
+
 ### Output
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
@@ -27,7 +46,6 @@ input type:keyboard {
 ### Autostart
 exec copyq --start-server
 exec /usr/bin/ulauncher --hide-window
-exec waybar
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term
