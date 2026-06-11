@@ -1,0 +1,27 @@
+#!/bin/bash
+# Toggle the kitty dropdown.
+# Runs under XWayland so xdotool can show/hide without restarting.
+
+WM_CLASS="kitty-dropdown"
+
+if ! pgrep -f "kitty.*dropdown.conf" > /dev/null; then
+    WAYLAND_DISPLAY= DISPLAY=:0 kitty --config ~/.config/kitty/dropdown.conf --class "$WM_CLASS" &
+    WID=$(xdotool search --sync --onlyvisible --classname "$WM_CLASS")
+    sleep 0.3
+    xdotool windowmove "$WID" 0 64
+    xdotool windowsize "$WID" 3072 1664
+    exit 0
+fi
+
+WID=$(xdotool search --classname "$WM_CLASS" 2>/dev/null | head -1)
+[ -z "$WID" ] && exit 0
+
+ACTIVE=$(xdotool getactivewindow 2>/dev/null)
+
+if [ "$WID" = "$ACTIVE" ]; then
+    xdotool windowminimize "$WID"
+else
+    xdotool set_desktop_for_window "$WID" $(xdotool get_desktop)
+    xdotool windowactivate --sync "$WID"
+    xdotool windowraise "$WID"
+fi

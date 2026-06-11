@@ -173,7 +173,7 @@ eval "$(starship init bash)"
 # Zoxide (better cd command)
 eval "$(zoxide init bash)"
 # Rust environment
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 
 # Added by Antigravity CLI installer

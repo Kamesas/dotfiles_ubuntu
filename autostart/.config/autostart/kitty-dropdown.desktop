@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Kitty Dropdown
+Exec=bash -c "WAYLAND_DISPLAY= DISPLAY=:0 kitty --config %h/.config/kitty/dropdown.conf --class kitty-dropdown"
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

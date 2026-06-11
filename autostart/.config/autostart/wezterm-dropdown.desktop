@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=WezTerm Dropdown
+Exec=bash -c "WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file %h/.config/wezterm/dropdown.lua"
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
