@@ -7,6 +7,58 @@ You can set things up two ways: **all at once**, or **one piece at a time**.
 
 ---
 
+## Required system packages
+
+These packages are not installed by `install.sh` — install them manually on a new machine.
+
+```bash
+sudo pacman -S xclip copyq wmctrl xdotool flameshot ulauncher
+```
+
+| Package | Why |
+|---------|-----|
+| `xclip` | Claude Code needs it to read images from clipboard (Ctrl+V image paste) |
+| `copyq` | Clipboard manager — keeps clipboard alive after Flameshot closes |
+| `wmctrl` | Window management used by launcher scripts |
+| `xdotool` | Window/keyboard automation used by dropdown and Ulauncher scripts |
+| `flameshot` | Screenshot tool (Print Screen key) |
+| `ulauncher` | App launcher (Alt+U) |
+
+---
+
+## GNOME settings (manual, stored in dconf)
+
+These are not in dotfiles — run once after a fresh install.
+
+```bash
+# Let Flameshot own the Print Screen key (remove GNOME's built-in screenshot)
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "[]"
+
+# Custom keybindings
+base="org.gnome.settings-daemon.plugins.media-keys"
+path="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+
+gsettings set $base.custom-keybinding:$path/custom0/ name    'WezTerm dropdown'
+gsettings set $base.custom-keybinding:$path/custom0/ command '/home/alex/.local/bin/wezterm-dropdown'
+gsettings set $base.custom-keybinding:$path/custom0/ binding '<Alt>w'
+
+gsettings set $base.custom-keybinding:$path/custom1/ name    'Kitty dropdown'
+gsettings set $base.custom-keybinding:$path/custom1/ command '/home/alex/.local/bin/kitty-dropdown'
+gsettings set $base.custom-keybinding:$path/custom1/ binding '<Alt>t'
+
+gsettings set $base.custom-keybinding:$path/custom2/ name    'Flameshot'
+gsettings set $base.custom-keybinding:$path/custom2/ command 'flameshot gui'
+gsettings set $base.custom-keybinding:$path/custom2/ binding 'Print'
+
+gsettings set $base.custom-keybinding:$path/custom3/ name    'Ulauncher toggle'
+gsettings set $base.custom-keybinding:$path/custom3/ command '/home/alex/.local/bin/ulauncher-toggle'
+gsettings set $base.custom-keybinding:$path/custom3/ binding '<Alt>u'
+
+gsettings set $base custom-keybindings "['$path/custom0/', '$path/custom1/', '$path/custom2/', '$path/custom3/']"
+```
+
+---
+
 ## First: install Stow and get the repo
 
 ```bash
