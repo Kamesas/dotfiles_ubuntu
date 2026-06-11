@@ -1,0 +1,11 @@
+#!/bin/bash
+# Launch Ulauncher and immediately pin its window to all workspaces.
+# Without this, GNOME remembers the window on workspace 1 and switches
+# back there every time you trigger the hotkey from another workspace.
+env GDK_BACKEND=x11 /usr/bin/ulauncher --hide-window &
+
+for i in $(seq 20); do
+    sleep 0.5
+    WID=$(xdotool search --classname "ulauncher" 2>/dev/null | head -1)
+    [ -n "$WID" ] && wmctrl -i -r "$WID" -b add,sticky && break
+done
