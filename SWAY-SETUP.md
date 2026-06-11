@@ -10,16 +10,14 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 ## Steps
 
 ### 1. Install Sway
-- [ ] `sudo pacman -S sway swaybar swaybg swaylock swaynag waybar`
-- [ ] `sudo pacman -S wofi` (app launcher, replaces Ulauncher hotkey in Sway)
-- [ ] `sudo pacman -S wl-clipboard` (replaces xclip on Wayland)
-- [ ] `sudo pacman -S grim slurp` (screenshot tools, replaces Flameshot on Wayland)
+- [x] `sudo pacman -S sway swaylock waybar wofi wl-clipboard grim slurp`
 - [ ] Verify Sway session appears at GDM login screen
 
 ### 2. Basic Sway config
-- [ ] Create `dotfiles/sway/.config/sway/config`
-- [ ] Set mod key, terminal, basic keybindings
-- [ ] Autostart: copyq, ulauncher, waybar
+- [x] Create `dotfiles/sway/.config/sway/config`
+- [x] Set mod key, terminal, basic keybindings
+- [x] Autostart: copyq, ulauncher, waybar
+- [x] Symlinked to `~/.config/sway/config`
 
 ### 3. Dropdown terminals (kitty + wezterm)
 - [ ] Update `kitty-dropdown` — detect Wayland, use `swaymsg` instead of `xdotool`
