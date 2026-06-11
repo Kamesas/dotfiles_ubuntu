@@ -42,9 +42,9 @@ require("lazy").setup({
   -- install = { colorscheme = { "tokyonight", "habamax" } },
   -- colorsheme = { "habamax" },
   checker = {
-    enabled = true, -- check for plugin updates periodically
+    enabled = false, -- off: periodic fetch of all plugins (over ssh) stalled typing. update with :Lazy update
     notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+  },
   performance = {
     rtp = {
       -- disable some rtp plugins

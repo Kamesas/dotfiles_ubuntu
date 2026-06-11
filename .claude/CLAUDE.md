@@ -18,7 +18,14 @@ not a native English speaker and finds dense or formal writing hard to follow.
   them. No long, literary comments.
 - Comments describe what the code *is* and why — never its history, the work stage, or our
   conversation. No "Stage 1 / Phase 2", no "used to live in X", no "your idea / as we discussed".
-  A future reader has only the code, not the chat.
+  A future reader has only the code, not the chat. Litmus test: write the comment as if the code
+  had always been this way. If a phrase only makes sense because you just changed or debugged it
+  (a mechanism you discovered, a bug you avoided), cut it — keep only the durable constraint a
+  future reader needs.
+- A comment is not a tutorial. Assume the reader knows the language, framework, and tools. Never
+  explain how Tailwind, React, `const`, `clamp()`, or any general feature works — only what *this*
+  specific value or block is and why it is here. If the explanation would be just as true in
+  someone else's codebase, it does not belong in yours.
 - Write code comments impersonally — no "we" or "I". Name the actor (the hook, the section, the
   page) or use the imperative ("Hold the page at the midpoint"). It says clearly what acts and keeps
   one voice across the codebase.
@@ -71,9 +78,19 @@ are not the same as "it works."
 Never stage or commit `.env`, credentials, tokens, keys, or anything that looks like a secret —
 even if asked. Warn and confirm first.
 
-## 8 — Commits and pushes only on request
-Don't create commits, push, force-push, or open PRs unless explicitly asked. "Save the changes"
-means edit files, not commit.
+## 8 — Git needs high caution; prefer to let the user run it
+Treat every git action that writes history as high-risk. Default to NOT running it — describe the
+exact command and let the user run it themselves, unless they clearly tell me to run it.
+- Don't create commits, push, force-push, or open PRs unless explicitly asked. "Save the changes"
+  means edit files, not commit.
+- A vague "proceed" / "go ahead" / "ok" is NOT approval for a specific commit. Before committing,
+  show the exact message I will use and get explicit yes on that message. Don't add a body or
+  reword beyond what the user agreed to.
+- Never amend, reset, rebase, cherry-pick, force-push, or otherwise rewrite history without asking
+  first for that specific action — even to fix my own mistake. Explain the problem and the proposed
+  fix, then wait. If I made the mess, the safest undo is usually the user's call.
+- Prefer the smallest, most reversible step. Stage, then stop and let the user commit, unless they
+  asked me to commit too.
 
 ## 9 — Report what you skipped
 If you intentionally left something out of scope (a related bug, a refactor you noticed, a test
@@ -86,3 +103,12 @@ their hedging and epistemic stance. Don't turn "I think / it looks like / I beli
 assertion, or sharpen a tentative claim into a confident one. Fix clarity, grammar, and structure
 — never the level of certainty. The claim is theirs to make, especially in first-person messages
 to other people.
+
+## 11 — Don't start long-running app servers; let the user run them
+Never launch a long-running dev/app server yourself — `storybook`, `dev`, `start`, `preview`,
+`serve`, watch processes, or anything that holds a port and stays up. The user runs these in their
+own terminal where they can see and reload them. Two reasons: a server I start is invisible to the
+user and can silently hold the port (they then can't start their own); and they prefer to drive the
+running app themselves. If a change needs to be seen in the running app, ask the user to run it
+(e.g. suggest `! npm run storybook`) and tell them what to look at. One-shot commands that exit on
+their own (`build`, `lint`, `test`, `tsc`) are fine to run without asking.
