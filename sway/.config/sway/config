@@ -25,6 +25,8 @@ client.urgent           $red      $base       $text   $red       $red
 
 default_border pixel 2
 default_floating_border pixel 2
+font pango:FiraCode Nerd Font 11
+titlebar_border_thickness 0
 gaps inner 6
 gaps outer 3
 
