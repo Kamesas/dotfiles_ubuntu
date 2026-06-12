@@ -4,8 +4,17 @@
 WID=$(xdotool search --classname "ulauncher" 2>/dev/null | head -1)
 if [ -n "$WID" ]; then
     xdotool set_desktop_for_window "$WID" "$(xdotool get_desktop)"
+    IS_VISIBLE=$(xwininfo -id "$WID" 2>/dev/null | grep "Map State.*IsViewable")
 fi
+
 gdbus call --session \
     --dest net.launchpad.ulauncher \
     --object-path /net/launchpad/ulauncher \
     --method net.launchpad.ulauncher.toggle_window
+
+# If we just showed the window (it was hidden before), steal focus from whatever had it.
+# Without this, Chrome and other apps keep keyboard focus and the Ulauncher input stays dead.
+if [ -n "$WID" ] && [ -z "$IS_VISIBLE" ]; then
+    sleep 0.2
+    xdotool windowactivate --sync "$WID" 2>/dev/null
+fi
