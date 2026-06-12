@@ -3,7 +3,7 @@
 Goal: install Sway alongside GNOME. Both sessions work independently.
 Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 
-## Status: in progress
+## Status: in progress — stopped after session 2026-06-11
 
 ---
 
@@ -15,9 +15,18 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 
 ### 2. Basic Sway config
 - [x] Create `dotfiles/sway/.config/sway/config`
-- [x] Set mod key, terminal, basic keybindings
+- [x] Catppuccin Mocha colors, gaps, borders
 - [x] Autostart: copyq, ulauncher, waybar
 - [x] Symlinked to `~/.config/sway/config`
+- [x] Keybindings: Super+h/l focus left/right, Super+j/k move window to next/prev workspace
+- [x] Waybar: persistent workspaces 1–5
+- [x] `for_window [app_id=".*"] border pixel 2` added to suppress title bars
+
+## Pending before next session
+
+- [ ] Confirm title bars are gone (Super+Shift+C reload, then open a fresh kitty window)
+- [ ] Run `pkill waybar` to pick up the persistent workspaces config (waybar doesn't reload on sway reload)
+- [ ] Check waybar shows workspaces 1–5 after pkill
 
 ### 3. Dropdown terminals (kitty + wezterm)
 - [ ] Update `kitty-dropdown` — detect Wayland, use `swaymsg` instead of `xdotool`

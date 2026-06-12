@@ -25,8 +25,6 @@ client.urgent           $red      $base       $text   $red       $red
 
 default_border pixel 2
 default_floating_border pixel 2
-font pango:FiraCode Nerd Font 11
-titlebar_border_thickness 0
 gaps inner 6
 gaps outer 3
 
@@ -63,24 +61,24 @@ bindsym Alt+u exec ~/.local/bin/ulauncher-toggle
 bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 ### Keybindings — focus
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
+bindsym $mod+h focus left
+bindsym $mod+l focus right
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-### Keybindings — move
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+### Keybindings — move window within workspace
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+l move right
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
+### Keybindings — move window to adjacent workspace and follow
+bindsym $mod+j move container to workspace next_on_output; workspace next_on_output
+bindsym $mod+k move container to workspace prev_on_output; workspace prev_on_output
 
 ### Keybindings — workspaces
 bindsym $mod+1 workspace number 1
@@ -153,3 +151,6 @@ bar {
 }
 
 include /etc/sway/config.d/*
+
+for_window [app_id=".*"] border pixel 2
+for_window [class=".*"] border pixel 2
