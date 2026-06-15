@@ -1,7 +1,12 @@
 #!/bin/bash
 # Move Ulauncher's window to the current workspace before showing it,
 # so GNOME doesn't switch back to workspace 1 where the window originally lives.
-WID=$(xdotool search --classname "ulauncher" 2>/dev/null | head -1)
+# Ulauncher keeps two windows of class "ulauncher": a tiny 20x20 helper and the
+# real search window. Pick the widest one so we act on the real input, not the helper.
+WID=$(for w in $(xdotool search --classname "ulauncher" 2>/dev/null); do
+    width=$(xdotool getwindowgeometry "$w" 2>/dev/null | grep -oP 'Geometry: \K[0-9]+')
+    [ -n "$width" ] && echo "$width $w"
+done | sort -rn | head -1 | awk '{print $2}')
 if [ -n "$WID" ]; then
     xdotool set_desktop_for_window "$WID" "$(xdotool get_desktop)"
     IS_VISIBLE=$(xwininfo -id "$WID" 2>/dev/null | grep "Map State.*IsViewable")
