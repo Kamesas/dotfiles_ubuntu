@@ -11,15 +11,18 @@ if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
     exit 0
 fi
 
-WID=$(xdotool search --classname "$WM_CLASS" 2>/dev/null | head -1)
-[ -z "$WID" ] && exit 0
+# wmctrl reads mutter's own window list instead of walking the whole X11
+# tree, which under GNOME/XWayland holds thousands of unmanaged helper
+# windows and makes `xdotool search` take over a second.
+WID_HEX=$(wmctrl -lx 2>/dev/null | grep -F "$WM_CLASS" | head -1 | awk '{print $1}')
+[ -z "$WID_HEX" ] && exit 0
+WID=$((WID_HEX))
 
 ACTIVE=$(xdotool getactivewindow 2>/dev/null)
 
 if [ "$WID" = "$ACTIVE" ]; then
     xdotool windowminimize "$WID"
 else
-    xdotool set_desktop_for_window "$WID" $(xdotool get_desktop)
     xdotool windowactivate --sync "$WID"
     xdotool windowraise "$WID"
 fi
