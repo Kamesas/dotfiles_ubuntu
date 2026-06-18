@@ -16,7 +16,7 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 ### 2. Basic Sway config
 - [x] Create `dotfiles/sway/.config/sway/config`
 - [x] Catppuccin Mocha colors, gaps, borders
-- [x] Autostart: copyq, ulauncher, waybar
+- [x] Autostart: copyq, waybar
 - [x] Symlinked to `~/.config/sway/config`
 - [x] Keybindings: Super+h/l focus left/right, Super+j/k move window to next/prev workspace
 - [x] Waybar: persistent workspaces 1–5
@@ -35,10 +35,18 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 - [ ] Remove `WAYLAND_DISPLAY= DISPLAY=:0` from wezterm autostart
 - [ ] Test both dropdowns work in Sway AND still work in GNOME
 
-### 4. Ulauncher
-- [ ] Update `ulauncher-toggle` — detect Wayland, use `swaymsg` for workspace move
-- [ ] Update `ulauncher-start` — remove X11-specific flags if not needed
-- [ ] Test Ulauncher appears on correct workspace in Sway AND GNOME
+### 4. Rofi
+- [x] On GNOME, Mutter doesn't support the wlr-layer-shell protocol, so Rofi's native
+      Wayland mode crashes there — the GNOME keybinding forces XWayland with
+      `env WAYLAND_DISPLAY= DISPLAY=:0 rofi -show drun -steal-focus`.
+- [x] `-steal-focus` is needed too: under GNOME/XWayland, Mutter doesn't hand Rofi's
+      window keyboard focus on its own, so typing/Escape did nothing without it.
+- [ ] On Sway (wlroots, has layer-shell), check whether `-steal-focus` is still needed
+      — Sway may focus new windows correctly on its own, making it redundant there.
+      Keep the plain `rofi -show drun` already in `sway/config` unless testing shows
+      otherwise; don't copy the GNOME env override, it would disable the native
+      rendering Sway actually supports.
+- [ ] Test Alt+u opens Rofi in Sway AND GNOME
 
 ### 5. Screenshots (Flameshot → grim+slurp on Wayland)
 - [ ] Add Sway keybinding: `Print` → `grim -g "$(slurp)"` (region select)
@@ -47,7 +55,7 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 
 ### 6. Verify GNOME still works
 - [ ] Log into GNOME — all dropdowns work
-- [ ] Ulauncher opens on correct workspace
+- [ ] Rofi opens correctly
 - [ ] Flameshot works with Print Screen
 - [ ] Ctrl+; works correctly in ToggleTerm
 

@@ -7,7 +7,7 @@ set $up k
 set $right l
 
 set $term kitty
-set $menu wofi --show run
+set $menu rofi -show drun
 
 ### Catppuccin Mocha colors
 set $base   #1e1e2e
@@ -45,7 +45,6 @@ input type:keyboard {
 
 ### Autostart
 exec copyq --start-server
-exec /usr/bin/ulauncher --hide-window
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term
@@ -57,7 +56,7 @@ floating_modifier $mod normal
 ### Keybindings — custom (matches GNOME setup)
 bindsym Alt+t exec ~/.local/bin/kitty-dropdown
 bindsym Alt+w exec ~/.local/bin/wezterm-dropdown
-bindsym Alt+u exec ~/.local/bin/ulauncher-toggle
+bindsym Alt+u exec rofi -show drun
 bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 ### Keybindings — focus
@@ -140,10 +139,6 @@ bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ 
 bindsym --locked XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-
-### Floating windows
-for_window [app_id="ulauncher"] floating enable, border none
-for_window [app_id="ulauncher"] move position center
 
 ### Status bar
 bar {

@@ -12,7 +12,7 @@ You can set things up two ways: **all at once**, or **one piece at a time**.
 These packages are not installed by `install.sh` — install them manually on a new machine.
 
 ```bash
-sudo pacman -S xclip copyq wmctrl xdotool flameshot ulauncher
+sudo pacman -S xclip copyq wmctrl xdotool flameshot
 ```
 
 | Package | Why |
@@ -20,9 +20,21 @@ sudo pacman -S xclip copyq wmctrl xdotool flameshot ulauncher
 | `xclip` | Claude Code needs it to read images from clipboard (Ctrl+V image paste) |
 | `copyq` | Clipboard manager — keeps clipboard alive after Flameshot closes |
 | `wmctrl` | Window management used by launcher scripts |
-| `xdotool` | Window/keyboard automation used by dropdown and Ulauncher scripts |
+| `xdotool` | Window/keyboard automation used by dropdown terminal scripts |
 | `flameshot` | Screenshot tool (Print Screen key) |
-| `ulauncher` | App launcher (Alt+U) |
+
+### App launcher (Alt+U): Ulauncher or Rofi
+
+Pick one, depending on the machine:
+
+- **Ulauncher** (`sudo pacman -S ulauncher`) — full launcher with extensions (translate,
+  clipboard, etc). Used on Ubuntu/HP.
+- **Rofi** (`sudo pacman -S rofi`) — no extensions, but starts fresh each time instead of
+  staying resident in the background. Used on the Arch/T480 GNOME-on-Wayland setup:
+  Ulauncher's clipboard-watching extension leaked thousands of X11 windows there, and
+  Rofi avoids the whole problem by not running as a background process. Also note Rofi's
+  native Wayland mode crashes under GNOME (Mutter doesn't support wlr-layer-shell), so the
+  keybinding below forces XWayland with `WAYLAND_DISPLAY= DISPLAY=:0`.
 
 ---
 
@@ -50,8 +62,12 @@ gsettings set $base.custom-keybinding:$path/custom2/ name    'Flameshot'
 gsettings set $base.custom-keybinding:$path/custom2/ command 'flameshot gui'
 gsettings set $base.custom-keybinding:$path/custom2/ binding 'Print'
 
+# Pick the command matching the launcher you installed above:
 gsettings set $base.custom-keybinding:$path/custom3/ name    'Ulauncher toggle'
 gsettings set $base.custom-keybinding:$path/custom3/ command '/home/alex/.local/bin/ulauncher-toggle'
+# or, for Rofi:
+# gsettings set $base.custom-keybinding:$path/custom3/ name    'Rofi launcher'
+# gsettings set $base.custom-keybinding:$path/custom3/ command 'env WAYLAND_DISPLAY= DISPLAY=:0 rofi -show drun -steal-focus'
 gsettings set $base.custom-keybinding:$path/custom3/ binding '<Alt>u'
 
 gsettings set $base custom-keybindings "['$path/custom0/', '$path/custom1/', '$path/custom2/', '$path/custom3/']"
