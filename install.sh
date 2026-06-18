@@ -21,7 +21,7 @@ NC='\033[0m'
 
 # Available packages (managed by Stow)
 CORE_PACKAGES=("bash" "git")
-OPTIONAL_PACKAGES=("tmux" "wezterm" "kitty" "bin" "misc" "fish" "btop" "flameshot" "kanata" "keyb" "rofi")
+OPTIONAL_PACKAGES=("tmux" "wezterm" "kitty" "bin" "misc" "fish" "btop" "flameshot" "kanata" "keyb" "rofi" "fastfetch")
 
 # Manual links — configs Stow can't manage:
 #  - nvim: a whole-folder link (the package is not laid out for Stow)
