@@ -32,9 +32,13 @@ Pick one, depending on the machine:
 - **Rofi** (`sudo pacman -S rofi`) — no extensions, but starts fresh each time instead of
   staying resident in the background. Used on the Arch/T480 GNOME-on-Wayland setup:
   Ulauncher's clipboard-watching extension leaked thousands of X11 windows there, and
-  Rofi avoids the whole problem by not running as a background process. Also note Rofi's
-  native Wayland mode crashes under GNOME (Mutter doesn't support wlr-layer-shell), so the
-  keybinding below forces XWayland with `WAYLAND_DISPLAY= DISPLAY=:0`.
+  Rofi avoids the whole problem by not running as a background process. Two more things
+  the keybinding below works around: Rofi's native Wayland mode crashes under GNOME
+  (Mutter doesn't support wlr-layer-shell), so it forces XWayland with
+  `WAYLAND_DISPLAY= DISPLAY=:0`; and apps launched from Rofi inherit that same forced
+  environment, which makes Chrome (and likely other apps that read `XDG_SESSION_TYPE` to
+  pick their display backend) crash instead of falling back to X11 — also forcing
+  `XDG_SESSION_TYPE=x11` keeps the whole environment consistent so they start normally.
 
 ---
 
@@ -67,7 +71,7 @@ gsettings set $base.custom-keybinding:$path/custom3/ name    'Ulauncher toggle'
 gsettings set $base.custom-keybinding:$path/custom3/ command '/home/alex/.local/bin/ulauncher-toggle'
 # or, for Rofi:
 # gsettings set $base.custom-keybinding:$path/custom3/ name    'Rofi launcher'
-# gsettings set $base.custom-keybinding:$path/custom3/ command 'env WAYLAND_DISPLAY= DISPLAY=:0 rofi -show drun -steal-focus'
+# gsettings set $base.custom-keybinding:$path/custom3/ command 'env WAYLAND_DISPLAY= DISPLAY=:0 XDG_SESSION_TYPE=x11 rofi -show drun -steal-focus'
 gsettings set $base.custom-keybinding:$path/custom3/ binding '<Alt>u'
 
 gsettings set $base custom-keybindings "['$path/custom0/', '$path/custom1/', '$path/custom2/', '$path/custom3/']"

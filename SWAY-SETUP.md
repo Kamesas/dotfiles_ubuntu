@@ -38,9 +38,13 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 ### 4. Rofi
 - [x] On GNOME, Mutter doesn't support the wlr-layer-shell protocol, so Rofi's native
       Wayland mode crashes there — the GNOME keybinding forces XWayland with
-      `env WAYLAND_DISPLAY= DISPLAY=:0 rofi -show drun -steal-focus`.
+      `env WAYLAND_DISPLAY= DISPLAY=:0 XDG_SESSION_TYPE=x11 rofi -show drun -steal-focus`.
 - [x] `-steal-focus` is needed too: under GNOME/XWayland, Mutter doesn't hand Rofi's
       window keyboard focus on its own, so typing/Escape did nothing without it.
+- [x] Apps launched *from* Rofi inherit that forced environment too. Without
+      `XDG_SESSION_TYPE=x11`, Chrome (and likely other apps that check session type to
+      pick a display backend) tried Wayland anyway, found no socket, and exited instantly
+      instead of falling back to X11 — looked like it briefly flashed open then vanished.
 - [ ] On Sway (wlroots, has layer-shell), check whether `-steal-focus` is still needed
       — Sway may focus new windows correctly on its own, making it redundant there.
       Keep the plain `rofi -show drun` already in `sway/config` unless testing shows
