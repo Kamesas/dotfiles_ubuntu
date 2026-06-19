@@ -31,7 +31,7 @@
     },
 
     "cpu": {
-        "format": " {usage}%",
+        "format": " {usage}%",
         "interval": 2
     },
 
