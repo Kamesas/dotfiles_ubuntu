@@ -86,6 +86,18 @@ path would mirror kitty's: `--class` flag, `[app_id=...]` criteria, no forced X1
 
 ## Notes / Issues
 
+- **Waybar symlinks were broken since install, 2026-06-11 → fixed 2026-06-19:**
+  `~/.config/waybar/config` and `style.css` had one extra `../` in their relative
+  symlink target (pointing at `/home/dotfiles/...` instead of `/home/alex/dotfiles/...`),
+  so they silently resolved to nothing and Waybar fell back to
+  `/etc/xdg/waybar/config.jsonc` the whole time — no Waybar customization (colors,
+  icons, layout) was ever actually visible. Not a stow bug (generic `stow -R waybar`
+  produces the correct 2-level path); looks like a one-off manual `ln -s` mistake.
+  Fixed by removing the broken links and running `stow -d ~/dotfiles -t ~ -R waybar`.
+  If Waybar ever looks like it's ignoring config changes again, check
+  `waybar -l info` output for "Using configuration file" — if it says
+  `/etc/xdg/waybar/...` instead of `~/.config/waybar/...`, the symlink is broken again.
+
 - **GPU usage on Sway, 2026-06-19:** with the Claude tab focused in Chrome, GPU freq
   spiked to 800-1100MHz (vs 300-550MHz with an empty tab focused) — confirmed live
   via `/sys/class/drm/card1/gt_cur_freq_mhz`. Likely a continuous animation in the
