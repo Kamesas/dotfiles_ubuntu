@@ -60,20 +60,22 @@ bindsym Alt+u exec rofi -show drun
 bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 ### Keybindings — focus
-bindsym $mod+h focus left
-bindsym $mod+l focus right
+bindsym $mod+Shift+h focus left
+bindsym $mod+Shift+l focus right
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 ### Keybindings — move window within workspace
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+l move right
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
+### Keybindings — switch workspace (vim-style: h = prev, l = next)
+bindsym $mod+h workspace prev_on_output
+bindsym $mod+l workspace next_on_output
 
 ### Keybindings — move window to adjacent workspace and follow
 bindsym $mod+j move container to workspace next_on_output; workspace next_on_output
@@ -134,8 +136,8 @@ bindsym $mod+r mode "resize"
 
 ### Media / brightness keys
 bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
 bindsym --locked XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
