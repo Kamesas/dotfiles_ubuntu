@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/window"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "memory", "pulseaudio", "network", "battery", "tray"],
+    "modules-right": ["cpu", "memory", "pulseaudio", "network", "sway/language", "battery", "tray"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -36,7 +36,7 @@
     },
 
     "memory": {
-        "format": " {used:0.1f}G",
+        "format": " {used:0.1f}/{total:0.1f}GB",
         "interval": 5
     },
 
@@ -52,6 +52,11 @@
         "format-ethernet": " {ipaddr}",
         "format-disconnected": "󰤭 off",
         "tooltip-format": "{ifname}: {ipaddr}\n{essid} ({signalStrength}%)"
+    },
+
+    "sway/language": {
+        "format": "{flag} {short}",
+        "tooltip-format": "{long}"
     },
 
     "pulseaudio": {

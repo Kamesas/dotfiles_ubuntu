@@ -81,6 +81,11 @@ window#waybar {
     color: @red;
 }
 
+#language {
+    color: @yellow;
+    padding: 0 10px;
+}
+
 #pulseaudio {
     color: @peach;
     padding: 0 10px;
