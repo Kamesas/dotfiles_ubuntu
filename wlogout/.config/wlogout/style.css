@@ -1,0 +1,54 @@
+/* Catppuccin Mocha, matches sway/waybar */
+* {
+    background-image: none;
+    box-shadow: none;
+    font-family: "FiraCode Nerd Font", monospace;
+}
+
+window {
+    background-color: rgba(17, 17, 27, 0.85);
+}
+
+button {
+    border-radius: 8px;
+    border-color: #45475a;
+    text-decoration-color: #cdd6f4;
+    color: #cdd6f4;
+    background-color: #1e1e2e;
+    border-style: solid;
+    border-width: 1px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 25%;
+    margin: 10px;
+}
+
+button:focus, button:active, button:hover {
+    background-color: #313244;
+    border-color: #89b4fa;
+    outline-style: none;
+}
+
+#lock {
+    background-image: image(url("/usr/share/wlogout/icons/lock.png"));
+}
+
+#logout {
+    background-image: image(url("/usr/share/wlogout/icons/logout.png"));
+}
+
+#suspend {
+    background-image: image(url("/usr/share/wlogout/icons/suspend.png"));
+}
+
+#hibernate {
+    background-image: image(url("/usr/share/wlogout/icons/hibernate.png"));
+}
+
+#shutdown {
+    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"));
+}
+
+#reboot {
+    background-image: image(url("/usr/share/wlogout/icons/reboot.png"));
+}

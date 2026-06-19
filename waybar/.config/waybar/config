@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/window"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "memory", "pulseaudio", "network", "sway/language", "battery", "tray"],
+    "modules-right": ["cpu", "memory", "pulseaudio", "network", "sway/language", "battery", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -68,5 +68,11 @@
 
     "tray": {
         "spacing": 8
+    },
+
+    "custom/power": {
+        "format": "",
+        "on-click": "wlogout",
+        "tooltip": false
     }
 }

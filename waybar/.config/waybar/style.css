@@ -98,3 +98,13 @@ window#waybar {
 #tray {
     padding: 0 8px;
 }
+
+#custom-power {
+    color: @red;
+    padding: 0 12px;
+}
+
+#custom-power:hover {
+    color: @text;
+    background: @surface0;
+}
