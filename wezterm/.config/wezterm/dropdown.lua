@@ -35,7 +35,10 @@ config.default_prog = { "tmux", "new-session", "-As", "dropdown" }
 
 wezterm.on("gui-startup", function()
 	local tab, pane, window = wezterm.mux.spawn_window({})
-	window:gui_window():maximize()
+	-- Sway sizes the dropdown itself via for_window; maximizing here would fight that.
+	if not os.getenv("SWAYSOCK") then
+		window:gui_window():maximize()
+	end
 end)
 
 config.keys = {

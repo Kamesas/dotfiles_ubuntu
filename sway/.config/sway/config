@@ -149,3 +149,10 @@ include /etc/sway/config.d/*
 
 for_window [app_id=".*"] border pixel 2
 for_window [class=".*"] border pixel 2
+
+### Dropdown terminals — float, fill the workspace area (Waybar stays visible),
+# and park in the scratchpad so Alt+t / Alt+w show/hide them from any workspace.
+for_window [app_id="kitty-dropdown"] floating enable, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show
+# WezTerm dropdown runs under XWayland (see wezterm-dropdown script), so it shows
+# up as an X11 "class" rather than a native Wayland "app_id".
+for_window [class="wezterm-dropdown"] floating enable, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show

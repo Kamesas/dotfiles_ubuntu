@@ -1,13 +1,27 @@
 #!/bin/bash
 # Toggle the WezTerm dropdown.
-# Runs under XWayland so xdotool can show/hide the window without restarting.
+# Always runs under XWayland — the installed wezterm (20240203, latest in the Arch
+# repo) crashes on native Sway Wayland windows with a wl_shm protocol error.
+# On Sway: shown/hidden via swaymsg + scratchpad (XWayland windows match by "class").
+# On GNOME: xdotool shows/hides it without restarting.
 
 CONFIG="$HOME/.config/wezterm/dropdown.lua"
-WM_CLASS="org.wezfurlong.wezterm"
+WM_CLASS="wezterm-dropdown"
+
+if [ -n "$SWAYSOCK" ]; then
+    # Only one dropdown on screen at a time — hide the other one first.
+    swaymsg '[app_id="kitty-dropdown"] move scratchpad' > /dev/null 2>&1
+    if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
+        WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
+    else
+        swaymsg "[class=\"$WM_CLASS\"] scratchpad show" > /dev/null
+    fi
+    exit 0
+fi
 
 # Start WezTerm under XWayland if not already running
 if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
-    WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" &
+    WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
     exit 0
 fi
 

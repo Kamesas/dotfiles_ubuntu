@@ -28,12 +28,29 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 - [ ] Run `pkill waybar` to pick up the persistent workspaces config (waybar doesn't reload on sway reload)
 - [ ] Check waybar shows workspaces 1–5 after pkill
 
-### 3. Dropdown terminals (kitty + wezterm)
-- [ ] Update `kitty-dropdown` — detect Wayland, use `swaymsg` instead of `xdotool`
-- [ ] Update `wezterm-dropdown` — same
-- [ ] Remove `linux_display_server x11` from `kitty/dropdown.conf` (auto-detect)
-- [ ] Remove `WAYLAND_DISPLAY= DISPLAY=:0` from wezterm autostart
-- [ ] Test both dropdowns work in Sway AND still work in GNOME
+### 3. Dropdown terminals (kitty + wezterm) — DONE 2026-06-19
+- [x] Update `kitty-dropdown` — detect Sway via `$SWAYSOCK`, use `swaymsg [app_id=...]
+      scratchpad show` there instead of `xdotool`. GNOME branch untouched.
+- [x] Update `wezterm-dropdown` — same idea, but see note below: WezTerm still runs
+      under XWayland on Sway too, matched via `[class=...]` instead of `[app_id=...]`.
+- [x] Remove `linux_display_server x11` from `kitty/dropdown.conf` — safe because the
+      GNOME script already force-unsets `WAYLAND_DISPLAY` before launching kitty, so
+      it falls back to X11 there regardless; on Sway it now picks native Wayland.
+- [x] `sway/config` — `for_window` rules float both dropdowns, size them
+      `100 ppt x 100 ppt` (fills the workspace area, Waybar stays visible since ppt
+      sizing excludes the bar), then `move scratchpad, scratchpad show` so they're
+      shown/hidden by class/app_id instead of living on a workspace.
+- [x] Test both dropdowns work in Sway AND still work in GNOME (kitty path verified
+      live; wezterm GNOME path unchanged except window class, not yet re-tested live)
+
+**Note:** the installed `wezterm` (20240203, latest in Arch's `extra` repo) crashes
+on native Sway Wayland windows — `[wayland-client error] Attempted to dispatch
+unknown opcode 0 for wl_shm, aborting.` Reproduces even with a bare
+`wezterm start -- true`, no custom config involved. Worked around by keeping
+WezTerm on XWayland on Sway too (same as GNOME), just toggled via
+`swaymsg [class="wezterm-dropdown"] scratchpad show` instead of `xdotool`. If this
+ever gets fixed upstream (or by moving to `wezterm-nightly` from AUR), the native
+path would mirror kitty's: `--class` flag, `[app_id=...]` criteria, no forced X11.
 
 ### 4. Rofi
 - [x] On GNOME, Mutter doesn't support the wlr-layer-shell protocol, so Rofi's native
@@ -62,12 +79,21 @@ Scripts detect `$WAYLAND_DISPLAY` and behave correctly in each environment.
 - [ ] Rofi opens correctly
 - [ ] Flameshot works with Print Screen
 - [ ] Ctrl+; works correctly in ToggleTerm
+- [ ] Open the Claude tab in Chrome, check GPU% in btop — compare against the Sway
+      number below to see if it's a Sway/wlroots throttling issue or just the site
 
 ---
 
 ## Notes / Issues
 
-<!-- Add problems and solutions here as we go -->
+- **GPU usage on Sway, 2026-06-19:** with the Claude tab focused in Chrome, GPU freq
+  spiked to 800-1100MHz (vs 300-550MHz with an empty tab focused) — confirmed live
+  via `/sys/class/drm/card1/gt_cur_freq_mhz`. Likely a continuous animation in the
+  site's UI keeping the renderer compositing non-stop. Not caused by the dropdown
+  terminal changes (killed both kitty/wezterm dropdowns entirely and GPU still
+  fluctuated the same way). Unconfirmed whether this is worse on Sway specifically
+  (wlroots throttling background/animated tabs less aggressively than GNOME's
+  Mutter) or just how the site behaves everywhere — see checklist item above.
 
 ---
 

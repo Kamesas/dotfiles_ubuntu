@@ -1,8 +1,20 @@
 #!/bin/bash
 # Toggle the kitty dropdown.
-# Runs under XWayland so xdotool can show/hide without restarting.
+# On Sway: native Wayland window, shown/hidden via swaymsg + scratchpad.
+# On GNOME: runs under XWayland so xdotool can show/hide without restarting.
 
 WM_CLASS="kitty-dropdown"
+
+if [ -n "$SWAYSOCK" ]; then
+    # Only one dropdown on screen at a time — hide the other one first.
+    swaymsg '[class="wezterm-dropdown"] move scratchpad' > /dev/null 2>&1
+    if ! pgrep -f "kitty.*dropdown.conf" > /dev/null; then
+        kitty --config ~/.config/kitty/dropdown.conf --class "$WM_CLASS" &
+    else
+        swaymsg "[app_id=\"$WM_CLASS\"] scratchpad show" > /dev/null
+    fi
+    exit 0
+fi
 
 if ! pgrep -f "kitty.*dropdown.conf" > /dev/null; then
     WAYLAND_DISPLAY= DISPLAY=:0 kitty --config ~/.config/kitty/dropdown.conf --class "$WM_CLASS" &
