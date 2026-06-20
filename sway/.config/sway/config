@@ -44,7 +44,7 @@ input type:keyboard {
 }
 
 ### Autostart
-exec copyq --start-server
+exec wl-paste --watch cliphist store
 exec blueman-applet
 exec mako
 
@@ -63,6 +63,7 @@ bindsym Alt+u exec rofi -show drun
 bindsym Alt+f exec rofi -show window
 bindsym Alt+n exec ~/.local/bin/wifi-menu
 bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
+bindsym Alt+p exec ~/.local/bin/clipboard-menu
 bindsym Print exec grim -g "$(slurp)" - | swappy -f -
 
 ### Keybindings — focus

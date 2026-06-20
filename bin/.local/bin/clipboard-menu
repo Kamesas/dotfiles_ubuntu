@@ -1,0 +1,3 @@
+#!/bin/bash
+# Rofi picker for clipboard history (cliphist), Alt+p in Sway.
+cliphist list | rofi -dmenu -p "clipboard" | cliphist decode | wl-copy
