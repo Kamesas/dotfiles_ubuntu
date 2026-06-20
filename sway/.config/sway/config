@@ -51,6 +51,7 @@ exec mako
 ### Keybindings — basics
 bindsym $mod+Return exec $term
 bindsym $mod+c kill
+bindsym --whole-window $mod+button2 kill
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -B 'Yes' 'swaymsg exit'
 bindsym $mod+Shift+p exec wlogout
