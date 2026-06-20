@@ -39,6 +39,26 @@ config.adjust_window_size_when_changing_font_size = false
 -- Attach to the persistent dropdown tmux session
 config.default_prog = { "tmux", "new-session", "-As", "dropdown" }
 
+-- Default Ctrl+=/Ctrl+- zoom by ~10% per step, growing coarser each press.
+-- These instead step by a fixed 0.5pt, so every press changes size by the
+-- same small amount.
+local FONT_STEP = 0.5
+local FONT_MIN = 6
+local FONT_MAX = 36
+
+local function step_font_size(window, delta)
+	local overrides = window:get_config_overrides() or {}
+	local size = overrides.font_size or config.font_size
+	overrides.font_size = math.max(math.min(size + delta, FONT_MAX), FONT_MIN)
+	window:set_config_overrides(overrides)
+end
+
+local function reset_font_size(window)
+	local overrides = window:get_config_overrides() or {}
+	overrides.font_size = config.font_size
+	window:set_config_overrides(overrides)
+end
+
 wezterm.on("gui-startup", function()
 	local tab, pane, window = wezterm.mux.spawn_window({})
 	-- Sway sizes the dropdown itself via for_window; maximizing here would fight that.
@@ -61,5 +81,43 @@ config.keys = {
 	{ key = "8", mods = "ALT", action = wezterm.action.SendKey({ key = "8", mods = "ALT" }) },
 	{ key = "9", mods = "ALT", action = wezterm.action.SendKey({ key = "9", mods = "ALT" }) },
 }
+
+-- WezTerm's own keytable has separate default entries for the "shifted" and
+-- "unshifted" forms of the same physical key (e.g. "=" and "+" both produce
+-- IncreaseFontSize by default, each under both CTRL and CTRL|SHIFT mods).
+-- Overriding just one form leaves the others still wired to the built-in
+-- zoom, which is how a single Ctrl+0 press fell through to the default
+-- ResetFontSize. Cover every form so none of them can fall through.
+local increase_keys = { { key = "=", mods = "CTRL" }, { key = "=", mods = "CTRL|SHIFT" }, { key = "+", mods = "CTRL" }, { key = "+", mods = "CTRL|SHIFT" } }
+local decrease_keys = { { key = "-", mods = "CTRL" }, { key = "-", mods = "CTRL|SHIFT" }, { key = "_", mods = "CTRL" }, { key = "_", mods = "CTRL|SHIFT" } }
+local reset_keys = { { key = "0", mods = "CTRL" }, { key = "0", mods = "CTRL|SHIFT" }, { key = ")", mods = "CTRL" }, { key = ")", mods = "CTRL|SHIFT" } }
+
+for _, k in ipairs(increase_keys) do
+	table.insert(config.keys, {
+		key = k.key,
+		mods = k.mods,
+		action = wezterm.action_callback(function(window, pane)
+			step_font_size(window, FONT_STEP)
+		end),
+	})
+end
+for _, k in ipairs(decrease_keys) do
+	table.insert(config.keys, {
+		key = k.key,
+		mods = k.mods,
+		action = wezterm.action_callback(function(window, pane)
+			step_font_size(window, -FONT_STEP)
+		end),
+	})
+end
+for _, k in ipairs(reset_keys) do
+	table.insert(config.keys, {
+		key = k.key,
+		mods = k.mods,
+		action = wezterm.action_callback(function(window, pane)
+			reset_font_size(window)
+		end),
+	})
+end
 
 return config
