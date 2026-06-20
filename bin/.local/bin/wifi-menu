@@ -1,0 +1,59 @@
+#!/bin/bash
+# Rofi menu to list and connect to WiFi networks (nmcli + rofi).
+# nm-applet has no tray icon under Sway (no SNI/Wayland support), so this
+# is the click-to-switch replacement, bound to a key in sway/config.
+
+IFACE=$(nmcli -t -f DEVICE,TYPE device | awk -F: '$2=="wifi"{print $1; exit}')
+
+mapfile -t lines < <(nmcli -t -f SSID,SECURITY,SIGNAL device wifi list ifname "$IFACE" \
+    | sed 's/\\:/\x01/g')
+
+declare -A signal_of security_of
+order=()
+for line in "${lines[@]}"; do
+    IFS=: read -r ssid security signal <<< "$line"
+    ssid=${ssid//$'\x01'/:}
+    [ -z "$ssid" ] && continue
+    # Keep the strongest signal if the same SSID shows up on multiple APs.
+    if [ -z "${signal_of[$ssid]}" ] || [ "$signal" -gt "${signal_of[$ssid]}" ]; then
+        [ -z "${signal_of[$ssid]}" ] && order+=("$ssid")
+        signal_of[$ssid]=$signal
+        security_of[$ssid]=${security:-open}
+    fi
+done
+
+current=$(nmcli -t -f ACTIVE,SSID device wifi list ifname "$IFACE" | awk -F: '$1=="yes"{print $2}')
+
+menu=""
+declare -A label_to_ssid
+for ssid in "${order[@]}"; do
+    mark=" "
+    [ "$ssid" = "$current" ] && mark="*"
+    label="$mark $ssid  (${signal_of[$ssid]}%, ${security_of[$ssid]})"
+    label_to_ssid["$label"]=$ssid
+    menu+="$label"$'\n'
+done
+
+chosen=$(printf '%s' "$menu" | rofi -dmenu -p "WiFi" -i)
+[ -z "$chosen" ] && exit 0
+
+ssid=${label_to_ssid[$chosen]}
+[ -z "$ssid" ] && exit 0
+
+if nmcli -t -f NAME connection show | grep -Fxq "$ssid"; then
+    if nmcli connection up "$ssid" > /dev/null 2>&1; then
+        notify-send "WiFi" "Connected to $ssid"
+    else
+        notify-send "WiFi" "Failed to connect to $ssid"
+    fi
+    exit 0
+fi
+
+password=$(rofi -dmenu -p "Password for $ssid" -password)
+[ -z "$password" ] && exit 0
+
+if nmcli device wifi connect "$ssid" password "$password" ifname "$IFACE" > /dev/null 2>&1; then
+    notify-send "WiFi" "Connected to $ssid"
+else
+    notify-send "WiFi" "Failed to connect to $ssid"
+fi
