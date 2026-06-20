@@ -79,6 +79,15 @@
   _    _    _              _              _    _         _    _    _
 )
 
+;; Layer 6 - Native mods (all keys at real positions; bottom row has mod-taps; g+h exits back to base)
+(deflayer native_mods
+  esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @cec a    s    d    f    @g_nm @h_nm j   k    l    ;    '    ret
+  lsft @z_s @nm_xc @nm_ca @nm_vg @pb_ch @pn_ch @m_g @co_a @dt_c @sl_s rsft  up
+  lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
+)
+
 ;; Aliases
 (defalias
   ;; Q: tap=q, hold=media layer (matching Corne lt LAYER3 Q)
@@ -115,17 +124,26 @@
   fat (macro = S-.)
 
   ;; Chord participants - right home row (h, j, k, l, ;)
-  h_ch (chord hjkl_chords h)
-  j_ch (chord hjkl_chords j)
-  k_ch (chord hjkl_chords k)
-  l_ch (chord hjkl_chords l)
-  sc_ch (chord hjkl_chords semi)
+  h_ch (chord home_row_chords h)
+  j_ch (chord home_row_chords j)
+  k_ch (chord home_row_chords k)
+  l_ch (chord home_row_chords l)
+  sc_ch (chord home_row_chords semi)
 
   ;; Chord participants - left home row (s, d, f, g)
-  s_ch (chord sdfg_chords s)
-  d_ch (chord sdfg_chords d)
-  f_ch (chord sdfg_chords f)
-  g_ch (chord sdfg_chords g)
+  s_ch (chord home_row_chords s)
+  d_ch (chord home_row_chords d)
+  f_ch (chord home_row_chords f)
+  g_ch (chord home_row_chords g)
+
+  ;; native_mods layer: x, c, v with mod-taps at their real key positions
+  nm_xc (tap-hold 200 200 x lctl)
+  nm_ca (tap-hold 200 200 c lalt)
+  nm_vg (tap-hold 200 200 v lmet)
+
+  ;; native_mods layer: g+h exits back to base
+  g_nm (chord gh_exit_chords g)
+  h_nm (chord gh_exit_chords h)
 
   ;; Chord participants - top row left (w, e, r)
   w_ch (chord wer_chords w)
@@ -167,29 +185,27 @@
   pn_ch (chord plain_toggle_chords n)
 )
 
-;; Right home row chords: h, j, k, l, ;
-(defchords hjkl_chords 50
+;; Home row chords: s, d, f, g (left) and h, j, k, l, ; (right)
+;; Merged into one group so g+h can trigger the native_mods layer
+(defchords home_row_chords 50
+  (s)      s          ;; s alone
+  (d)      d          ;; d alone
+  (f)      f          ;; f alone
+  (g)      g          ;; g alone
   (h)      h          ;; h alone
   (j)      j          ;; j alone
   (k)      k          ;; k alone
   (l)      l          ;; l alone
   (semi)   ;          ;; ; alone
+  (s d)    tab        ;; s+d → tab
+  (d f)    caps       ;; d+f → caps lock
+  (f g)    @fat       ;; f+g → =>
   (h j)    =          ;; h+j → equal
   (j k)    esc        ;; j+k → escape
   (k l)    bspc       ;; k+l → backspace
   (l semi) '          ;; l+; → single quote
   (j l)    ret        ;; j+l → enter
-)
-
-;; Left home row chords: s, d, f, g
-(defchords sdfg_chords 50
-  (s)     s          ;; s alone
-  (d)     d          ;; d alone
-  (f)     f          ;; f alone
-  (g)     g          ;; g alone
-  (s d)   tab        ;; s+d → tab
-  (d f)   caps       ;; d+f → caps lock
-  (f g)   @fat       ;; f+g → =>
+  (g h)    (layer-switch native_mods)  ;; g+h → native_mods layer
 )
 
 ;; Top row left chords: w, e, r
@@ -241,6 +257,13 @@
   (s)   s
   (d)   d
   (s d) tab
+)
+
+;; native_mods layer: g+h exits back to base
+(defchords gh_exit_chords 50
+  (g)   g
+  (h)   h
+  (g h) (layer-switch base)
 )
 
 ;; Plain layer: b+n switches back to base (only customization in plain mode)
