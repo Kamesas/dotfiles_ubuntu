@@ -3,7 +3,7 @@
 
 export ZSH="$HOME/.oh-my-zsh"
 
-ZSH_THEME="agnosterzak"
+ZSH_THEME="agnoster"
 
 plugins=( 
     git
@@ -20,14 +20,16 @@ source $ZSH/oh-my-zsh.sh
 #pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
 
 # fastfetch. Will be disabled if above colorscript was chosen to install
-fastfetch -c $HOME/.config/fastfetch/config-compact.jsonc
+command -v fastfetch &>/dev/null && fastfetch -c $HOME/.config/fastfetch/config-compact.jsonc
 
 # Set-up icons for files/directories in terminal using lsd
-alias ls='lsd'
-alias l='ls -l'
-alias la='ls -a'
-alias lla='ls -la'
-alias lt='ls --tree'
+if command -v lsd &>/dev/null; then
+    alias ls='lsd'
+    alias l='ls -l'
+    alias la='ls -a'
+    alias lla='ls -la'
+    alias lt='ls --tree'
+fi
 
 # ============================================================================
 # NEOVIM CONFIGURATIONS
@@ -98,7 +100,7 @@ eval "$(starship init zsh)"
 # Zoxide (better cd command)
 eval "$(zoxide init zsh)"
 # Rust environment
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 # ============================================================================
 # KEY BINDINGS
