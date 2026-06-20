@@ -59,8 +59,9 @@ floating_modifier $mod normal
 bindsym Alt+t exec ~/.local/bin/kitty-dropdown
 bindsym Alt+w exec ~/.local/bin/wezterm-dropdown
 bindsym Alt+u exec rofi -show drun
+bindsym Alt+f exec rofi -show window
 bindsym Alt+n exec ~/.local/bin/wifi-menu
-bindsym Print exec grim -g "$(slurp)" - | wl-copy
+bindsym Print exec grim -g "$(slurp)" - | swappy -f -
 
 ### Keybindings — focus
 bindsym $mod+Shift+h focus left
