@@ -1,0 +1,43 @@
+#!/bin/bash
+# Rofi picker for wallpapers (awww), Alt+o in Sway. Lists images from
+# ~/Pictures/Wallpapers with thumbnail previews, sends the pick to the awww daemon.
+
+dir="$HOME/Pictures/Wallpapers"
+thumb_dir="$HOME/.cache/wallpaper-menu/thumbs"
+mkdir -p "$thumb_dir"
+
+mapfile -t files < <(find "$dir" -maxdepth 1 -type f \
+    \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.webp' \) \
+    -printf '%f\n' | sort)
+
+if [ ${#files[@]} -eq 0 ]; then
+    notify-send "Wallpaper" "No images in $dir"
+    exit 0
+fi
+
+build_menu() {
+    for f in "${files[@]}"; do
+        src="$dir/$f"
+        thumb="$thumb_dir/$(md5sum <<< "$src" | cut -d' ' -f1).png"
+        # Regenerate only if missing or the source changed since the last run.
+        if [ ! -f "$thumb" ] || [ "$src" -nt "$thumb" ]; then
+            magick "${src}[0]" -thumbnail 400x400 "$thumb" 2>/dev/null
+        fi
+        # bash variables can't hold a NUL byte, so each entry is streamed
+        # straight to the pipe instead of built up in a string first.
+        printf '%s\0icon\x1f%s\n' "$f" "$thumb"
+    done
+}
+
+# Grid of large tiles (thumbnail above filename) instead of rofi's default
+# small inline app-icon style, which is too tiny for judging a wallpaper.
+chosen=$(build_menu | rofi -dmenu -show-icons -p "wallpaper" -theme-str '
+    window { width: 75%; }
+    listview { columns: 4; lines: 2; spacing: 8px; padding: 8px; }
+    element { orientation: vertical; padding: 2px; }
+    element-icon { size: 280px; }
+    element-text { horizontal-align: 0.5; padding: 2px 0px 0px; }
+')
+[ -z "$chosen" ] && exit 0
+
+awww img "$dir/$chosen"

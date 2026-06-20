@@ -28,9 +28,6 @@ default_floating_border pixel 2
 gaps inner 6
 gaps outer 3
 
-### Output
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-
 ### Input
 input type:touchpad {
     tap enabled
@@ -48,6 +45,7 @@ exec wl-paste --watch cliphist store
 exec blueman-applet
 exec mako
 exec /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
+exec awww-daemon
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term
@@ -66,6 +64,7 @@ bindsym Alt+f exec rofi -show window
 bindsym Alt+n exec ~/.local/bin/wifi-menu
 bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
 bindsym Alt+p exec ~/.local/bin/clipboard-menu
+bindsym Alt+o exec ~/.local/bin/wallpaper-menu
 bindsym Print exec grim -g "$(slurp)" - | swappy -f -
 
 ### Keybindings — focus
