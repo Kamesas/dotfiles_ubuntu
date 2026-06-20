@@ -47,6 +47,7 @@ input type:keyboard {
 exec wl-paste --watch cliphist store
 exec blueman-applet
 exec mako
+exec /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term
