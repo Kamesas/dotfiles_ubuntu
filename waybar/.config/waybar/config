@@ -4,7 +4,7 @@
     "height": 28,
     "spacing": 4,
 
-    "modules-left": ["sway/workspaces", "sway/window"],
+    "modules-left": ["sway/workspaces", "custom/wezterm-dropdown", "custom/kitty-dropdown", "sway/window"],
     "modules-center": ["clock"],
     "modules-right": ["cpu", "memory", "pulseaudio", "network", "sway/language", "battery", "custom/notifications", "tray", "custom/power"],
 
@@ -57,6 +57,20 @@
         "format-muted": "󰝟 muted",
         "format-icons": { "default": ["", "", ""] },
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+
+    "custom/kitty-dropdown": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "Kitty dropdown terminal (Alt+t)",
+        "on-click": "~/.local/bin/kitty-dropdown"
+    },
+
+    "custom/wezterm-dropdown": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "WezTerm dropdown terminal (Alt+w)",
+        "on-click": "~/.local/bin/wezterm-dropdown"
     },
 
     "custom/notifications": {

@@ -95,6 +95,22 @@ window#waybar {
     color: @subtext0;
 }
 
+#custom-wezterm-dropdown,
+#custom-kitty-dropdown {
+    color: @blue;
+    padding: 0 10px;
+}
+
+#custom-wezterm-dropdown {
+    margin-right: 6px;
+}
+
+#custom-wezterm-dropdown:hover,
+#custom-kitty-dropdown:hover {
+    color: @text;
+    background: @surface0;
+}
+
 #custom-notifications {
     color: @red;
     padding: 0 10px;
