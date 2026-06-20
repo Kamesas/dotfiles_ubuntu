@@ -20,7 +20,7 @@ bell = '$BELL'
 bell_slash = '$BELL_SLASH'
 
 data = json.load(sys.stdin)
-apps = sorted(set(n['app_name'] for n in data))
+apps = sorted(set(n['app_name'] for n in data if n['app_name'] != 'OSD'))
 
 if dnd:
     tooltip = 'Do not disturb is ON'

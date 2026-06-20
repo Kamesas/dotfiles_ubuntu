@@ -1,0 +1,19 @@
+#!/bin/bash
+# Brightness OSD popup. Usage: brightness-osd <brightnessctl-set-arg>
+# Tagged app-name "OSD" so mako's config can give it a short timeout,
+# overriding the global "never auto-dismiss" default used for real
+# notifications (Slack, Telegram, etc).
+
+brightnessctl set "$1" > /dev/null
+percent=$(brightnessctl -m | cut -d',' -f4 | tr -d '%')
+
+# notify-send's -r only replaces a notification if it's a real previously
+# issued ID -- a made-up one is silently ignored and a new one is created.
+# Track the last ID in a state file so repeated presses replace in place
+# instead of stacking popups.
+ID_FILE="/tmp/brightness-osd.id"
+replace_args=()
+[ -f "$ID_FILE" ] && replace_args=(-r "$(cat "$ID_FILE")")
+
+new_id=$(notify-send -a "OSD" -p "${replace_args[@]}" -h "int:value:$percent" "Brightness" "${percent}%")
+echo "$new_id" > "$ID_FILE"
