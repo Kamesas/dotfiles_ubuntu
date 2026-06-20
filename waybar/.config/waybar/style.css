@@ -95,6 +95,15 @@ window#waybar {
     color: @subtext0;
 }
 
+#custom-notifications {
+    color: @red;
+    padding: 0 10px;
+}
+
+#custom-notifications.dnd {
+    color: @subtext0;
+}
+
 #tray {
     padding: 0 8px;
 }

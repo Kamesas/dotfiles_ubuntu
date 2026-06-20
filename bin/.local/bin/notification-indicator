@@ -1,0 +1,34 @@
+#!/bin/bash
+# Waybar module: shows a bell icon when mako has any active notifications,
+# or a muted-bell icon whenever do-not-disturb is on (Alt+d) -- so it's
+# never silently forgotten on during a call. Click to dismiss everything
+# and clear it.
+
+BELL=$(printf '\xef\x83\xb3')
+BELL_SLASH=$(printf '\xef\x87\xb6')
+
+dnd=0
+if makoctl mode 2>/dev/null | grep -qx "do-not-disturb"; then
+    dnd=1
+fi
+
+makoctl list -j 2>/dev/null | python3 -c "
+import json, sys
+
+dnd = $dnd
+bell = '$BELL'
+bell_slash = '$BELL_SLASH'
+
+data = json.load(sys.stdin)
+apps = sorted(set(n['app_name'] for n in data))
+
+if dnd:
+    tooltip = 'Do not disturb is ON'
+    if apps:
+        tooltip += ' -- missed: ' + ', '.join(apps)
+    print(json.dumps({'text': bell_slash, 'tooltip': tooltip, 'class': 'dnd'}))
+elif apps:
+    print(json.dumps({'text': bell, 'tooltip': 'Missed: ' + ', '.join(apps), 'class': 'has-notifications'}))
+else:
+    print(json.dumps({'text': '', 'tooltip': '', 'class': 'no-notifications'}))
+"

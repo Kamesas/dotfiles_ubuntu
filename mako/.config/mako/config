@@ -1,0 +1,16 @@
+# Notifications stay on screen until dismissed, so nothing sent while away
+# (lunch, etc.) is missed — apps can ask for their own shorter timeout
+# (Slack, Telegram, etc. usually do), ignore-timeout overrides that.
+default-timeout=0
+ignore-timeout=1
+
+# Waybar's notification-indicator module polls every 5s on its own, but this
+# makes a new notification show up on the bell instantly instead of waiting
+# on that timer.
+on-notify=exec pkill -SIGRTMIN+8 waybar
+
+# Do-not-disturb — toggled with Alt+d (screen sharing, etc). Notifications
+# stay queued (still counted by the Waybar bell) but no popup shows on
+# screen, so nothing leaks to whoever's watching.
+[mode=do-not-disturb]
+invisible=1

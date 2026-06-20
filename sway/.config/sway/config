@@ -46,6 +46,7 @@ input type:keyboard {
 ### Autostart
 exec copyq --start-server
 exec blueman-applet
+exec mako
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term
@@ -61,6 +62,7 @@ bindsym Alt+w exec ~/.local/bin/wezterm-dropdown
 bindsym Alt+u exec rofi -show drun
 bindsym Alt+f exec rofi -show window
 bindsym Alt+n exec ~/.local/bin/wifi-menu
+bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
 bindsym Print exec grim -g "$(slurp)" - | swappy -f -
 
 ### Keybindings — focus
