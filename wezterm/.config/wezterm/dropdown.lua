@@ -30,6 +30,12 @@ config.enable_tab_bar = false
 config.window_decorations = "NONE"
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 
+-- Without this, zooming the font (Ctrl+=/Ctrl+-) resizes the OS window itself
+-- to keep the same row/column count — fights Sway's one-time floating-size
+-- rule for this dropdown, since Sway only applies that rule when the window
+-- is first created, not on every resize after.
+config.adjust_window_size_when_changing_font_size = false
+
 -- Attach to the persistent dropdown tmux session
 config.default_prog = { "tmux", "new-session", "-As", "dropdown" }
 
