@@ -5,13 +5,33 @@
 
 WM_CLASS="kitty-dropdown"
 
+# "scratchpad show" toggles, but it shows the window back at its old
+# output/position, not the currently focused one. "move container to output
+# current" fixes the output (and un-hides it as a side effect), so visibility
+# has to be checked first to still get a real show/hide toggle.
+is_dropdown_visible() {
+    swaymsg -t get_tree | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+def walk(n):
+    if n.get('app_id') == '$WM_CLASS':
+        sys.exit(0 if n.get('visible') else 1)
+    for c in n.get('nodes', []) + n.get('floating_nodes', []):
+        walk(c)
+walk(data)
+sys.exit(1)
+"
+}
+
 if [ -n "$SWAYSOCK" ]; then
     # Only one dropdown on screen at a time — hide the other one first.
     swaymsg '[class="wezterm-dropdown"] move scratchpad' > /dev/null 2>&1
     if ! pgrep -f "kitty.*dropdown.conf" > /dev/null; then
         kitty --config ~/.config/kitty/dropdown.conf --class "$WM_CLASS" &
+    elif is_dropdown_visible; then
+        swaymsg "[app_id=\"$WM_CLASS\"] move scratchpad" > /dev/null
     else
-        swaymsg "[app_id=\"$WM_CLASS\"] scratchpad show" > /dev/null
+        swaymsg "[app_id=\"$WM_CLASS\"] move container to output current, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, focus" > /dev/null
     fi
     exit 0
 fi
