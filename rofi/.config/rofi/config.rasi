@@ -3,3 +3,5 @@ configuration {
     show-icons: true;
     font: "FiraCode Nerd Font 14";
 }
+
+@theme "/usr/share/rofi/themes/material.rasi"
