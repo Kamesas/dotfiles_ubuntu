@@ -37,10 +37,16 @@ desc=$(pactl list sources | awk -v RS="" -v FS="\n" -v target="$name" '
 }
 ')
 
-short=$desc
-if [ ${#short} -gt 18 ]; then
-    short="${short:0:17}…"
-fi
+case "$desc" in
+    "Internal Microphone") short="Int Mic" ;;
+    "Microphone")          short="Ext Mic" ;;
+    *)
+        short=$desc
+        if [ ${#short} -gt 18 ]; then
+            short="${short:0:17}…"
+        fi
+        ;;
+esac
 
 muted=0
 [[ "$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)" == *MUTED* ]] && muted=1
