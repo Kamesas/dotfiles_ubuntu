@@ -4,6 +4,8 @@ return {
     opts = {
       keymap = {
         preset = "default",
+        -- <C-space> is the tmux leader key, so C-x triggers completion manually instead
+        ["<C-x>"] = { "show", "show_documentation", "hide_documentation" },
       },
       completion = {
         list = {
