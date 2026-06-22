@@ -5,6 +5,12 @@
 
 IFACE=$(nmcli -t -f DEVICE,TYPE device | awk -F: '$2=="wifi"{print $1; exit}')
 
+# Force a fresh scan. Once connected, NetworkManager's background scan
+# interval can stretch to a day, so the cached list can miss a weak-signal
+# AP (e.g. a far 5GHz network) for a long time otherwise.
+nmcli device wifi rescan ifname "$IFACE" > /dev/null 2>&1
+sleep 2
+
 mapfile -t lines < <(nmcli -t -f SSID,SECURITY,SIGNAL device wifi list ifname "$IFACE" \
     | sed 's/\\:/\x01/g')
 
