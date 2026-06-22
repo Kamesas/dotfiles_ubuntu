@@ -1,3 +1,4 @@
 [Default]
 paint_mode=arrow
 transparent=true
+early_exit=true
