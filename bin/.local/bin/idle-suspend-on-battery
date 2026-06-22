@@ -1,0 +1,7 @@
+#!/bin/bash
+# Suspend on idle, but only when running on battery. Called by swayidle's
+# timeout command, which has no built-in way to check the power source.
+
+if [ "$(cat /sys/class/power_supply/AC/online)" = "0" ]; then
+    systemctl suspend
+fi
