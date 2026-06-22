@@ -14,11 +14,12 @@ set $base   #1e1e2e
 set $mantle #181825
 set $text   #cdd6f4
 set $blue   #89b4fa
+set $blue_dim #546994
 set $surface1 #45475a
 set $red    #f38ba8
 
 # Window colors:        border    background  text    indicator  child_border
-client.focused          $blue     $base       $text   $blue      $blue
+client.focused          $blue_dim $base       $text   $blue_dim  $blue_dim
 client.unfocused        $surface1 $base       $text   $surface1  $surface1
 client.focused_inactive $surface1 $base       $text   $surface1  $surface1
 client.urgent           $red      $base       $text   $red       $red
