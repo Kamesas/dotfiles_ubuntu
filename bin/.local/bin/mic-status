@@ -3,7 +3,8 @@
 # the source name — on combo-jack hardware (e.g. the T480) internal and
 # external mic are two ports of one source, so the source name alone
 # ("Built-in Audio Analog Stereo") never changes when you switch mics.
-# Click opens mic-menu to switch.
+# Also flags mute state, since muted vs unmuted otherwise looks identical
+# in the bar. Click opens mic-menu to switch.
 
 name=$(pactl get-default-source)
 
@@ -41,4 +42,11 @@ if [ ${#short} -gt 18 ]; then
     short="${short:0:17}…"
 fi
 
-printf '{"text":" %s","tooltip":"Microphone: %s"}\n' "$short" "$desc"
+muted=0
+[[ "$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)" == *MUTED* ]] && muted=1
+
+if [ "$muted" -eq 1 ]; then
+    printf '{"text":" %s muted","tooltip":"Microphone (muted): %s","class":"muted"}\n' "$short" "$desc"
+else
+    printf '{"text":" %s","tooltip":"Microphone: %s"}\n' "$short" "$desc"
+fi

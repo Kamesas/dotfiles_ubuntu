@@ -95,6 +95,15 @@ window#waybar {
     color: @subtext0;
 }
 
+#custom-mic {
+    color: @teal;
+    padding: 0 10px;
+}
+
+#custom-mic.muted {
+    color: @subtext0;
+}
+
 #custom-wezterm-dropdown,
 #custom-kitty-dropdown {
     color: @blue;

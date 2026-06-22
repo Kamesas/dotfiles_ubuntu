@@ -8,11 +8,15 @@
 # affects whichever one is currently active — no need to pick a mic here.
 
 wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ "$1"
-percent=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{printf "%d", $2 * 100}')
+vol_line=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
+percent=$(awk '{printf "%d", $2 * 100}' <<< "$vol_line")
+
+body="${percent}%"
+[[ "$vol_line" == *MUTED* ]] && body="${percent}% (muted)"
 
 ID_FILE="/tmp/mic-volume-osd.id"
 replace_args=()
 [ -f "$ID_FILE" ] && replace_args=(-r "$(cat "$ID_FILE")")
 
-new_id=$(notify-send -a "OSD" -p "${replace_args[@]}" -h "int:value:$percent" "Microphone Volume" "${percent}%")
+new_id=$(notify-send -a "OSD" -p "${replace_args[@]}" -h "int:value:$percent" "Microphone Volume" "$body")
 echo "$new_id" > "$ID_FILE"
