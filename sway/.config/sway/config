@@ -68,6 +68,7 @@ bindsym Alt+m exec ~/.local/bin/mic-menu
 bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
 bindsym Alt+p exec ~/.local/bin/clipboard-menu
 bindsym Alt+o exec ~/.local/bin/wallpaper-menu
+bindsym Alt+y exec ~/.local/bin/waybar-toggle
 bindsym Print exec grim -g "$(slurp)" - | swappy -f -
 
 ### Keybindings — focus

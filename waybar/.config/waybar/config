@@ -3,6 +3,7 @@
     "position": "top",
     "height": 28,
     "spacing": 4,
+    "ipc": true,
 
     "modules-left": ["sway/workspaces", "custom/wezterm-dropdown", "custom/kitty-dropdown", "sway/window"],
     "modules-center": ["clock"],

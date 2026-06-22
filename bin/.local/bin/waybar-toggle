@@ -1,0 +1,13 @@
+#!/bin/bash
+# Toggle Waybar between dock (always shown) and invisible (always hidden).
+# Sway's own "hide" mode auto-reveals on the $mod key, which fires constantly
+# during normal window-management use — invisible skips that, so the bar
+# stays gone until toggled back.
+
+mode=$(swaymsg -t get_bar_config bar-0 | python3 -c 'import json,sys; print(json.load(sys.stdin)["mode"])')
+
+if [ "$mode" = "invisible" ]; then
+    swaymsg bar bar-0 mode dock
+else
+    swaymsg bar bar-0 mode invisible
+fi
