@@ -1,0 +1,44 @@
+#!/bin/bash
+# Waybar module: shows the active port of the default microphone, not just
+# the source name — on combo-jack hardware (e.g. the T480) internal and
+# external mic are two ports of one source, so the source name alone
+# ("Built-in Audio Analog Stereo") never changes when you switch mics.
+# Click opens mic-menu to switch.
+
+name=$(pactl get-default-source)
+
+desc=$(pactl list sources | awk -v RS="" -v FS="\n" -v target="$name" '
+{
+    src_name=""; src_desc=""; active=""; n=0; delete pname; delete pdesc
+    for (i=1; i<=NF; i++) {
+        line=$i
+        if (line ~ /^[ \t]*Name:/) { l=line; sub(/^[ \t]*Name:[ \t]*/,"",l); src_name=l }
+        else if (line ~ /^[ \t]*Description:/) { l=line; sub(/^[ \t]*Description:[ \t]*/,"",l); src_desc=l }
+        else if (line ~ /^[ \t]*Active Port:/) { l=line; sub(/^[ \t]*Active Port:[ \t]*/,"",l); active=l }
+        else if (line ~ /^[ \t]+[^ \t]+: .*\(type:/) {
+            l=line
+            sub(/^[ \t]+/,"",l)
+            split(l, parts, /: /)
+            n++
+            pname[n]=parts[1]
+            d=l
+            sub(/^[^:]+: /,"",d)
+            sub(/ \(type:.*/,"",d)
+            pdesc[n]=d
+        }
+    }
+    if (src_name != target) next
+    for (k=1; k<=n; k++) {
+        if (pname[k] == active) { print pdesc[k]; exit }
+    }
+    print src_desc
+    exit
+}
+')
+
+short=$desc
+if [ ${#short} -gt 18 ]; then
+    short="${short:0:17}…"
+fi
+
+printf '{"text":" %s","tooltip":"Microphone: %s"}\n' "$short" "$desc"

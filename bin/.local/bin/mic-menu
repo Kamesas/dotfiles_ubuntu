@@ -1,0 +1,72 @@
+#!/bin/bash
+# Rofi menu to switch the active microphone.
+#
+# Lists every port on every real (non-monitor) source — this covers both
+# genuinely separate hardware (e.g. a USB mic, its own source) and
+# combo-jack ports that share one source, like the T480's internal vs
+# 3.5mm external mic, which the kernel exposes as two ports of the same
+# "Built-in Audio Analog Stereo" source and auto-switches by jack-sense.
+
+current_source=$(pactl get-default-source)
+current_port=$(pactl list sources | awk -v RS="" -v FS="\n" -v target="$current_source" '
+{
+    name=""; active=""
+    for (i=1; i<=NF; i++) {
+        if ($i ~ /^[ \t]*Name:/) { l=$i; sub(/^[ \t]*Name:[ \t]*/,"",l); name=l }
+        else if ($i ~ /^[ \t]*Active Port:/) { l=$i; sub(/^[ \t]*Active Port:[ \t]*/,"",l); active=l }
+    }
+    if (name == target) { print active; exit }
+}
+')
+
+mapfile -t entries < <(pactl list sources | awk -v RS="" -v FS="\n" '
+{
+    name=""; desc=""; n=0; delete pname; delete pdesc
+    for (i=1; i<=NF; i++) {
+        line=$i
+        if (line ~ /^[ \t]*Name:/) { l=line; sub(/^[ \t]*Name:[ \t]*/,"",l); name=l }
+        else if (line ~ /^[ \t]*Description:/) { l=line; sub(/^[ \t]*Description:[ \t]*/,"",l); desc=l }
+        else if (line ~ /^[ \t]+[^ \t]+: .*\(type:/) {
+            l=line
+            sub(/^[ \t]+/,"",l)
+            split(l, parts, /: /)
+            n++
+            pname[n]=parts[1]
+            d=l
+            sub(/^[^:]+: /,"",d)
+            sub(/ \(type:.*/,"",d)
+            pdesc[n]=d
+        }
+    }
+    if (name == "" || name ~ /\.monitor$/) next
+    if (n == 0) {
+        print name "\x01" "" "\x01" desc
+    } else {
+        for (k=1; k<=n; k++) print name "\x01" pname[k] "\x01" pdesc[k]
+    }
+}
+')
+
+menu=""
+declare -A label_to_src label_to_port
+for entry in "${entries[@]}"; do
+    IFS=$'\x01' read -r src port desc <<< "$entry"
+    mark=" "
+    [ "$src" = "$current_source" ] && [ "$port" = "$current_port" ] && mark="*"
+    label="$mark $desc"
+    label_to_src["$label"]=$src
+    label_to_port["$label"]=$port
+    menu+="$label"$'\n'
+done
+
+chosen=$(printf '%s' "$menu" | rofi -dmenu -p "Microphone" -i)
+[ -z "$chosen" ] && exit 0
+
+src=${label_to_src[$chosen]}
+port=${label_to_port[$chosen]}
+[ -z "$src" ] && exit 0
+
+pactl set-default-source "$src"
+[ -n "$port" ] && pactl set-source-port "$src" "$port"
+pkill -SIGRTMIN+9 waybar
+notify-send "Microphone" "Switched to ${chosen:2}"
