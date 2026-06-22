@@ -65,6 +65,8 @@
         "signal": 9,
         "return-type": "json",
         "on-click": "~/.local/bin/mic-menu",
+        "on-scroll-up": "~/.local/bin/mic-volume-osd 5%+",
+        "on-scroll-down": "~/.local/bin/mic-volume-osd 5%-",
         "tooltip": true
     },
 

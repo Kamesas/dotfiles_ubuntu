@@ -1,0 +1,18 @@
+#!/bin/bash
+# Mic volume OSD popup. Usage: mic-volume-osd <wpctl-set-volume-arg>
+# Same pattern as brightness-osd: short-timeout notification, replaced in
+# place instead of stacking on repeated scroll events.
+#
+# There's one software gain knob shared by both the internal and external
+# mic (same PipeWire source node, just rerouted by jack-sense), so this
+# affects whichever one is currently active — no need to pick a mic here.
+
+wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ "$1"
+percent=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{printf "%d", $2 * 100}')
+
+ID_FILE="/tmp/mic-volume-osd.id"
+replace_args=()
+[ -f "$ID_FILE" ] && replace_args=(-r "$(cat "$ID_FILE")")
+
+new_id=$(notify-send -a "OSD" -p "${replace_args[@]}" -h "int:value:$percent" "Microphone Volume" "${percent}%")
+echo "$new_id" > "$ID_FILE"
