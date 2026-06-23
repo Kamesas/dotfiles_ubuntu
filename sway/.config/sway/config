@@ -41,6 +41,13 @@ input type:keyboard {
     xkb_layout us,ua
 }
 
+### Output layout — external stacked above the laptop, laptop centered below.
+# 320 = (2560 - 1920) / 2, so the narrower laptop sits centred under the wider
+# external and the cursor crosses cleanly in the middle. External matched by
+# make/model/serial so it survives different HDMI/DP ports.
+output "Lenovo Group Limited R27qe UP3359FZ" position 0 0
+output eDP-1 position 320 1440
+
 ### Autostart
 exec wl-paste --watch cliphist store
 exec blueman-applet
@@ -96,6 +103,22 @@ bindsym $mod+l workspace next_on_output
 ### Keybindings — move window to adjacent workspace and follow
 bindsym $mod+j move container to workspace next_on_output; workspace next_on_output
 bindsym $mod+k move container to workspace prev_on_output; workspace prev_on_output
+
+### Workspace-to-output assignment
+# Pin number ranges to each monitor so numbering stays fixed instead of sharing
+# one global pool: external 1–5, laptop 6–10. The external is matched by
+# make/model/serial, so it keeps its range across different HDMI/DP ports.
+# When the external is unplugged, all workspaces fall back to the laptop.
+workspace 1 output "Lenovo Group Limited R27qe UP3359FZ"
+workspace 2 output "Lenovo Group Limited R27qe UP3359FZ"
+workspace 3 output "Lenovo Group Limited R27qe UP3359FZ"
+workspace 4 output "Lenovo Group Limited R27qe UP3359FZ"
+workspace 5 output "Lenovo Group Limited R27qe UP3359FZ"
+workspace 6 output eDP-1
+workspace 7 output eDP-1
+workspace 8 output eDP-1
+workspace 9 output eDP-1
+workspace 10 output eDP-1
 
 ### Keybindings — workspaces
 bindsym $mod+1 workspace number 1
