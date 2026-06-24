@@ -97,12 +97,14 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 ### Keybindings — switch workspace (vim-style: h = prev, l = next)
-bindsym $mod+h workspace prev_on_output
-bindsym $mod+l workspace next_on_output
+# ws-relative steps by number and creates the next workspace on demand, so "next"
+# past the last one opens a fresh one instead of wrapping (like GNOME).
+bindsym $mod+h exec ~/.local/bin/ws-relative prev
+bindsym $mod+l exec ~/.local/bin/ws-relative next
 
 ### Keybindings — move window to adjacent workspace and follow
-bindsym $mod+j move container to workspace next_on_output; workspace next_on_output
-bindsym $mod+k move container to workspace prev_on_output; workspace prev_on_output
+bindsym $mod+j exec ~/.local/bin/ws-relative next move
+bindsym $mod+k exec ~/.local/bin/ws-relative prev move
 
 ### Workspace-to-output assignment
 # Pin number ranges to each monitor so numbering stays fixed instead of sharing

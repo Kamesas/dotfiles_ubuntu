@@ -1,0 +1,19 @@
+#!/bin/sh
+# Switch to the next/prev workspace by number, creating the next one on demand
+# (like GNOME's dynamic workspaces). Sway's next_on_output/prev_on_output only
+# cycle workspaces that already exist, so they can never make a fresh one; the
+# "number" form does create the target if it's missing.
+#   $1 = next | prev
+#   $2 = move   (optional: carry the focused window along, then follow it)
+
+cur=$(swaymsg -t get_workspaces | python3 -c \
+  'import json,sys; print(next(w["num"] for w in json.load(sys.stdin) if w["focused"]))')
+
+case "$1" in
+    next) target=$((cur + 1)) ;;
+    prev) [ "$cur" -le 1 ] && exit 0; target=$((cur - 1)) ;;
+    *) exit 1 ;;
+esac
+
+[ "$2" = move ] && swaymsg move container to workspace number "$target"
+swaymsg workspace number "$target"
