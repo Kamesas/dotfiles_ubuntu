@@ -40,9 +40,9 @@ mapfile -t entries < <(pactl list sources | awk -v RS="" -v FS="\n" '
     }
     if (name == "" || name ~ /\.monitor$/) next
     if (n == 0) {
-        print name "\x01" "" "\x01" desc
+        print name "\x01" "" "\x01" "" "\x01" desc
     } else {
-        for (k=1; k<=n; k++) print name "\x01" pname[k] "\x01" pdesc[k]
+        for (k=1; k<=n; k++) print name "\x01" pname[k] "\x01" pdesc[k] "\x01" desc
     }
 }
 ')
@@ -50,10 +50,15 @@ mapfile -t entries < <(pactl list sources | awk -v RS="" -v FS="\n" '
 menu=""
 declare -A label_to_src label_to_port
 for entry in "${entries[@]}"; do
-    IFS=$'\x01' read -r src port desc <<< "$entry"
+    IFS=$'\x01' read -r src port pdesc sdesc <<< "$entry"
     mark=" "
     [ "$src" = "$current_source" ] && [ "$port" = "$current_port" ] && mark="*"
-    label="$mark $desc"
+    # A port description like "Microphone" repeats across devices (laptop
+    # jack vs dock jack). Append the device so each entry is distinct; the
+    # " Analog Stereo" suffix is noise, drop it.
+    dev="${sdesc% Analog Stereo}"
+    if [ -n "$pdesc" ]; then text="$pdesc · $dev"; else text="$sdesc"; fi
+    label="$mark $text"
     label_to_src["$label"]=$src
     label_to_port["$label"]=$port
     menu+="$label"$'\n'

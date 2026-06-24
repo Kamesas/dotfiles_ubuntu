@@ -1,0 +1,73 @@
+#!/bin/bash
+# Rofi menu to switch the active audio output (sink).
+#
+# Twin of mic-menu, but for output. Lists every real sink — laptop
+# speakers, the ThinkPad dock's USB audio, Bluetooth headphones — lets
+# you pick one, makes it the default, and moves anything already playing
+# to it. Plugging the dock in makes PipeWire auto-switch output to it;
+# this is how you switch back.
+#
+# For a Bluetooth sink it also forces the A2DP (music) profile. The Buds
+# can sit in the HSP/HFP headset profile (mono, 16 kHz) when an app grabs
+# the mic — picking them here always gives stereo music quality.
+
+current_sink=$(pactl get-default-sink)
+
+mapfile -t entries < <(pactl list sinks | awk -v RS="" -v FS="\n" '
+{
+    name=""; desc=""
+    for (i=1; i<=NF; i++) {
+        line=$i
+        if (line ~ /^[ \t]*Name:/) { l=line; sub(/^[ \t]*Name:[ \t]*/,"",l); name=l }
+        else if (line ~ /^[ \t]*Description:/) { l=line; sub(/^[ \t]*Description:[ \t]*/,"",l); desc=l }
+    }
+    if (name == "") next
+    print name "\x01" desc
+}
+')
+
+menu=""
+declare -A label_to_sink
+for entry in "${entries[@]}"; do
+    IFS=$'\x01' read -r sink desc <<< "$entry"
+    mark=" "
+    [ "$sink" = "$current_sink" ] && mark="*"
+    label="$mark $desc"
+    label_to_sink["$label"]=$sink
+    menu+="$label"$'\n'
+done
+
+chosen=$(printf '%s' "$menu" | rofi -dmenu -p "Output" -i)
+[ -z "$chosen" ] && exit 0
+
+sink=${label_to_sink[$chosen]}
+[ -z "$sink" ] && exit 0
+
+# Bluetooth sink: make sure the card is on an A2DP profile, not headset mono.
+if [[ "$sink" =~ ^bluez_output\.([^.]+)\. ]]; then
+    card="bluez_card.${BASH_REMATCH[1]}"
+    active=$(pactl list cards | awk -v RS="" -v FS="\n" -v target="$card" '
+        { for (i=1;i<=NF;i++) if ($i ~ /^[ \t]*Name:[ \t]*'"$card"'$/) { found=1 }
+          if (found) { for (i=1;i<=NF;i++) if ($i ~ /Active Profile:/) { l=$i; sub(/.*Active Profile:[ \t]*/,"",l); print l; exit } } }')
+    if [[ "$active" != a2dp* ]]; then
+        # Prefer AAC, fall back to the first available A2DP profile.
+        profile=$(pactl list cards | awk -v RS="" -v FS="\n" -v card="$card" '
+            $0 ~ "Name:[ \t]*" card "$" {
+                for (i=1;i<=NF;i++) {
+                    if ($i ~ /^[ \t]+a2dp-sink.*available: yes/) {
+                        l=$i; sub(/^[ \t]+/,"",l); sub(/:.*/,"",l)
+                        if (l=="a2dp-sink") aac=l
+                        else if (first=="") first=l
+                    }
+                }
+                print (aac!="" ? aac : first); exit
+            }')
+        [ -n "$profile" ] && pactl set-card-profile "$card" "$profile" && sleep 1
+    fi
+fi
+
+pactl set-default-sink "$sink"
+for i in $(pactl list short sink-inputs | awk '{print $1}'); do
+    pactl move-sink-input "$i" "$sink" 2>/dev/null
+done
+notify-send "Output" "Switched to ${chosen:2}"

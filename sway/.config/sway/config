@@ -72,6 +72,7 @@ bindsym Alt+u exec rofi -show drun
 bindsym Alt+f exec rofi -show window
 bindsym Alt+n exec ~/.local/bin/wifi-menu
 bindsym Alt+m exec ~/.local/bin/mic-menu
+bindsym Alt+a exec ~/.local/bin/sink-menu
 bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
 bindsym Alt+p exec ~/.local/bin/clipboard-menu
 bindsym Alt+o exec ~/.local/bin/wallpaper-menu
