@@ -1,0 +1,82 @@
+#!/bin/bash
+# Rofi menu to pick the display layout. Same idea as mic-menu / sink-menu.
+#
+# Three screens hang off the dock at once: the laptop's built-in panel, the
+# desk monitor (Lenovo R27qe), and the projector (it reports itself as
+# "AML TV"). This menu turns the wanted ones on, the rest off, and positions
+# them — so switching desk work vs the evening projector needs no cables.
+#
+# Screens are matched by model, not by connector name, so the menu still
+# works when the dock hands out a different DP-N after a re-dock.
+
+# Connector name of the output whose model contains $1 (empty if not plugged).
+name_by_model() {
+    swaymsg -t get_outputs -r | python3 -c "import sys,json
+m=sys.argv[1].lower()
+for o in json.load(sys.stdin):
+    if m in (o.get('model') or '').lower(): print(o['name']); break" "$1"
+}
+
+# Laptop panel: match the eDP connector rather than a model string.
+laptop=$(swaymsg -t get_outputs -r | python3 -c "import sys,json
+for o in json.load(sys.stdin):
+    if o['name'].startswith('eDP'): print(o['name']); break")
+monitor=$(name_by_model "R27qe")
+projector=$(name_by_model "AML TV")
+
+# Build the list — skip a screen's entries if it isn't plugged in.
+entries=()
+[ -n "$monitor" ]   && entries+=("Monitor only" "Monitor + laptop")
+[ -n "$projector" ] && entries+=("Projector only" "Projector + laptop (mirror)")
+[ -n "$monitor" ] && [ -n "$projector" ] && entries+=("Monitor + laptop + projector (mirror)")
+entries+=("Laptop only")
+
+chosen=$(printf '%s\n' "${entries[@]}" | rofi -dmenu -p "Display" -i)
+[ -z "$chosen" ] && exit 0
+
+# A mirror may be left running from an earlier pick — stop it. Only the
+# mirror layout below starts it again.
+pkill -x wl-mirror 2>/dev/null
+
+# Enable + place the screens this layout needs. Positions: the active
+# external sits at 0,0 and the laptop is centred below it — laptop is 1920
+# wide, so x = (external_width - 1920) / 2 (320 under the 2560 monitor, 0
+# under the 1920 projector); y = external height (1440 monitor, 1080 projector).
+on=""
+case "$chosen" in
+    "Monitor only")
+        on="$monitor"
+        swaymsg output "$monitor" enable position 0 0 ;;
+    "Monitor + laptop")
+        on="$monitor $laptop"
+        swaymsg output "$monitor" enable position 0 0
+        swaymsg output "$laptop" enable position 320 1440 ;;
+    "Projector only")
+        on="$projector"
+        swaymsg output "$projector" enable position 0 0 ;;
+    "Projector + laptop (mirror)")
+        on="$projector $laptop"
+        swaymsg output "$laptop" enable position 0 0
+        swaymsg output "$projector" enable position 1920 0
+        # Clone the laptop onto the projector, fullscreen. Both screens are
+        # 1080p, so it lines up exactly. wl-mirror keeps running until the
+        # next pick kills it (see pkill above).
+        setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/dev/null 2>&1 ;;
+    "Monitor + laptop + projector (mirror)")
+        # Monitor is its own separate screen; the projector mirrors the laptop.
+        on="$monitor $laptop $projector"
+        swaymsg output "$monitor" enable position 0 0
+        swaymsg output "$laptop" enable position 320 1440
+        swaymsg output "$projector" enable position 2560 0
+        setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/dev/null 2>&1 ;;
+    "Laptop only")
+        on="$laptop"
+        swaymsg output "$laptop" enable position 0 0 ;;
+esac
+
+# Turn off any screen that isn't part of the chosen layout.
+for out in $laptop $monitor $projector; do
+    case " $on " in *" $out "*) ;; *) swaymsg output "$out" disable ;; esac
+done
+
+notify-send "Display" "$chosen"
