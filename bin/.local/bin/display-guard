@@ -1,0 +1,25 @@
+#!/bin/bash
+# Safety net for undocking. If an output change leaves no active screen — e.g.
+# you undock while in a monitor-only layout, so the external is gone and the
+# laptop panel is off — turn the laptop panel back on. Without this you get a
+# black laptop, and Rofi has nowhere to show, so Alt+s can't rescue you.
+#
+# Started once from sway autostart; listens for output add/remove events.
+
+ensure_screen() {
+    swaymsg -t get_outputs -r | python3 -c '
+import sys, json, subprocess
+outs = json.load(sys.stdin)
+if any(o.get("active") for o in outs):
+    sys.exit(0)              # a screen is already on, nothing to do
+for o in outs:               # all dark — bring the laptop panel back
+    if o["name"].startswith("eDP"):
+        subprocess.run(["swaymsg", "output", o["name"], "enable", "position", "0", "0"])
+        break
+'
+}
+
+ensure_screen                                  # check once at startup
+swaymsg -t subscribe -m '["output"]' | while read -r _; do
+    ensure_screen                              # and on every output change
+done

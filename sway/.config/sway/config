@@ -55,6 +55,7 @@ exec mako
 exec /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
 exec awww-daemon
 exec swayidle -w timeout 1200 ~/.local/bin/idle-suspend-on-battery
+exec ~/.local/bin/display-guard
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term
