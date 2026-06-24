@@ -1,0 +1,46 @@
+#!/bin/bash
+# Low-battery warnings + safety suspend. Sway has no power daemon, so nothing
+# warns you the battery is dying — this fills that gap. Polls the combined
+# battery (UPower's DisplayDevice, which sums the T480's two cells) every
+# minute and, while discharging:
+#   - 20%  normal notification
+#   - 10%  urgent, sticky notification
+#   -  5%  urgent notification, then suspend so a hard power cut can't eat work
+# Each level fires once; plugging in re-arms them.
+
+LOW=20
+CRITICAL=10
+SUSPEND=5
+DEV=/org/freedesktop/UPower/devices/DisplayDevice
+
+warned_low=0
+warned_crit=0
+
+read_battery() {  # sets $pct (integer) and $state
+    local info
+    info=$(upower -i "$DEV")
+    pct=$(printf '%s\n' "$info" | awk '/percentage:/ {gsub("%","",$2); print int($2)}')
+    state=$(printf '%s\n' "$info" | awk '/state:/ {print $2}')
+}
+
+while true; do
+    read_battery
+    if [ "$state" = "discharging" ] && [ -n "$pct" ]; then
+        if [ "$pct" -le "$SUSPEND" ]; then
+            notify-send -u critical "Battery critical" "${pct}% — suspending to save your work"
+            sleep 5
+            systemctl suspend
+        elif [ "$pct" -le "$CRITICAL" ] && [ "$warned_crit" = 0 ]; then
+            notify-send -u critical "Battery very low" "${pct}% left — plug in now"
+            warned_crit=1
+        elif [ "$pct" -le "$LOW" ] && [ "$warned_low" = 0 ]; then
+            notify-send -u normal "Battery low" "${pct}% left"
+            warned_low=1
+        fi
+    else
+        # charging / full / not discharging — re-arm for the next discharge
+        warned_low=0
+        warned_crit=0
+    fi
+    sleep 60
+done
