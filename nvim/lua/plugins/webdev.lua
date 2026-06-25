@@ -121,6 +121,11 @@ return {
         )
       end,
       settings = {
+        -- Prefer the path alias (@/...) over relative imports on auto-import.
+        -- Projects without an alias fall back to relative paths on their own.
+        tsserver_file_preferences = {
+          importModuleSpecifierPreference = "non-relative",
+        },
         -- Disable inlay hints (keep them off)
         typescript = {
           inlayHints = {
