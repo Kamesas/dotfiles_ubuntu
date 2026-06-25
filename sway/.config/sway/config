@@ -89,10 +89,10 @@ bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
-bindsym Alt+h focus left
-bindsym Alt+j focus down
-bindsym Alt+k focus up
-bindsym Alt+l focus right
+bindsym $mod+Alt+h focus left
+bindsym $mod+Alt+j focus down
+bindsym $mod+Alt+k focus up
+bindsym $mod+Alt+l focus right
 
 ### Keybindings — move window within workspace
 bindsym $mod+Shift+Left move left
