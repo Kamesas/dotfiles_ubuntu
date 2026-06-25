@@ -101,6 +101,8 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 # Rust environment
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+# System cargo (pacman) has no .cargo/env, so add the install bin dir ourselves.
+[ -d "$HOME/.cargo/bin" ] && case ":$PATH:" in *":$HOME/.cargo/bin:"*) ;; *) export PATH="$HOME/.cargo/bin:$PATH" ;; esac
 
 # ============================================================================
 # KEY BINDINGS
