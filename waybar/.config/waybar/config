@@ -7,7 +7,7 @@
 
     "modules-left": ["sway/workspaces", "custom/wezterm-dropdown", "custom/kitty-dropdown", "sway/window"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "memory", "custom/mic", "pulseaudio", "network", "sway/language", "battery", "custom/notifications", "tray", "custom/power"],
+    "modules-right": ["cpu", "custom/memory", "custom/mic", "pulseaudio", "network", "sway/language", "battery", "custom/notifications", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -29,9 +29,11 @@
         "interval": 2
     },
 
-    "memory": {
-        "format": " {used:0.1f}/{total:0.1f}GB",
-        "interval": 5
+    "custom/memory": {
+        "exec": "~/.local/bin/mem-status",
+        "interval": 5,
+        "return-type": "json",
+        "tooltip": true
     },
 
     "battery": {

@@ -113,3 +113,4 @@ bindkey '^[[3;5~' kill-word
 
 # Added by Antigravity CLI installer
 export PATH="/home/alex/.local/bin:$PATH"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

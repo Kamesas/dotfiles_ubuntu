@@ -14,7 +14,13 @@ return {
     -- markdown, and powers image previews in the picker. Uses the terminal
     -- graphics protocol (WezTerm/Kitty). Inside tmux this needs
     -- `allow-passthrough on` (set in ~/.config/tmux/tmux.conf).
-    image = { enabled = true },
+    image = {
+      enabled = true,
+      -- Don't pop up a preview just because the cursor moved over an image
+      -- reference (e.g. <Image src="..."> in jsx/tsx). Without this it
+      -- shows a floating preview on every hover.
+      doc = { float = false },
+    },
     picker = {
       -- Start every picker with the preview pane hidden. This stops images
       -- (and other files) from being previewed as you move the cursor.
@@ -22,7 +28,8 @@ return {
       -- actually want it.
       layout = { hidden = { "preview" } },
       sources = {
-        -- explorer = { hidden = true, ignored = true },
+        -- Show dotfiles and gitignored entries in the file tree (e.g. notes/).
+        explorer = { hidden = true, ignored = true },
         -- files = { hidden = true, ignored = true },
         grep = { hidden = true, ignored = true },
       },

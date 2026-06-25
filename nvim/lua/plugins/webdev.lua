@@ -63,7 +63,7 @@ return {
         ]]
         tailwindcss = {
           on_attach = function(_, bufnr)
-            vim.lsp.document_color.enable(false, bufnr)
+            vim.lsp.document_color.enable(false, { bufnr = bufnr })
           end,
           settings = {
             tailwindCSS = {

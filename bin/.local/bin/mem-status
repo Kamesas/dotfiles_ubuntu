@@ -1,0 +1,27 @@
+#!/bin/bash
+# Waybar module: memory usage. The built-in "memory" module's {used} counts
+# most file cache as used, which inflates the number compared to btop (which
+# splits Used/Cached/Available like /proc/meminfo actually does) — this
+# replicates btop's breakdown in the tooltip instead.
+
+read -r total free avail buffers cached < <(awk '
+/^MemTotal:/     { total=$2 }
+/^MemFree:/      { free=$2 }
+/^MemAvailable:/ { avail=$2 }
+/^Buffers:/      { buffers=$2 }
+/^Cached:/       { cached=$2 }
+END { print total, free, avail, buffers, cached }
+' /proc/meminfo)
+
+to_gib() { awk -v kb="$1" 'BEGIN { printf "%.1f", kb / 1048576 }'; }
+
+used=$(( total - free - buffers - cached ))
+cache_total=$(( buffers + cached ))
+
+total_gib=$(to_gib "$total")
+used_gib=$(to_gib "$used")
+avail_gib=$(to_gib "$avail")
+cache_gib=$(to_gib "$cache_total")
+
+printf '{"text":"\xef\x83\x89 %s/%sGB","tooltip":"Used: %sGB\\nCached: %sGB\\nAvailable: %sGB\\nTotal: %sGB"}\n' \
+    "$used_gib" "$total_gib" "$used_gib" "$cache_gib" "$avail_gib" "$total_gib"
