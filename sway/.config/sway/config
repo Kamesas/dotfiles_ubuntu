@@ -80,7 +80,7 @@ bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
 bindsym Alt+p exec ~/.local/bin/clipboard-menu
 bindsym Alt+o exec ~/.local/bin/wallpaper-menu
 bindsym Alt+y exec ~/.local/bin/waybar-toggle
-bindsym Print exec grim -g "$(slurp)" - | swappy -f -
+bindsym Print exec wayfreeze --after-freeze-cmd 'grim -g "$(slurp)" /tmp/screenshot.png; pkill wayfreeze; swappy -f /tmp/screenshot.png'
 
 ### Keybindings — focus
 bindsym $mod+Shift+h focus left
