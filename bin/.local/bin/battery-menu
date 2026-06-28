@@ -1,0 +1,53 @@
+#!/bin/bash
+# Rofi menu to pick the battery charge profile (TLP thresholds).
+#
+# Switches between protecting the battery (cycle 40-80) and charging full
+# before unplugging. The actual threshold change needs root, so this calls
+# the small helper /usr/local/bin/battery-charge-profile through sudo (a
+# NOPASSWD sudoers rule limits sudo to exactly that command). The helper
+# writes a TLP drop-in and runs `tlp start`, so the choice survives reboot.
+#
+# Profiles:
+#   longevity  40-80   desk default, least battery wear
+#   top        79-80   charge to 80 now and hold
+#   full       95-100  charge to 100 now, for trips
+
+conf=/etc/tlp.d/01-charge-profile.conf
+helper=/usr/local/bin/battery-charge-profile
+
+# Which profile is active now, read from the drop-in (default: longevity).
+start=$(awk -F= '/^START_CHARGE_THRESH_BAT0/{print $2}' "$conf" 2>/dev/null)
+stop=$(awk -F= '/^STOP_CHARGE_THRESH_BAT0/{print $2}' "$conf" 2>/dev/null)
+case "$start/$stop" in
+    79/80)  active=top ;;
+    95/100) active=full ;;
+    *)      active=longevity ;;
+esac
+
+# Current charge of the internal battery, just for the prompt label.
+cap=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null)
+
+declare -A id=(
+    ["Longevity  40–80  (desk)"]=longevity
+    ["Top up now  → 80"]=top
+    ["Full  → 100  (travel)"]=full
+)
+order=( "Longevity  40–80  (desk)" "Top up now  → 80" "Full  → 100  (travel)" )
+
+menu=""
+for label in "${order[@]}"; do
+    mark=" "
+    [ "${id[$label]}" = "$active" ] && mark="*"
+    menu+="$mark $label"$'\n'
+done
+
+chosen=$(printf '%s' "$menu" | rofi -dmenu -p "Charge ${cap}%" -i)
+[ -z "$chosen" ] && exit 0
+
+# Drop the 2-char mark prefix ("* " or "  ").
+profile=${id[${chosen:2}]}
+[ -z "$profile" ] && exit 0
+
+sudo "$helper" "$profile"
+
+command -v notify-send >/dev/null && notify-send "Battery charge" "Profile set: $profile"
