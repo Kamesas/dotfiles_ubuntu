@@ -1,0 +1,11 @@
+#!/bin/bash
+# Alt+f window switcher.
+# Runs rofi's window picker, then hides the dropdown terminals so the chosen
+# window isn't left covered by a full-screen dropdown. Only hides after a real
+# pick — rofi exits non-zero on Escape, so a cancel leaves the dropdown alone.
+# Moving an already-hidden dropdown to scratchpad is a no-op, so both are safe
+# to send regardless of which (if any) was showing.
+
+rofi -show window || exit 0
+
+swaymsg '[app_id="kitty-dropdown"] move scratchpad; [class="wezterm-dropdown"] move scratchpad' > /dev/null 2>&1

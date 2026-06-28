@@ -9,6 +9,9 @@ set $right l
 set $term kitty
 set $menu rofi -show drun
 
+# New windows stack top/bottom instead of side by side.
+default_orientation vertical
+
 ### Catppuccin Mocha colors
 set $base   #1e1e2e
 set $mantle #181825
@@ -71,7 +74,7 @@ floating_modifier $mod normal
 bindsym Alt+t exec ~/.local/bin/kitty-dropdown
 bindsym Alt+w exec ~/.local/bin/wezterm-dropdown
 bindsym Alt+u exec rofi -show drun
-bindsym Alt+f exec rofi -show window
+bindsym Alt+f exec ~/.local/bin/window-switch
 bindsym Alt+n exec ~/.local/bin/wifi-menu
 bindsym Alt+m exec ~/.local/bin/mic-menu
 bindsym Alt+a exec ~/.local/bin/sink-menu
