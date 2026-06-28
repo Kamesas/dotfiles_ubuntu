@@ -7,7 +7,7 @@
 
     "modules-left": ["sway/workspaces", "custom/wezterm-dropdown", "custom/kitty-dropdown", "sway/window"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "custom/memory", "custom/mic", "pulseaudio", "network", "sway/language", "battery", "custom/notifications", "tray", "custom/power"],
+    "modules-right": ["cpu", "custom/memory", "custom/mic", "pulseaudio", "network", "sway/language", "battery#bat0", "battery#bat1", "custom/notifications", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -36,11 +36,21 @@
         "tooltip": true
     },
 
-    "battery": {
+    "battery#bat0": {
+        "bat": "BAT0",
         "states": { "warning": 30, "critical": 15 },
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
+        "format": "{icon} {capacity}/",
+        "format-charging": " {capacity}/",
+        "tooltip-format": "Internal BAT0: {capacity}%",
         "format-icons": ["", "", "", "", ""]
+    },
+
+    "battery#bat1": {
+        "bat": "BAT1",
+        "states": { "warning": 30, "critical": 15 },
+        "format": "{capacity}%",
+        "format-charging": " {capacity}%",
+        "tooltip-format": "External pack BAT1: {capacity}%"
     },
 
     "network": {

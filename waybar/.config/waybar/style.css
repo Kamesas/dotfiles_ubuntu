@@ -62,6 +62,11 @@ window#waybar {
 #battery.warning { color: @yellow; }
 #battery.critical { color: @red; }
 
+/* Two battery modules shown as one block: BAT0/BAT1. Drop the inner
+   padding so they touch and read as "79/42%". */
+#battery.bat0 { padding-right: 0; }
+#battery.bat1 { padding-left: 0; }
+
 #cpu {
     color: @mauve;
     padding: 0 10px;
