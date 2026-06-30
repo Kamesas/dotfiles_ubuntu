@@ -2,6 +2,10 @@ configuration {
     modi: "drun,run,window";
     show-icons: true;
     font: "FiraCode Nerd Font 14";
+    // Match typed text against the app's name/keywords only, not its command line.
+    // Default includes "exec", which made typing "steam" match game shortcuts
+    // whose command is "steam steam://rungameid/...".
+    drun-match-fields: "name,generic,keywords";
 }
 
 @theme "/usr/share/rofi/themes/material.rasi"
