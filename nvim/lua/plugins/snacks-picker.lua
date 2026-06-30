@@ -29,7 +29,7 @@ return {
       layout = { hidden = { "preview" } },
       sources = {
         -- Show dotfiles and gitignored entries in the file tree (e.g. notes/).
-        explorer = { hidden = true, ignored = true },
+        explorer = { hidden = false, ignored = true },
         -- files = { hidden = true, ignored = true },
         grep = { hidden = true, ignored = true },
       },
