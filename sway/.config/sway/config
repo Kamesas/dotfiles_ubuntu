@@ -31,6 +31,10 @@ default_border pixel 2
 default_floating_border pixel 2
 gaps inner 6
 gaps outer 3
+# Drop all gaps when a workspace has only one window; keep them when there are more.
+smart_gaps on
+# Hide the window border when gaps are off, so a single window is fully borderless.
+smart_borders no_gaps
 
 ### Input
 input type:touchpad {
