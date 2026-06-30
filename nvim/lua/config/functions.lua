@@ -29,18 +29,8 @@ end
 
 -- Copy selection to clipboard with file context
 M.copy_for_claude = function()
-  -- Get file info — express the path relative to the git root, NOT nvim's cwd.
-  -- `%:.` collapses to just the basename when cwd is inside a subfolder, which is
-  -- ambiguous (e.g. "DOCS.md" instead of "notes/DOCS.md"). Fall back to the
-  -- absolute path when the file isn't inside a git repo.
-  local abs = vim.fn.expand("%:p")
-  local git_root = vim.fn.systemlist({ "git", "-C", vim.fn.expand("%:p:h"), "rev-parse", "--show-toplevel" })[1]
-  local filepath
-  if vim.v.shell_error == 0 and git_root and git_root ~= "" then
-    filepath = abs:sub(#git_root + 2)
-  else
-    filepath = abs
-  end
+  -- Absolute path, so the file is unambiguous no matter nvim's cwd.
+  local filepath = vim.fn.expand("%:p")
   -- Use "v" and "." to get current visual selection (not '< '> which update after leaving visual mode)
   local pos1 = vim.fn.line("v")
   local pos2 = vim.fn.line(".")
