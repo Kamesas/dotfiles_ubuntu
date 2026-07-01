@@ -44,7 +44,13 @@ sys.exit(1)
 # rect even when it holds only this one floating window, so sizing it by
 # percentage always leaves a stray margin. Zero the gaps just long enough to
 # read the real pixel rect, then restore whatever the config says and size to that.
+#
+# The other dropdown's "move scratchpad" is folded into this same final
+# swaymsg call instead of being sent separately — that puts hide-old and
+# show-new in one compositor transaction, so there's no rendered frame in
+# between where neither window is up (which used to flash the desktop).
 fill_current_output() {
+    local hide_other="$1"
     local cfg inner outer rect x y w h
     cfg=$(swaymsg -t get_config | python3 -c "import json,sys; print(json.load(sys.stdin)['config'])")
     inner=$(echo "$cfg" | grep -oP '^gaps inner \K[0-9]+')
@@ -63,23 +69,22 @@ for w in json.load(sys.stdin):
     # "move position" (without "absolute") is relative to the output's own
     # top-left, not the global layout — "absolute" is needed since x/y here
     # are the workspace's global compositor coordinates.
-    swaymsg "[class=\"$WM_CLASS\"] move container to output current, resize set width ${w} px height ${h} px, move absolute position ${x} px ${y} px, focus" > /dev/null
+    swaymsg "${hide_other:+$hide_other; }[class=\"$WM_CLASS\"] move container to output current, resize set width ${w} px height ${h} px, move absolute position ${x} px ${y} px, focus" > /dev/null
 }
 
 if [ -n "$SWAYSOCK" ]; then
-    # Only one dropdown on screen at a time — hide the other one first.
-    swaymsg '[app_id="kitty-dropdown"] move scratchpad' > /dev/null 2>&1
+    HIDE_OTHER='[app_id="kitty-dropdown"] move scratchpad'
     if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
         WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
         for i in $(seq 1 50); do
             is_dropdown_mapped && break
             sleep 0.1
         done
-        fill_current_output
+        fill_current_output "$HIDE_OTHER"
     elif is_dropdown_visible; then
         swaymsg "[class=\"$WM_CLASS\"] move scratchpad" > /dev/null
     else
-        fill_current_output
+        fill_current_output "$HIDE_OTHER"
     fi
     exit 0
 fi
