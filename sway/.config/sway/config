@@ -30,7 +30,10 @@ client.urgent           $red      $base       $text   $red       $red
 default_border pixel 2
 default_floating_border pixel 2
 gaps inner 6
-gaps outer 3
+# No outer gap: it also insets the workspace rect used for floating window
+# percentage placement (e.g. the fullscreen dropdown terminals), regardless
+# of smart_gaps, leaving them with an unwanted margin even when alone.
+gaps outer 0
 # Drop all gaps when a workspace has only one window; keep them when there are more.
 smart_gaps on
 # Hide the window border when gaps are off, so a single window is fully borderless.
@@ -209,7 +212,8 @@ for_window [class=".*"] border pixel 2
 
 ### Dropdown terminals — float, fill the workspace area (Waybar stays visible),
 # and park in the scratchpad so Alt+t / Alt+w show/hide them from any workspace.
-for_window [app_id="kitty-dropdown"] floating enable, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show
+# They always cover the full screen alone, so drop the border like a single tiled window.
+for_window [app_id="kitty-dropdown"] floating enable, border pixel 0, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show
 # WezTerm dropdown runs under XWayland (see wezterm-dropdown script), so it shows
 # up as an X11 "class" rather than a native Wayland "app_id".
-for_window [class="wezterm-dropdown"] floating enable, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show
+for_window [class="wezterm-dropdown"] floating enable, border pixel 0, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show

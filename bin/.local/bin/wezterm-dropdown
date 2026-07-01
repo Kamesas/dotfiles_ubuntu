@@ -26,15 +26,60 @@ sys.exit(1)
 "
 }
 
+is_dropdown_mapped() {
+    swaymsg -t get_tree | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+def walk(n):
+    if n.get('window_properties', {}).get('class') == '$WM_CLASS':
+        sys.exit(0)
+    for c in n.get('nodes', []) + n.get('floating_nodes', []):
+        walk(c)
+walk(data)
+sys.exit(1)
+"
+}
+
+# Sway bakes both "gaps inner" and "gaps outer" into the focused workspace's
+# rect even when it holds only this one floating window, so sizing it by
+# percentage always leaves a stray margin. Zero the gaps just long enough to
+# read the real pixel rect, then restore whatever the config says and size to that.
+fill_current_output() {
+    local cfg inner outer rect x y w h
+    cfg=$(swaymsg -t get_config | python3 -c "import json,sys; print(json.load(sys.stdin)['config'])")
+    inner=$(echo "$cfg" | grep -oP '^gaps inner \K[0-9]+')
+    outer=$(echo "$cfg" | grep -oP '^gaps outer \K[0-9]+')
+    swaymsg "gaps inner current set 0; gaps outer current set 0" > /dev/null
+    rect=$(swaymsg -t get_workspaces | python3 -c "
+import json, sys
+for w in json.load(sys.stdin):
+    if w.get('focused'):
+        r = w['rect']
+        print(r['x'], r['y'], r['width'], r['height'])
+        break
+")
+    swaymsg "gaps inner current set $inner; gaps outer current set $outer" > /dev/null
+    read -r x y w h <<< "$rect"
+    # "move position" (without "absolute") is relative to the output's own
+    # top-left, not the global layout — "absolute" is needed since x/y here
+    # are the workspace's global compositor coordinates.
+    swaymsg "[class=\"$WM_CLASS\"] move container to output current, resize set width ${w} px height ${h} px, move absolute position ${x} px ${y} px, focus" > /dev/null
+}
+
 if [ -n "$SWAYSOCK" ]; then
     # Only one dropdown on screen at a time — hide the other one first.
     swaymsg '[app_id="kitty-dropdown"] move scratchpad' > /dev/null 2>&1
     if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
         WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
+        for i in $(seq 1 50); do
+            is_dropdown_mapped && break
+            sleep 0.1
+        done
+        fill_current_output
     elif is_dropdown_visible; then
         swaymsg "[class=\"$WM_CLASS\"] move scratchpad" > /dev/null
     else
-        swaymsg "[class=\"$WM_CLASS\"] move container to output current, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, focus" > /dev/null
+        fill_current_output
     fi
     exit 0
 fi
