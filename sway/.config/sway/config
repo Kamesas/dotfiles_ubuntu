@@ -67,6 +67,8 @@ exec awww-daemon
 exec swayidle -w timeout 1200 ~/.local/bin/idle-suspend-on-battery
 exec ~/.local/bin/display-guard
 exec ~/.local/bin/battery-notify
+# Renumber workspaces to close gaps when one empties (1,3 -> 1,2).
+exec ~/.local/bin/ws-compact
 
 ### Keybindings — basics
 bindsym $mod+Return exec $term

@@ -1,0 +1,31 @@
+#!/bin/sh
+# Keep workspace numbers gapless, like GNOME's dynamic workspaces: when a
+# workspace empties and disappears, shift the higher ones down (1,3 -> 1,2).
+# Without this, closing the last window on a middle workspace leaves a hole,
+# and Win+l (ws-relative) re-creates it as a fresh empty workspace.
+# Workspace 99 is the projector-mirror parking spot (see display-menu) and
+# is never renumbered.
+
+swaymsg -t subscribe -m '["workspace"]' | python3 -u -c '
+import json, subprocess, sys
+
+for line in sys.stdin:
+    try:
+        event = json.loads(line)
+    except ValueError:
+        continue
+    if event.get("change") != "empty":
+        continue
+
+    out = subprocess.run(["swaymsg", "-t", "get_workspaces"],
+                         capture_output=True, text=True).stdout
+    ws = sorted((w for w in json.loads(out) if 0 < w["num"] < 99),
+                key=lambda w: w["num"])
+
+    # Walk from the lowest number up: each target number is already free,
+    # so the renames never collide.
+    for i, w in enumerate(ws, 1):
+        if w["num"] != i:
+            subprocess.run(["swaymsg", "rename", "workspace",
+                            w["name"], "to", str(i)])
+'
