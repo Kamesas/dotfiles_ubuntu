@@ -4,11 +4,13 @@
 # laptop panel is off — turn the laptop panel back on. Without this you get a
 # black laptop, and Rofi has nowhere to show, so Alt+s can't rescue you.
 #
-# Also keeps a picked mirror layout alive: on every output change it runs
-# `display-menu --restore-mirror`, which restarts wl-mirror when the projector
-# re-appears and kills a stranded clone window while it's gone.
+# Also keeps a picked mirror layout alive: on every output change AND every
+# workspace change it runs `display-menu --restore-mirror`, which restarts
+# wl-mirror when the projector re-appears, kills a stranded clone window
+# while it's gone, and uncovers the clone if another workspace ever lands
+# on the projector on top of it.
 #
-# Started once from sway autostart; listens for output add/remove events.
+# Started once from sway autostart.
 
 STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/display-mode"
 
@@ -32,6 +34,14 @@ ensure_mirror() {
 }
 
 ensure_screen; ensure_mirror                   # check once at startup
+
+# Workspace events: any workspace that covers the clone on the projector gets
+# uncovered within a moment. ensure_mirror is a no-op unless the saved mode
+# is a mirror, so this loop costs one grep per workspace switch otherwise.
+swaymsg -t subscribe -m '["workspace"]' | while read -r _; do
+    ensure_mirror
+done &
+
 swaymsg -t subscribe -m '["output"]' | while read -r _; do
     ensure_screen                              # and on every output change
     ensure_mirror

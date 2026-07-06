@@ -204,6 +204,10 @@ include /etc/sway/config.d/*
 for_window [app_id=".*"] border pixel 2
 for_window [class=".*"] border pixel 2
 
+# The projector clone window (wl-mirror) must never take focus when it
+# appears — keystrokes would silently go to the projector's workspace.
+no_focus [app_id="at.yrlf.wl_mirror"]
+
 ### Dropdown terminals — float, fill the workspace area (Waybar stays visible),
 # and park in the scratchpad so Alt+t / Alt+w show/hide them from any workspace.
 # They always cover the full screen alone, so drop the border like a single tiled window.

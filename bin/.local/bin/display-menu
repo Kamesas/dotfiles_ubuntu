@@ -37,6 +37,13 @@ output_active() {
 sys.exit(0 if any(o['name']==sys.argv[1] and o.get('active') for o in json.load(sys.stdin)) else 1)" "$1"
 }
 
+# Exit 0 if workspace 99 (the parked clone workspace) is what the named
+# output currently shows.
+ws99_visible() {
+    swaymsg -t get_workspaces -r | python3 -c "import sys,json
+sys.exit(0 if any(w['name']=='99' and w['output']==sys.argv[1] and w.get('visible') for w in json.load(sys.stdin)) else 1)" "$1"
+}
+
 # `output enable` is async — wl-mirror fails if the output isn't up yet.
 # Poll until it reports active, ~10s max.
 wait_active() {
@@ -61,7 +68,9 @@ start_mirror() {
     swaymsg focus output "$projector"
     swaymsg workspace number 99
     swaymsg focus output "$laptop"
-    setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/tmp/wl-mirror.log 2>&1
+    # 9>&- : do not let wl-mirror inherit the restore lock (fd 9) — a child
+    # holding it open would block every future restore.
+    setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/tmp/wl-mirror.log 2>&1 9>&-
 }
 
 # --restore-mirror: called by display-guard on every output change while a
@@ -70,6 +79,11 @@ start_mirror() {
 # re-apply the picked layout and restart the mirror. With the projector
 # unplugged, kill any leftover clone window instead.
 if [ "$1" = "--restore-mirror" ]; then
+    # Several guard events can fire at once — let one restore run and the
+    # extras exit. The restore's own focus changes fire one more workspace
+    # event, so a break during the locked window is still caught.
+    exec 9>"${XDG_RUNTIME_DIR:-/tmp}/display-restore.lock"
+    flock -n 9 || exit 0
     mode=$(cat "$STATE_FILE" 2>/dev/null)
     case "$mode" in *mirror*) ;; *) exit 0 ;; esac
     if [ -z "$projector" ]; then
@@ -77,17 +91,25 @@ if [ "$1" = "--restore-mirror" ]; then
         exit 0
     fi
     if output_active "$projector" && pgrep -x wl-mirror >/dev/null; then
-        exit 0                       # mirror is healthy, nothing to do
+        ws99_visible "$projector" && exit 0
+        # wl-mirror is alive but hidden: after a signal drop sway shows a
+        # fresh empty workspace on the projector while 99 comes back behind
+        # it. Bring 99 back in view; focus ends on the laptop, like
+        # start_mirror.
+        swaymsg focus output "$projector"
+        swaymsg workspace number 99
+        swaymsg focus output "$laptop"
+        exit 0
     fi
     pkill -x wl-mirror 2>/dev/null
     case "$mode" in
         "Projector + laptop (mirror)")
             swaymsg output "$laptop" enable position 0 0
-            swaymsg output "$projector" enable position 1920 0 ;;
+            swaymsg output "$projector" enable position 0 1200 ;;
         "Monitor + laptop + projector (mirror)")
             [ -n "$monitor" ] && swaymsg output "$monitor" enable position 0 0
             swaymsg output "$laptop" enable position 320 1440
-            swaymsg output "$projector" enable position 2560 0 ;;
+            swaymsg output "$projector" enable position 3000 0 ;;
     esac
     start_mirror
     exit 0
@@ -96,7 +118,7 @@ fi
 # Build the list — skip a screen's entries if it isn't plugged in.
 entries=()
 [ -n "$monitor" ]   && entries+=("Monitor only" "Monitor + laptop")
-[ -n "$projector" ] && entries+=("Projector only" "Projector + laptop (mirror)")
+[ -n "$projector" ] && entries+=("Projector only" "Projector + laptop" "Projector + laptop (mirror)")
 [ -n "$monitor" ] && [ -n "$projector" ] && entries+=("Monitor + laptop + projector (mirror)")
 entries+=("Laptop only")
 
@@ -115,6 +137,9 @@ printf '%s\n' "$chosen" > "$STATE_FILE"
 # external sits at 0,0 and the laptop is centred below it — laptop is 1920
 # wide, so x = (external_width - 1920) / 2 (320 under the 2560 monitor, 0
 # under the 1920 projector); y = external height (1440 monitor, 1080 projector).
+# In mirror layouts the projector is placed with a gap, sharing no edge with
+# any other screen: the cursor cannot cross a gap, so it can never wander
+# onto the clone and pull focus (and new workspaces) there.
 on=""; mirror=""
 case "$chosen" in
     "Monitor only")
@@ -127,16 +152,22 @@ case "$chosen" in
     "Projector only")
         on="$projector"
         swaymsg output "$projector" enable position 0 0 ;;
+    "Projector + laptop")
+        # Extended, not mirrored: the projector is a normal second screen
+        # with its own workspace, like the desk monitor.
+        on="$projector $laptop"
+        swaymsg output "$projector" enable position 0 0
+        swaymsg output "$laptop" enable position 0 1080 ;;
     "Projector + laptop (mirror)")
         on="$projector $laptop"; mirror=1
         swaymsg output "$laptop" enable position 0 0
-        swaymsg output "$projector" enable position 1920 0 ;;
+        swaymsg output "$projector" enable position 0 1200 ;;
     "Monitor + laptop + projector (mirror)")
         # Monitor is its own separate screen; the projector mirrors the laptop.
         on="$monitor $laptop $projector"; mirror=1
         swaymsg output "$monitor" enable position 0 0
         swaymsg output "$laptop" enable position 320 1440
-        swaymsg output "$projector" enable position 2560 0 ;;
+        swaymsg output "$projector" enable position 3000 0 ;;
     "Laptop only")
         on="$laptop"
         swaymsg output "$laptop" enable position 0 0 ;;
