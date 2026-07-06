@@ -89,7 +89,8 @@ return {
         MkdnYankFileAnchorLink = { "n", "yfa" },
         MkdnIncreaseHeading = { "n", "+" },
         MkdnDecreaseHeading = { "n", "-" },
-        MkdnToggleToDo = { { "n", "v" }, "<C-Space>" }, -- toggle checkbox
+        -- Toggle checkbox. Not <C-Space>: that is the tmux leader and never reaches nvim.
+        MkdnToggleToDo = { { "n", "v" }, "<leader>mt" },
         MkdnNewListItem = false,
         MkdnNewListItemBelowInsert = { "n", "o" },
         MkdnNewListItemAboveInsert = { "n", "O" },

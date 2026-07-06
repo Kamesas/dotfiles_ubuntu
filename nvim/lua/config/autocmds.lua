@@ -33,12 +33,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     if vim.g.autoformat == false or vim.b[args.buf].autoformat == false then
       return
     end
-    local eslint_files = {
-      "eslint.config.js", "eslint.config.mjs", "eslint.config.cjs",
-      ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml",
-      ".eslintrc.json", ".eslintrc",
-    }
-    if not vim.fs.root(args.buf, eslint_files) then
+    if not vim.fs.root(args.buf, require("config.functions").eslint_config_files) then
       return
     end
     require("conform").format({

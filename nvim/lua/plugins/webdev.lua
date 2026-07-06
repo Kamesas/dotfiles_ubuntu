@@ -4,7 +4,8 @@ return {
     "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
-        "typescript-language-server",
+        -- No typescript-language-server here: typescript-tools.nvim spawns
+        -- tsserver itself, ts_ls/vtsls are disabled below.
         "tailwindcss-language-server",
         "css-lsp",
         "html-lsp",

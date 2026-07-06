@@ -22,11 +22,9 @@ vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineMoveNext<CR>", { desc = "Move 
 -- vim.keymap.set("n", "<C-m>", "O<Esc>", { desc = "Add line above" })
 vim.keymap.set("n", "<C-Enter>", "o<Esc>", { desc = "Add line below" })
 
--- Delete without saving to register
+-- Delete and change without saving to register
 vim.keymap.set({ "n", "x" }, "d", '"_d', { desc = "Delete without yanking" })
-vim.keymap.set("n", "dd", '"_dd', { desc = "Delete line without yanking" })
-vim.keymap.set("n", "ciw", '"_ciw', { desc = "Change inner word without yanking" })
-vim.keymap.set("n", "caw", '"_caw', { desc = "Change inner word without yanking" })
+vim.keymap.set({ "n", "x" }, "c", '"_c', { desc = "Change without yanking" })
 
 -- Cut to clipboard
 vim.keymap.set({ "n", "x" }, "<C-x>", '"+d', { desc = "Cut to clipboard" })
@@ -45,9 +43,6 @@ vim.keymap.set("n", "gV", function()
   vim.lsp.buf.definition()
 end, { desc = "Go to Definition (vsplit)" })
 
--- LSP document symbols
-vim.keymap.set("n", "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP Document Symbols" })
-
 -- Console log word under cursor (inserts line below)
 vim.keymap.set("n", "<leader>l", fn.console_log, { desc = "Console log" })
 vim.keymap.set("n", "<leader>cj", fn.console_log_json, { desc = "Console log JSON" })
@@ -65,33 +60,9 @@ vim.keymap.set("n", "gcb", fn.comment_block, { desc = "Go Comment Block" })
 -- Zoom/maximize current window (toggle)
 vim.keymap.set("n", "<leader>wz", fn.zoom_toggle, { desc = "Toggle zoom window" })
 
--- Enter in insert mode → call blink directly (bypasses nvim-autopairs stealing CR)
-vim.keymap.set("i", "<CR>", function()
-  local ok, blink = pcall(require, "blink.cmp")
-  if ok then
-    local handled = blink.accept()
-    if handled then return end
-  end
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, true, true), "n", true)
-end, { desc = "Accept completion or newline" })
-
--- Arrow keys in insert mode → call blink directly so Enter still works
-vim.keymap.set("i", "<Down>", function()
-  local ok, blink = pcall(require, "blink.cmp")
-  if ok then
-    local handled = blink.select_next()
-    if handled then return end
-  end
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Down>", true, true, true), "n", true)
-end, { desc = "Next completion or move down" })
-vim.keymap.set("i", "<Up>", function()
-  local ok, blink = pcall(require, "blink.cmp")
-  if ok then
-    local handled = blink.select_prev()
-    if handled then return end
-  end
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Up>", true, true, true), "n", true)
-end, { desc = "Prev completion or move up" })
+-- Enter / arrow keys for completion are configured in blink itself
+-- (lua/plugins/blink.lua) — its "fallback" runs other insert-mode
+-- mappings correctly, e.g. mini.pairs on Enter between brackets.
 
 -- Ctrl+Backspace to delete word backward in insert mode
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })

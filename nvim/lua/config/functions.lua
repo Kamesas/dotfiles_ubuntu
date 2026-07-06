@@ -1,5 +1,13 @@
 local M = {}
 
+-- Config files that mark a project as using eslint.
+-- Shared by conform (formatter choice) and the eslint_d autocmd.
+M.eslint_config_files = {
+  "eslint.config.js", "eslint.config.mjs", "eslint.config.cjs",
+  ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml",
+  ".eslintrc.json", ".eslintrc",
+}
+
 -- Console.log word under cursor
 M.console_log = function()
   local word = vim.fn.expand("<cword>")

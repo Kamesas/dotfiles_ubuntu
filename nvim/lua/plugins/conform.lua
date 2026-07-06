@@ -6,11 +6,7 @@ return {
       ".prettierrc.json", ".prettierrc.yaml", ".prettierrc.yml",
       "prettier.config.js", "prettier.config.mjs", "prettier.config.cjs",
     }
-    local eslint_files = {
-      "eslint.config.js", "eslint.config.mjs", "eslint.config.cjs",
-      ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml",
-      ".eslintrc.json", ".eslintrc",
-    }
+    local eslint_files = require("config.functions").eslint_config_files
     local function js_formatters(bufnr)
       local has_prettier = vim.fs.root(bufnr, prettier_files)
       local has_eslint = vim.fs.root(bufnr, eslint_files)
@@ -26,6 +22,10 @@ return {
       typescriptreact = js_formatters,
       javascript = js_formatters,
       javascriptreact = js_formatters,
+      -- eslint does not handle CSS, so prettierd runs unconditionally here
+      css = { "prettierd" },
+      scss = { "prettierd" },
+      less = { "prettierd" },
     })
     opts.default_format_opts = { lsp_format = "never" }
   end,

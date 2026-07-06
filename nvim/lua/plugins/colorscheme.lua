@@ -3,11 +3,10 @@ return {
     "sainnhe/sonokai",
     lazy = false,
     priority = 1000,
-    config = function()
-      -- Optionally configure and load the colorscheme
-      -- directly inside the plugin declaration.
+    -- Sonokai reads its g: options when the colorscheme loads, so set them
+    -- in init. LazyVim applies the colorscheme itself (opts below).
+    init = function()
       vim.g.sonokai_enable_italic = true
-      vim.cmd.colorscheme("sonokai")
     end,
   },
   {
