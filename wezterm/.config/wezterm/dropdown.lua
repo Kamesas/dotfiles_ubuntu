@@ -69,6 +69,11 @@ end)
 
 config.keys = {
 	{ key = "Enter", mods = "ALT", action = wezterm.action.DisableDefaultAssignment },
+	-- The dropdown is one window with tmux inside. Block WezTerm's own
+	-- new-window / new-tab keys: extra windows stack invisibly behind the
+	-- dropdown, and the tab bar is hidden so tabs would be invisible too.
+	{ key = "n", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
+	{ key = "t", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
 	{ key = "Backspace", mods = "CTRL", action = wezterm.action.SendKey({ key = "w", mods = "CTRL" }) },
 	{ key = "0", mods = "ALT", action = wezterm.action.SendKey({ key = "0", mods = "ALT" }) },
 	{ key = "1", mods = "ALT", action = wezterm.action.SendKey({ key = "1", mods = "ALT" }) },

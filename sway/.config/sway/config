@@ -211,7 +211,10 @@ no_focus [app_id="at.yrlf.wl_mirror"]
 ### Dropdown terminals — float, fill the workspace area (Waybar stays visible),
 # and park in the scratchpad so Alt+t / Alt+w show/hide them from any workspace.
 # They always cover the full screen alone, so drop the border like a single tiled window.
-for_window [app_id="kitty-dropdown"] floating enable, border pixel 0, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show
+# No "scratchpad show" here: a new window starts small and would be visible while
+# it grows to full size. Park it hidden; the dropdown script reveals it only after
+# setting the final pixel size, so the first visible frame is already full-screen.
+for_window [app_id="kitty-dropdown"] floating enable, border pixel 0, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad
 # WezTerm dropdown runs under XWayland (see wezterm-dropdown script), so it shows
 # up as an X11 "class" rather than a native Wayland "app_id".
-for_window [class="wezterm-dropdown"] floating enable, border pixel 0, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad, scratchpad show
+for_window [class="wezterm-dropdown"] floating enable, border pixel 0, resize set width 100 ppt height 100 ppt, move position 0 ppt 0 ppt, move scratchpad
