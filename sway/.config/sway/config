@@ -9,8 +9,8 @@ set $right l
 set $term kitty
 set $menu rofi -show drun
 
-# New windows stack top/bottom instead of side by side.
-default_orientation vertical
+# New windows open side by side instead of stacked top/bottom.
+default_orientation horizontal
 
 ### Catppuccin Mocha colors
 set $base   #1e1e2e
@@ -122,20 +122,10 @@ bindsym $mod+j exec ~/.local/bin/ws-relative next move
 bindsym $mod+k exec ~/.local/bin/ws-relative prev move
 
 ### Workspace-to-output assignment
-# Pin number ranges to each monitor so numbering stays fixed instead of sharing
-# one global pool: external 1–5, laptop 6–10. The external is matched by
-# make/model/serial, so it keeps its range across different HDMI/DP ports.
-# When the external is unplugged, all workspaces fall back to the laptop.
-workspace 1 output "Lenovo Group Limited R27qe UP3359FZ"
-workspace 2 output "Lenovo Group Limited R27qe UP3359FZ"
-workspace 3 output "Lenovo Group Limited R27qe UP3359FZ"
-workspace 4 output "Lenovo Group Limited R27qe UP3359FZ"
-workspace 5 output "Lenovo Group Limited R27qe UP3359FZ"
-workspace 6 output eDP-1
-workspace 7 output eDP-1
-workspace 8 output eDP-1
-workspace 9 output eDP-1
-workspace 10 output eDP-1
+# No pinning: one shared pool numbered from 1. A workspace opens on whatever
+# screen is focused. This keeps numbering sane with any screen mix — desk
+# monitor, projector, or laptop alone — instead of ranges leaking onto the
+# wrong screen when a monitor is missing.
 
 ### Keybindings — workspaces
 bindsym $mod+1 workspace number 1
@@ -163,8 +153,10 @@ bindsym Ctrl+Alt+0 move container to workspace number 10
 ### Keybindings — layout
 bindsym $mod+b splith
 bindsym $mod+v splitv
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+# Stacking/tabbed disabled — they draw container title bars (the H[app] line).
+# Split layouts never show a title bar. Re-enable if you ever want tabs.
+#bindsym $mod+s layout stacking
+#bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 bindsym $mod+f fullscreen
 bindsym $mod+Shift+space floating toggle
