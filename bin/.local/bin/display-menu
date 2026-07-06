@@ -8,6 +8,10 @@
 #
 # Screens are matched by model, not by connector name, so the menu still
 # works when the dock hands out a different DP-N after a re-dock.
+#
+# Every pick is saved to $STATE_FILE. display-guard calls
+# `display-menu --restore-mirror` on output changes, so a mirror survives
+# the projector dropping its signal and coming back.
 
 # Connector name of the output whose model contains $1 (empty if not plugged).
 name_by_model() {
@@ -24,6 +28,71 @@ for o in json.load(sys.stdin):
 monitor=$(name_by_model "R27qe")
 projector=$(name_by_model "AML TV")
 
+# The last picked layout, read back by --restore-mirror.
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/display-mode"
+
+# Exit 0 if the named output is currently active (lit up).
+output_active() {
+    swaymsg -t get_outputs -r | python3 -c "import sys,json
+sys.exit(0 if any(o['name']==sys.argv[1] and o.get('active') for o in json.load(sys.stdin)) else 1)" "$1"
+}
+
+# `output enable` is async — wl-mirror fails if the output isn't up yet.
+# Poll until it reports active, ~10s max.
+wait_active() {
+    for _ in $(seq 1 50); do
+        output_active "$1" && return 0
+        sleep 0.2
+    done
+    return 1
+}
+
+# Clone the laptop panel onto the projector, fullscreen. The projector stays
+# a real output with its own workspace (Wayland has no true clone mode), so
+# park that workspace at number 99 — number-based switching (Win+h/l, Win+N)
+# then never lands focus on it. Focus ends on the laptop, which is what the
+# projector shows anyway. Both screens are 1080p, so the clone lines up
+# exactly. wl-mirror runs until the next pick (or display-guard) kills it.
+start_mirror() {
+    if ! wait_active "$projector"; then
+        notify-send "Display" "Projector did not come up — no mirror"
+        return 1
+    fi
+    swaymsg focus output "$projector"
+    swaymsg workspace number 99
+    swaymsg focus output "$laptop"
+    setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/tmp/wl-mirror.log 2>&1
+}
+
+# --restore-mirror: called by display-guard on every output change while a
+# mirror mode is picked. Sway re-enables a returning projector as a plain
+# extended screen and leaves wl-mirror dead or stranded on another output —
+# re-apply the picked layout and restart the mirror. With the projector
+# unplugged, kill any leftover clone window instead.
+if [ "$1" = "--restore-mirror" ]; then
+    mode=$(cat "$STATE_FILE" 2>/dev/null)
+    case "$mode" in *mirror*) ;; *) exit 0 ;; esac
+    if [ -z "$projector" ]; then
+        pkill -x wl-mirror 2>/dev/null
+        exit 0
+    fi
+    if output_active "$projector" && pgrep -x wl-mirror >/dev/null; then
+        exit 0                       # mirror is healthy, nothing to do
+    fi
+    pkill -x wl-mirror 2>/dev/null
+    case "$mode" in
+        "Projector + laptop (mirror)")
+            swaymsg output "$laptop" enable position 0 0
+            swaymsg output "$projector" enable position 1920 0 ;;
+        "Monitor + laptop + projector (mirror)")
+            [ -n "$monitor" ] && swaymsg output "$monitor" enable position 0 0
+            swaymsg output "$laptop" enable position 320 1440
+            swaymsg output "$projector" enable position 2560 0 ;;
+    esac
+    start_mirror
+    exit 0
+fi
+
 # Build the list — skip a screen's entries if it isn't plugged in.
 entries=()
 [ -n "$monitor" ]   && entries+=("Monitor only" "Monitor + laptop")
@@ -35,14 +104,18 @@ chosen=$(printf '%s\n' "${entries[@]}" | rofi -dmenu -p "Display" -i)
 [ -z "$chosen" ] && exit 0
 
 # A mirror may be left running from an earlier pick — stop it. Only the
-# mirror layout below starts it again.
+# mirror layouts below start it again.
 pkill -x wl-mirror 2>/dev/null
+
+# Remember the pick for --restore-mirror.
+mkdir -p "$(dirname "$STATE_FILE")"
+printf '%s\n' "$chosen" > "$STATE_FILE"
 
 # Enable + place the screens this layout needs. Positions: the active
 # external sits at 0,0 and the laptop is centred below it — laptop is 1920
 # wide, so x = (external_width - 1920) / 2 (320 under the 2560 monitor, 0
 # under the 1920 projector); y = external height (1440 monitor, 1080 projector).
-on=""
+on=""; mirror=""
 case "$chosen" in
     "Monitor only")
         on="$monitor"
@@ -55,20 +128,15 @@ case "$chosen" in
         on="$projector"
         swaymsg output "$projector" enable position 0 0 ;;
     "Projector + laptop (mirror)")
-        on="$projector $laptop"
+        on="$projector $laptop"; mirror=1
         swaymsg output "$laptop" enable position 0 0
-        swaymsg output "$projector" enable position 1920 0
-        # Clone the laptop onto the projector, fullscreen. Both screens are
-        # 1080p, so it lines up exactly. wl-mirror keeps running until the
-        # next pick kills it (see pkill above).
-        setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/dev/null 2>&1 ;;
+        swaymsg output "$projector" enable position 1920 0 ;;
     "Monitor + laptop + projector (mirror)")
         # Monitor is its own separate screen; the projector mirrors the laptop.
-        on="$monitor $laptop $projector"
+        on="$monitor $laptop $projector"; mirror=1
         swaymsg output "$monitor" enable position 0 0
         swaymsg output "$laptop" enable position 320 1440
-        swaymsg output "$projector" enable position 2560 0
-        setsid -f wl-mirror --fullscreen-output "$projector" "$laptop" >/dev/null 2>&1 ;;
+        swaymsg output "$projector" enable position 2560 0 ;;
     "Laptop only")
         on="$laptop"
         swaymsg output "$laptop" enable position 0 0 ;;
@@ -78,5 +146,9 @@ esac
 for out in $laptop $monitor $projector; do
     case " $on " in *" $out "*) ;; *) swaymsg output "$out" disable ;; esac
 done
+
+# Start the clone last: it may wait a few seconds for the projector to light
+# up, and the rest of the layout should not wait with it.
+[ -n "$mirror" ] && start_mirror
 
 notify-send "Display" "$chosen"

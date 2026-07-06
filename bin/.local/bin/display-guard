@@ -4,7 +4,13 @@
 # laptop panel is off — turn the laptop panel back on. Without this you get a
 # black laptop, and Rofi has nowhere to show, so Alt+s can't rescue you.
 #
+# Also keeps a picked mirror layout alive: on every output change it runs
+# `display-menu --restore-mirror`, which restarts wl-mirror when the projector
+# re-appears and kills a stranded clone window while it's gone.
+#
 # Started once from sway autostart; listens for output add/remove events.
+
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/display-mode"
 
 ensure_screen() {
     swaymsg -t get_outputs -r | python3 -c '
@@ -19,7 +25,14 @@ for o in outs:               # all dark — bring the laptop panel back
 '
 }
 
-ensure_screen                                  # check once at startup
+ensure_mirror() {
+    # Only spend a process spawn when the last picked layout is a mirror.
+    grep -q mirror "$STATE_FILE" 2>/dev/null || return
+    ~/.local/bin/display-menu --restore-mirror
+}
+
+ensure_screen; ensure_mirror                   # check once at startup
 swaymsg -t subscribe -m '["output"]' | while read -r _; do
     ensure_screen                              # and on every output change
+    ensure_mirror
 done
