@@ -1,0 +1,12 @@
+#!/bin/bash
+# Waybar module: dictation state, driven by the dictate script through
+# SIGRTMIN+10. Dim mic when idle (click starts dictation), red mic while
+# recording, mic with dots while the model transcribes.
+#  is the nerd-font microphone glyph, kept as an escape so the icon
+# survives any tool that mangles private-use characters.
+
+case "$(cat "$XDG_RUNTIME_DIR/dictate.state" 2>/dev/null)" in
+    rec)  printf '{"text":" REC","tooltip":"Dictation: recording - Alt+V to stop","class":"recording"}\n' ;;
+    busy) printf '{"text":" ...","tooltip":"Dictation: transcribing...","class":"busy"}\n' ;;
+    *)    printf '{"text":"","tooltip":"Dictation: Alt+V or click to start","class":"idle"}\n' ;;
+esac

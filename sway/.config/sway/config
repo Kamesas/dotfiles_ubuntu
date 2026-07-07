@@ -71,57 +71,60 @@ exec ~/.local/bin/battery-notify
 exec ~/.local/bin/ws-compact
 
 ### Keybindings — basics
-bindsym $mod+Return exec $term
-bindsym $mod+c kill
+# --to-code binds the physical key, so bindings work in any keyboard layout.
+bindsym --to-code $mod+Return exec $term
+bindsym --to-code $mod+c kill
 bindsym --whole-window $mod+button2 kill
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -B 'Yes' 'swaymsg exit'
-bindsym $mod+Shift+p exec wlogout
+bindsym --to-code $mod+Shift+c reload
+bindsym --to-code $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -B 'Yes' 'swaymsg exit'
+bindsym --to-code $mod+Shift+p exec wlogout
 floating_modifier $mod normal
 
 ### Keybindings — custom (matches GNOME setup)
-bindsym Alt+t exec ~/.local/bin/kitty-dropdown
-bindsym Alt+w exec ~/.local/bin/wezterm-dropdown
-bindsym Alt+u exec rofi -show drun
-bindsym Alt+f exec ~/.local/bin/window-switch
-bindsym Alt+n exec ~/.local/bin/wifi-menu
-bindsym Alt+m exec ~/.local/bin/mic-menu
-bindsym Alt+a exec ~/.local/bin/sink-menu
-bindsym Alt+s exec ~/.local/bin/display-menu
-bindsym Alt+b exec ~/.local/bin/battery-menu
-bindsym Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
-bindsym Alt+p exec ~/.local/bin/clipboard-menu
-bindsym Alt+o exec ~/.local/bin/wallpaper-menu
-bindsym Alt+y exec ~/.local/bin/waybar-toggle
+bindsym --to-code Alt+t exec ~/.local/bin/kitty-dropdown
+bindsym --to-code Alt+w exec ~/.local/bin/wezterm-dropdown
+bindsym --to-code Alt+u exec rofi -show drun
+bindsym --to-code Alt+f exec ~/.local/bin/window-switch
+bindsym --to-code Alt+n exec ~/.local/bin/wifi-menu
+bindsym --to-code Alt+m exec ~/.local/bin/mic-menu
+bindsym --to-code Alt+a exec ~/.local/bin/sink-menu
+bindsym --to-code Alt+s exec ~/.local/bin/display-menu
+bindsym --to-code Alt+b exec ~/.local/bin/battery-menu
+bindsym --to-code Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
+bindsym --to-code Alt+p exec ~/.local/bin/clipboard-menu
+bindsym --to-code Alt+o exec ~/.local/bin/wallpaper-menu
+bindsym --to-code Alt+y exec ~/.local/bin/waybar-toggle
+bindsym --to-code Alt+v exec ~/.local/bin/dictate
+bindsym --to-code Alt+Shift+v exec ~/.local/bin/dictate uk
 bindsym Print exec wayfreeze --after-freeze-cmd 'grim -g "$(slurp)" /tmp/screenshot.png; pkill wayfreeze; swappy -f /tmp/screenshot.png'
 
 ### Keybindings — focus
-bindsym $mod+Shift+h focus left
-bindsym $mod+Shift+l focus right
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-bindsym $mod+Alt+h focus left
-bindsym $mod+Alt+j focus down
-bindsym $mod+Alt+k focus up
-bindsym $mod+Alt+l focus right
+bindsym --to-code $mod+Shift+h focus left
+bindsym --to-code $mod+Shift+l focus right
+bindsym --to-code $mod+Left focus left
+bindsym --to-code $mod+Down focus down
+bindsym --to-code $mod+Up focus up
+bindsym --to-code $mod+Right focus right
+bindsym --to-code $mod+Alt+h focus left
+bindsym --to-code $mod+Alt+j focus down
+bindsym --to-code $mod+Alt+k focus up
+bindsym --to-code $mod+Alt+l focus right
 
 ### Keybindings — move window within workspace
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+bindsym --to-code $mod+Shift+Left move left
+bindsym --to-code $mod+Shift+Down move down
+bindsym --to-code $mod+Shift+Up move up
+bindsym --to-code $mod+Shift+Right move right
 
 ### Keybindings — switch workspace (vim-style: h = prev, l = next)
 # ws-relative steps by number and creates the next workspace on demand, so "next"
 # past the last one opens a fresh one instead of wrapping (like GNOME).
-bindsym $mod+h exec ~/.local/bin/ws-relative prev
-bindsym $mod+l exec ~/.local/bin/ws-relative next
+bindsym --to-code $mod+h exec ~/.local/bin/ws-relative prev
+bindsym --to-code $mod+l exec ~/.local/bin/ws-relative next
 
 ### Keybindings — move window to adjacent workspace and follow
-bindsym $mod+j exec ~/.local/bin/ws-relative next move
-bindsym $mod+k exec ~/.local/bin/ws-relative prev move
+bindsym --to-code $mod+j exec ~/.local/bin/ws-relative next move
+bindsym --to-code $mod+k exec ~/.local/bin/ws-relative prev move
 
 ### Workspace-to-output assignment
 # No pinning: one shared pool numbered from 1. A workspace opens on whatever
@@ -130,53 +133,53 @@ bindsym $mod+k exec ~/.local/bin/ws-relative prev move
 # wrong screen when a monitor is missing.
 
 ### Keybindings — workspaces
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+6 workspace number 6
-bindsym $mod+7 workspace number 7
-bindsym $mod+8 workspace number 8
-bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
+bindsym --to-code $mod+1 workspace number 1
+bindsym --to-code $mod+2 workspace number 2
+bindsym --to-code $mod+3 workspace number 3
+bindsym --to-code $mod+4 workspace number 4
+bindsym --to-code $mod+5 workspace number 5
+bindsym --to-code $mod+6 workspace number 6
+bindsym --to-code $mod+7 workspace number 7
+bindsym --to-code $mod+8 workspace number 8
+bindsym --to-code $mod+9 workspace number 9
+bindsym --to-code $mod+0 workspace number 10
 
-bindsym Ctrl+Alt+1 move container to workspace number 1
-bindsym Ctrl+Alt+2 move container to workspace number 2
-bindsym Ctrl+Alt+3 move container to workspace number 3
-bindsym Ctrl+Alt+4 move container to workspace number 4
-bindsym Ctrl+Alt+5 move container to workspace number 5
-bindsym Ctrl+Alt+6 move container to workspace number 6
-bindsym Ctrl+Alt+7 move container to workspace number 7
-bindsym Ctrl+Alt+8 move container to workspace number 8
-bindsym Ctrl+Alt+9 move container to workspace number 9
-bindsym Ctrl+Alt+0 move container to workspace number 10
+bindsym --to-code Ctrl+Alt+1 move container to workspace number 1
+bindsym --to-code Ctrl+Alt+2 move container to workspace number 2
+bindsym --to-code Ctrl+Alt+3 move container to workspace number 3
+bindsym --to-code Ctrl+Alt+4 move container to workspace number 4
+bindsym --to-code Ctrl+Alt+5 move container to workspace number 5
+bindsym --to-code Ctrl+Alt+6 move container to workspace number 6
+bindsym --to-code Ctrl+Alt+7 move container to workspace number 7
+bindsym --to-code Ctrl+Alt+8 move container to workspace number 8
+bindsym --to-code Ctrl+Alt+9 move container to workspace number 9
+bindsym --to-code Ctrl+Alt+0 move container to workspace number 10
 
 ### Keybindings — layout
-bindsym $mod+b splith
-bindsym $mod+v splitv
+bindsym --to-code $mod+b splith
+bindsym --to-code $mod+v splitv
 # Stacking/tabbed disabled — they draw container title bars (the H[app] line).
 # Split layouts never show a title bar. Re-enable if you ever want tabs.
 #bindsym $mod+s layout stacking
 #bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-bindsym $mod+f fullscreen
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+a focus parent
+bindsym --to-code $mod+e layout toggle split
+bindsym --to-code $mod+f fullscreen
+bindsym --to-code $mod+Shift+space floating toggle
+bindsym --to-code $mod+a focus parent
 
 ### Keybindings — keyboard layout (matches GNOME's Win+Space)
-bindsym $mod+space input "*" xkb_switch_layout next
+bindsym --to-code $mod+space input "*" xkb_switch_layout next
 
 ### Keybindings — scratchpad
-bindsym $mod+Shift+minus move scratchpad
-bindsym $mod+minus scratchpad show
+bindsym --to-code $mod+Shift+minus move scratchpad
+bindsym --to-code $mod+minus scratchpad show
 
 ### Keybindings — resize mode
 mode "resize" {
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym --to-code $left resize shrink width 10px
+    bindsym --to-code $down resize grow height 10px
+    bindsym --to-code $up resize shrink height 10px
+    bindsym --to-code $right resize grow width 10px
     bindsym Left resize shrink width 10px
     bindsym Down resize grow height 10px
     bindsym Up resize shrink height 10px
@@ -184,7 +187,7 @@ mode "resize" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+r mode "resize"
+bindsym --to-code $mod+r mode "resize"
 
 ### Media / brightness keys
 bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle

@@ -1,0 +1,129 @@
+#!/bin/bash
+# Push-to-talk dictation for any window. First run starts recording the mic;
+# second run stops it, turns the speech into text (offline), and types the
+# result into the focused window. Press once to talk, once more to finish.
+# State shows in waybar via the custom/dictate module, not in notifications;
+# only failures produce a notification.
+#
+# Two engines, chosen by the key that stops the recording:
+#   Alt+V        (no arg) — Parakeet: ~1 s, auto language, but mixes
+#                Russian into Ukrainian speech.
+#   Alt+Shift+V  ("uk")   — Whisper small pinned to Ukrainian: ~6 s,
+#                clean Ukrainian.
+
+WHISPER_DIR=~/.local/opt/whisper.cpp
+LANG_MODE="$1"
+
+# Character counting and Cyrillic matching need a UTF-8 locale; sway may
+# start the script without one.
+export LC_ALL=C.UTF-8
+
+PIDFILE="$XDG_RUNTIME_DIR/dictate.pid"
+WAV="$XDG_RUNTIME_DIR/dictate.wav"
+LOG="$XDG_RUNTIME_DIR/dictate.log"
+STATE="$XDG_RUNTIME_DIR/dictate.state"
+
+set_state() {  # rec | busy | "" (idle)
+    if [ -n "$1" ]; then echo "$1" > "$STATE"; else rm -f "$STATE"; fi
+    pkill -SIGRTMIN+10 waybar
+}
+
+# Second press: stop the recorder and let the WAV file close cleanly.
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    kill -INT "$(cat "$PIDFILE")"
+    rm -f "$PIDFILE"
+    set_state busy
+    sleep 0.3
+
+    run_whisper() {  # $1 = language, $2 = model size
+        "$WHISPER_DIR/build/bin/whisper-cli" -m "$WHISPER_DIR/models/ggml-$2.bin" \
+            -f "$WAV" -l "$1" -np -nt -sns 2>/dev/null \
+            | tr '\n' ' ' | sed 's/^ *//; s/ *$//'
+    }
+
+    # The active keyboard layout is a strong hint for the spoken language:
+    # with a Ukrainian layout, skip the fast engine and pin Ukrainian.
+    if [ -z "$LANG_MODE" ]; then
+        swaymsg -t get_inputs | grep -q '"xkb_active_layout_name": "Ukrainian' && LANG_MODE=uk
+    fi
+
+    t0=$(date +%s%N)
+    if [ "$LANG_MODE" = "uk" ]; then
+        text=$(run_whisper uk small)
+    else
+        text=$("$WHISPER_DIR/build/bin/parakeet-cli" \
+               -m "$WHISPER_DIR/models/ggml-parakeet-tdt-0.6b-v3-q8_0.bin" \
+               -f "$WAV" -np 2>/dev/null \
+               | tr '\n' ' ' | sed 's/^ *//; s/ *$//')
+        # English layout but a mostly-Cyrillic result means the fast engine
+        # wrote English speech in Ukrainian letters — redo pinned to English.
+        cyr=$(printf '%s' "$text" | grep -o '[А-Яа-яЄєІіЇїҐґ]' | wc -l)
+        if [ "$cyr" -gt $(( ${#text} / 2 )) ]; then
+            LANG_MODE="en-retry"
+            text=$(run_whisper en base)
+        fi
+    fi
+    t1=$(date +%s%N)
+    # s16 mono 16 kHz WAV holds 32000 bytes per second of audio.
+    audio_s=$(( $(stat -c%s "$WAV") / 32000 ))
+
+    if [ -n "$text" ]; then
+        rm -f "$WAV"
+        # Safety net: apps sometimes swallow the simulated keystrokes, so
+        # the text is always in the clipboard too — Ctrl+V recovers it.
+        printf '%s' "$text" | wl-copy
+        # WezTerm ignores Wayland virtual-keyboard input, so wtype can't
+        # reach it — inject the text through wezterm's own CLI instead.
+        focused=$(swaymsg -t get_tree | python3 -c "
+import json, sys
+def walk(n):
+    if n.get('focused'):
+        print(n.get('app_id') or n.get('window_properties', {}).get('class') or '')
+        return True
+    return any(walk(c) for c in n.get('nodes', []) + n.get('floating_nodes', []))
+walk(json.load(sys.stdin))")
+        if [[ "${focused,,}" == *wezterm* ]]; then
+            # Outside a wezterm pane the CLI picks the mux socket and sees
+            # no windows — point it at the GUI socket explicitly.
+            export WEZTERM_UNIX_SOCKET=$(ls -t "$XDG_RUNTIME_DIR"/wezterm/gui-sock-* 2>/dev/null | head -1)
+            pane=$(wezterm cli list-clients --format json 2>/dev/null \
+                   | python3 -c "import json,sys; c=json.load(sys.stdin); print(c[0]['focused_pane_id'] if c else '')")
+            method="wezterm-cli pane=$pane"
+            if [ -n "$pane" ]; then
+                printf '%s' "$text" | wezterm cli send-text --pane-id "$pane"
+            else
+                notify-send -u critical -t 4000 "Dictation" "Can't reach wezterm"
+            fi
+        elif [[ "${focused,,}" == *chrom* ]]; then
+            # Chrome drops text typed through the virtual keyboard, but a
+            # single paste shortcut gets through. The text is already in
+            # the clipboard (safety-net copy above).
+            method="paste"
+            sleep 0.15
+            wtype -M ctrl v -m ctrl
+        else
+            method="wtype"
+            sleep 0.15
+            wtype -d 12 -- "$text"
+        fi
+    else
+        # Keep the audio of a failed run so the cause can be inspected.
+        mv -f "$WAV" "$XDG_RUNTIME_DIR/dictate-failed.wav"
+        notify-send -u critical -t 4000 "Dictation" "Heard nothing"
+    fi
+    set_state ""
+    echo "$(date +%T) engine=${LANG_MODE:-auto} audio=${audio_s}s asr=$(( (t1-t0)/1000000 ))ms mic=$(pactl get-default-source) focused=$focused method=$method chars=${#text}" >> "$LOG"
+    exit 0
+fi
+
+# First press: start recording. Refuse while the mic is muted — recording
+# would only produce silence and a confusing "Heard nothing".
+if [[ "$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)" == *MUTED* ]]; then
+    notify-send -u critical -t 4000 "Dictation" "Mic is muted (Alt+M or click the bar icon)"
+    exit 1
+fi
+
+rm -f "$WAV"
+pw-record --format=s16 --rate=16000 --channels=1 "$WAV" > /dev/null 2>&1 &
+echo $! > "$PIDFILE"
+set_state rec

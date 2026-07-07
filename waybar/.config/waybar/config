@@ -7,7 +7,7 @@
 
     "modules-left": ["sway/workspaces", "custom/wezterm-dropdown", "custom/kitty-dropdown", "sway/window"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "custom/memory", "custom/mic", "pulseaudio", "network", "sway/language", "battery#bat0", "battery#bat1", "custom/notifications", "tray", "custom/power"],
+    "modules-right": ["custom/dictate", "cpu", "custom/memory", "custom/mic", "pulseaudio", "network", "sway/language", "battery#bat0", "battery#bat1", "custom/notifications", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -70,6 +70,15 @@
         "format-muted": "󰝟 muted",
         "format-icons": { "default": ["", "", ""] },
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+
+    "custom/dictate": {
+        "exec": "~/.local/bin/dictate-status",
+        "interval": "once",
+        "signal": 10,
+        "return-type": "json",
+        "on-click": "~/.local/bin/dictate",
+        "tooltip": true
     },
 
     "custom/mic": {
