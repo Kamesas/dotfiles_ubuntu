@@ -72,7 +72,11 @@ used), `dictate-failed.wav` (audio of the last empty result).
    Cyrillic result under an English layout, the run is redone with whisper
    `base` pinned to English (Parakeet sometimes writes English speech in
    Ukrainian letters). The `engine=` field in the log shows what ran:
-   `auto`, `uk`, or `en-retry`.
+   `auto`, `uk`, or `en-retry`. The Cyrillic check must use `\p{Cyrillic}`
+   (`grep -P`), not a `[А-Я]` letter range — GNU grep rejects such ranges
+   under the script's `C.UTF-8` locale ("Invalid collation character", the
+   error is discarded), the count silently becomes 0 and the retry never
+   fires.
 3. The text is delivered to the focused window:
    - **WezTerm windows**: WezTerm ignores the Wayland virtual-keyboard
      protocol, so `wtype` never reaches it. The script detects a focused

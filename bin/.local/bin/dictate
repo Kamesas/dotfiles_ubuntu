@@ -57,7 +57,9 @@ if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
                | tr '\n' ' ' | sed 's/^ *//; s/ *$//')
         # English layout but a mostly-Cyrillic result means the fast engine
         # wrote English speech in Ukrainian letters — redo pinned to English.
-        cyr=$(printf '%s' "$text" | grep -o '[А-Яа-яЄєІіЇїҐґ]' | wc -l)
+        # \p{Cyrillic}, not a [А-Я] range: GNU grep rejects letter ranges
+        # under C.UTF-8 ("Invalid collation character") and would count 0.
+        cyr=$(printf '%s' "$text" | grep -oP '\p{Cyrillic}' | wc -l)
         if [ "$cyr" -gt $(( ${#text} / 2 )) ]; then
             LANG_MODE="en-retry"
             text=$(run_whisper en base)
