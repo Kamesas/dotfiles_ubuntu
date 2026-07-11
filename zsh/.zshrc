@@ -13,6 +13,24 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# ============================================================================
+# WAYLAND DISPLAY SELF-HEAL
+# ============================================================================
+# A shared tmux server can hand a pane a stale, empty WAYLAND_DISPLAY (ours is
+# first spawned by the XWayland wezterm dropdown, which blanks it). With it
+# empty, wl-paste can't reach the clipboard, so image paste in Claude Code
+# silently does nothing. If it's unset/empty but a live Wayland socket exists,
+# point it at that socket. Keys off the socket, not the OS, so it works on Sway
+# and on GNOME/Ubuntu Wayland; on plain X11 there is no socket, so it does
+# nothing. The (N) glob qualifier yields nothing (no error) when none match.
+if [ -z "$WAYLAND_DISPLAY" ]; then
+    _wl_runtime="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    for _sock in "$_wl_runtime"/wayland-[0-9](N); do
+        [ -S "$_sock" ] && export WAYLAND_DISPLAY="${_sock##*/}" && break
+    done
+    unset _wl_runtime _sock
+fi
+
 
 # Display Pokemon-colorscripts
 # Project page: https://gitlab.com/phoneybadger/pokemon-colorscripts#on-other-distros-and-macos
