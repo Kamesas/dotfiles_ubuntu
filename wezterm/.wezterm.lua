@@ -4,7 +4,11 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- Font settings to match Guake
-config.font = wezterm.font("FiraCode Nerd Font", { weight = "Medium" })
+-- FiraCode has no CJK glyphs; Noto CJK fills them in for Japanese/Chinese/Korean text.
+config.font = wezterm.font_with_fallback({
+	{ family = "FiraCode Nerd Font", weight = "Medium" },
+	"Noto Sans CJK JP",
+})
 config.font_size = 14
 -- Cursor settings
 config.default_cursor_style = "BlinkingBlock"
