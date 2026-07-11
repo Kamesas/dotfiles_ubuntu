@@ -147,6 +147,53 @@ tokens, saved memory) stay out of git on purpose.
 
 ---
 
+## ESP32 / PlatformIO development
+
+Full editor docs live in `nvim/Platformio.md` (keybindings, troubleshooting).
+This is the machine setup — what to do on a fresh OS or laptop.
+
+**1. Install the PlatformIO CLI:**
+
+```bash
+pip install --user platformio     # puts `pio` in ~/.local/bin
+```
+
+**2. Link the clangd config:**
+
+```bash
+cd ~/dotfiles && stow clangd
+```
+
+This links `~/.config/clangd/config.yaml`. It strips GCC-only build flags
+(`-mlongcalls` and friends) that clang rejects. Without it, every ESP32 file
+shows "Unknown argument" warnings and clangd stops finding system headers.
+
+**3. Neovim does the rest itself.** On first start, Mason installs clangd, and
+`nvim/lua/plugins/clangd.lua` already passes `--query-driver` so clangd can ask
+the ESP32 compilers for their built-in include paths.
+
+**4. In each project, build once and generate the editor database:**
+
+```bash
+cd <project>
+pio run                # downloads toolchain + framework + libraries
+pio run -t compiledb   # writes compile_commands.json for clangd
+```
+
+Or from inside Neovim: `:PioLSP` (does the compiledb step), then `:LspRestart`.
+
+Notes:
+
+- `~/.platformio/` is only a cache. Do not back it up or migrate it —
+  `pio run` rebuilds it on any machine.
+- `compile_commands.json` stores absolute paths. After moving a project
+  folder, run `pio run -t compiledb` there again.
+- Serial upload works out of the box on Arch (systemd gives the logged-in
+  user access to USB serial). If upload fails with "permission denied":
+  `sudo usermod -aG uucp $USER` on Arch, `dialout` on Ubuntu, then re-login.
+
+---
+
 ## Edit and save your changes
 
 Edit any file inside `~/dotfiles/`. Because of the links, the change is live right away.

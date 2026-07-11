@@ -1,0 +1,19 @@
+# Global clangd config for PlatformIO / ESP32 work.
+#
+# clangd reads each project's compile_commands.json, which carries the real
+# build flags from the ESP32 GCC toolchain (xtensa and riscv). Some of those
+# flags are GCC-only, and clang's driver rejects them with "Unknown argument".
+# One rejected flag makes clangd drop the whole command, so it stops querying
+# the toolchain and then fails to find system headers like machine/endian.h.
+#
+# Stripping these flags for indexing fixes both the warnings and the missing
+# header. If a new "Unknown argument" shows up, add that flag here, then run
+# :LspRestart.
+CompileFlags:
+  Remove:
+    - -mlongcalls
+    - -mtext-section-literals
+    - -fno-tree-switch-conversion
+    - -fstrict-volatile-bitfields
+    - -freorder-blocks
+    - -mfix-esp32-psram-cache-issue

@@ -25,14 +25,15 @@ Relevant files:
 | `lua/plugins/platformio.lua` | The PlatformIO plugin + `<leader>p` which-key menu |
 | `lua/plugins/clangd.lua` | clangd `--query-driver` so it finds the ESP32 GCC toolchain headers |
 | `<project>/compile_commands.json` | Generated include/flag database clangd reads (gitignored) |
-| `<project>/.clangd` | Strips GCC-only flags that clang rejects |
+| `~/.config/clangd/config.yaml` | Strips GCC-only flags that clang rejects (dotfiles `clangd` stow package) |
 
 ---
 
 ## Prerequisites
 
-- The `pio` CLI. It lives at `~/.platformio/penv/bin/pio` and is **not on
-  PATH** by default. Add this to your shell rc to call it as just `pio`:
+- The `pio` CLI. Installed with `pip install --user platformio`, so it lands
+  in `~/.local/bin/pio` (already on PATH). Some installs put it in
+  `~/.platformio/penv/bin` instead — if `pio` is not found, add that to PATH:
 
   ```sh
   export PATH="$HOME/.platformio/penv/bin:$PATH"
@@ -54,10 +55,11 @@ This runs `pio run -t compiledb`, generates `compile_commands.json`, adds it to
 `.gitignore`, and restarts the LSP. After that clangd resolves `Arduino.h`,
 `uint8_t`, your classes, etc.
 
-> If clangd still complains about an unknown GCC flag, add it to the `Remove:`
-> list in the project's `.clangd` file. The common ESP32 offenders
-> (`-fno-tree-switch-conversion`, `-fstrict-volatile-bitfields`,
-> `-mtext-section-literals`) are already handled.
+> If clangd still complains about an unknown GCC flag, add it to the
+> `CompileFlags.Remove` list in `~/.config/clangd/config.yaml` (dotfiles
+> `clangd` stow package — one file covers every project). The common ESP32
+> offenders (`-mlongcalls`, `-fno-tree-switch-conversion`,
+> `-fstrict-volatile-bitfields`, `-mtext-section-literals`) are already there.
 
 **Re-run `:PioLSP` whenever you change `lib_deps` or add new headers** — the
 compile database is a snapshot and won't pick up new include paths on its own.
@@ -114,6 +116,24 @@ device automatically.
 
 - **`Arduino.h` not found / unknown type `uint8_t`** → `compile_commands.json`
   is missing or stale. Run `:PioLSP`, then `:LspRestart`.
+- **Moved or renamed the project folder** → same symptom as above.
+  `compile_commands.json` stores absolute paths, so it breaks on any move.
+  Run `pio run -t compiledb` (or `:PioLSP`) in the project, then `:LspRestart`.
+- **A library header not found (`DHT.h`, `U8g2lib.h`, …)** → check that
+  `lib_deps` sits inside the `[env:...]` section of `platformio.ini`.
+  In the `[platformio]` section it is silently ignored — the build prints
+  `Warning! Ignore unknown configuration option 'lib_deps'` and never
+  downloads the libraries.
+- **Custom framework header not found (`Bluepad32.h`, …)** → the project uses
+  `platform_packages` to swap in a custom framework, but the compile database
+  was generated against the plain one. Run `pio run` first (so every package
+  finishes installing), THEN `pio run -t compiledb`. Generating the database
+  while packages are still downloading records the wrong framework paths.
+- **Whole `~/.platformio` folder missing or gutted** → not a disaster. It is
+  only a cache (toolchains, frameworks, tools). `pio run` in any project
+  re-downloads what that project needs. Same for `.pio/` inside a project —
+  if package state looks corrupted ("Already up-to-date" but files missing),
+  delete `.pio/` and run `pio run` again.
 - **`Unknown argument: -f…` / `-mlongcalls` from clang** → these GCC-only flags
   are stripped globally in `~/.config/clangd/config.yaml`. If a new one appears,
   add it to that file's `CompileFlags.Remove` list, then `:LspRestart`.
