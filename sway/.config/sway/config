@@ -94,8 +94,12 @@ bindsym --to-code Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8
 bindsym --to-code Alt+p exec ~/.local/bin/clipboard-menu
 bindsym --to-code Alt+o exec ~/.local/bin/wallpaper-menu
 bindsym --to-code Alt+y exec ~/.local/bin/waybar-toggle
-bindsym --to-code Alt+v exec ~/.local/bin/dictate
-bindsym --to-code Alt+Shift+v exec ~/.local/bin/dictate uk
+# Hold to record, release to stop. The release key picks the engine.
+# Not "v": kanata turns a held v into the Win key, so the press never arrives.
+bindsym --to-code Alt+r exec ~/.local/bin/dictate start
+bindsym --to-code --release Alt+r exec ~/.local/bin/dictate stop
+bindsym --to-code Alt+Shift+r exec ~/.local/bin/dictate start
+bindsym --to-code --release Alt+Shift+r exec ~/.local/bin/dictate stop uk
 bindsym Print exec wayfreeze --after-freeze-cmd 'grim -g "$(slurp)" /tmp/screenshot.png; pkill wayfreeze; swappy -f /tmp/screenshot.png'
 
 ### Keybindings — focus

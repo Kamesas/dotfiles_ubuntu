@@ -1,33 +1,41 @@
 # Voice Dictation Setup
 
 Offline push-to-talk dictation for the whole desktop (Sway session).
-Press **Alt+V** anywhere, speak, press **Alt+V** again — the text is typed
-into the focused window. Works in English and Ukrainian (auto-detected).
+Hold **Alt+R** anywhere, speak, release — the text is typed into the
+focused window. Works in English and Ukrainian (auto-detected).
 Everything runs locally, no internet needed, no cost.
 
 ## How to use
 
-- **Alt+V** or click the mic icon in waybar → start recording.
+- Hold **Alt+R** → recording runs while the keys are held.
   The bar shows a red ` REC`.
-- Speak.
-- **Alt+V** (or click `REC`) → stop. The bar shows ` …` while the model
-  works (about 1 s per short phrase), then the text is typed into the
-  focused window.
-- **Alt+Shift+V** to stop instead → forced-Ukrainian mode: slower (~6 s)
-  but clean Ukrainian. The key that *stops* the recording picks the
-  engine, so you can decide at the end.
+- Speak, then release. The bar shows ` …` while the model works (about
+  1 s per short phrase), then the text is typed into the focused window.
+- Hold **Alt+Shift+R** instead → forced-Ukrainian mode: slower (~6 s)
+  but clean Ukrainian. The key that *ends* the recording picks the
+  engine, so adding Shift just before releasing also works.
+- Click the mic icon in waybar → old toggle mode: click once to start,
+  click `REC` to stop. Useful for long dictation without holding keys.
+
+Guards against accidental recordings:
+
+- A tap shorter than half a second is dropped silently — nothing is
+  transcribed or typed.
+- Any recording still running after **3 minutes** is stopped by a
+  watchdog: nothing is typed, a notification appears, and the audio is
+  kept at `/run/user/1000/dictate-failed.wav` in case it was wanted.
 
 The keyboard layout also steers the language:
 
 - **Ukrainian layout active** → every dictation is pinned to Ukrainian
-  automatically (~6 s), no Alt+Shift+V needed.
+  automatically (~6 s), no Alt+Shift+R needed.
 - **English layout** → the fast engine runs (~1 s). If it returns mostly
   Cyrillic anyway (it sometimes writes English speech in Ukrainian
   letters), the script notices the mismatch with the layout and redoes it
   pinned to English (~+2.5 s).
 - Consequence: to dictate Ukrainian, either switch the layout to Ukrainian
-  first or stop with Alt+Shift+V. Ukrainian spoken with an English layout
-  and stopped with plain Alt+V will be forced into English.
+  first or stop with Alt+Shift+R. Ukrainian spoken with an English layout
+  and stopped with plain Alt+R will be forced into English.
 - Idle state: dim mic icon in the bar. Hover it for a hint.
 - In **nvim** enter insert mode first — otherwise the letters run as
   normal-mode commands.
@@ -44,9 +52,9 @@ Notifications appear only on problems:
 
 | File | Role |
 |---|---|
-| `bin/.local/bin/dictate` | Toggle script: record → transcribe → type |
+| `bin/.local/bin/dictate` | Script: record → transcribe → type. Takes `start`, `stop [uk]`, or no arg (toggle, for the waybar click) |
 | `bin/.local/bin/dictate-status` | Waybar module state (idle / recording / busy) |
-| `sway/.config/sway/config` | `bindsym Alt+v exec ~/.local/bin/dictate` |
+| `sway/.config/sway/config` | `Alt+r` press → `dictate start`, release (`bindsym --release`) → `dictate stop` |
 | `waybar/.config/waybar/config` | `custom/dictate` module (signal 10, click to toggle) |
 | `waybar/.config/waybar/style.css` | Module colors: dim idle, red recording, peach busy |
 | `~/.local/opt/whisper.cpp/` | Speech-to-text engine (outside dotfiles, see below) |
@@ -57,10 +65,13 @@ used), `dictate-failed.wav` (audio of the last empty result).
 
 ## How it works
 
-1. First run: `pw-record` starts capturing the default mic to a 16 kHz mono
-   WAV. A pidfile marks "recording". The script refuses to start if the mic
-   is muted.
-2. Second run: the recorder is stopped and the engine is chosen — forced
+1. Key press (`dictate start`): `pw-record` starts capturing the default
+   mic to a 16 kHz mono WAV. A pidfile marks "recording". The script
+   refuses to start if the mic is muted. A background watchdog stops any
+   recording older than 3 minutes without transcribing it.
+2. Key release (`dictate stop`): the recorder is stopped. Clips under
+   half a second are dropped silently (accidental tap). Then the engine
+   is chosen — forced
    Ukrainian (whisper small `-l uk`) when the `uk` argument was given or
    any keyboard reports a Ukrainian active layout (checked via
    `swaymsg -t get_inputs`), otherwise `parakeet-cli` (NVIDIA Parakeet TDT
@@ -100,11 +111,11 @@ used), `dictate-failed.wav` (audio of the last empty result).
 Engine and models live in `~/.local/opt/whisper.cpp` (built from
 [ggml-org/whisper.cpp](https://github.com/ggml-org/whisper.cpp)):
 
-- `models/ggml-parakeet-tdt-0.6b-v3-q8_0.bin` — default engine (Alt+V).
+- `models/ggml-parakeet-tdt-0.6b-v3-q8_0.bin` — default engine (Alt+R).
   25 European languages, auto language detection, ~1 s per phrase. No way
   to force a language — the CLI has no language option. Weakness: mixes
   Russian into Ukrainian speech.
-- `models/ggml-small.bin` — Ukrainian engine (Alt+Shift+V), run with
+- `models/ggml-small.bin` — Ukrainian engine (Alt+Shift+R), run with
   `-l uk` pinned, ~6 s per phrase. Pinning the language matters twice:
   it skips the detection pass (auto-detect costs ~20 s, pinned ~6 s) and
   it stops the Russian drift.

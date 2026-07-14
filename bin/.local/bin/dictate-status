@@ -6,7 +6,7 @@
 # survives any tool that mangles private-use characters.
 
 case "$(cat "$XDG_RUNTIME_DIR/dictate.state" 2>/dev/null)" in
-    rec)  printf '{"text":" REC","tooltip":"Dictation: recording - Alt+V to stop","class":"recording"}\n' ;;
+    rec)  printf '{"text":" REC","tooltip":"Dictation: recording - release Alt+R (or click) to stop","class":"recording"}\n' ;;
     busy) printf '{"text":" ...","tooltip":"Dictation: transcribing...","class":"busy"}\n' ;;
-    *)    printf '{"text":"","tooltip":"Dictation: Alt+V or click to start","class":"idle"}\n' ;;
+    *)    printf '{"text":"","tooltip":"Dictation: hold Alt+R, or click to start","class":"idle"}\n' ;;
 esac

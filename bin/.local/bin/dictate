@@ -1,18 +1,27 @@
 #!/bin/bash
-# Push-to-talk dictation for any window. First run starts recording the mic;
-# second run stops it, turns the speech into text (offline), and types the
-# result into the focused window. Press once to talk, once more to finish.
+# Push-to-talk dictation for any window. Hold Alt+R, speak, release — the
+# speech is turned into text (offline) and typed into the focused window.
 # State shows in waybar via the custom/dictate module, not in notifications;
 # only failures produce a notification.
 #
+# Commands:
+#   dictate start      — begin recording (key press)
+#   dictate stop [uk]  — stop, transcribe, type (key release)
+#   dictate [uk]       — toggle, kept for the waybar click
+#
 # Two engines, chosen by the key that stops the recording:
-#   Alt+V        (no arg) — Parakeet: ~1 s, auto language, but mixes
+#   Alt+R        (no arg) — Parakeet: ~1 s, auto language, but mixes
 #                Russian into Ukrainian speech.
-#   Alt+Shift+V  ("uk")   — Whisper small pinned to Ukrainian: ~6 s,
+#   Alt+Shift+R  ("uk")   — Whisper small pinned to Ukrainian: ~6 s,
 #                clean Ukrainian.
 
 WHISPER_DIR=~/.local/opt/whisper.cpp
-LANG_MODE="$1"
+
+ACTION="$1"
+case "$ACTION" in
+    start|stop) LANG_MODE="$2" ;;
+    *) LANG_MODE="$ACTION"; ACTION=toggle ;;
+esac
 
 # Character counting and Cyrillic matching need a UTF-8 locale; sway may
 # start the script without one.
@@ -28,12 +37,20 @@ set_state() {  # rec | busy | "" (idle)
     pkill -SIGRTMIN+10 waybar
 }
 
-# Second press: stop the recorder and let the WAV file close cleanly.
+# Recording active: stop the recorder and let the WAV file close cleanly.
 if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    [ "$ACTION" = start ] && exit 0
     kill -INT "$(cat "$PIDFILE")"
     rm -f "$PIDFILE"
     set_state busy
     sleep 0.3
+
+    # Under half a second of audio is an accidental tap — drop it silently.
+    if [ "$(stat -c%s "$WAV" 2>/dev/null || echo 0)" -lt 16000 ]; then
+        rm -f "$WAV"
+        set_state ""
+        exit 0
+    fi
 
     run_whisper() {  # $1 = language, $2 = model size
         "$WHISPER_DIR/build/bin/whisper-cli" -m "$WHISPER_DIR/models/ggml-$2.bin" \
@@ -118,8 +135,11 @@ walk(json.load(sys.stdin))")
     exit 0
 fi
 
-# First press: start recording. Refuse while the mic is muted — recording
-# would only produce silence and a confusing "Heard nothing".
+# Nothing is recording: a stray key release has nothing to do.
+[ "$ACTION" = stop ] && exit 0
+
+# Start recording. Refuse while the mic is muted — recording would only
+# produce silence and a confusing "Heard nothing".
 if [[ "$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)" == *MUTED* ]]; then
     notify-send -u critical -t 4000 "Dictation" "Mic is muted (Alt+M or click the bar icon)"
     exit 1
@@ -127,5 +147,20 @@ fi
 
 rm -f "$WAV"
 pw-record --format=s16 --rate=16000 --channels=1 "$WAV" > /dev/null 2>&1 &
-echo $! > "$PIDFILE"
+rec_pid=$!
+echo "$rec_pid" > "$PIDFILE"
 set_state rec
+
+# Watchdog: a recording running this long was forgotten (missed release,
+# stray waybar click). Stop it and keep the audio instead of transcribing
+# a huge accidental clip.
+(
+    sleep 180
+    [ "$(cat "$PIDFILE" 2>/dev/null)" = "$rec_pid" ] || exit 0
+    kill -INT "$rec_pid"
+    rm -f "$PIDFILE"
+    mv -f "$WAV" "$XDG_RUNTIME_DIR/dictate-failed.wav"
+    set_state ""
+    notify-send -u critical -t 6000 "Dictation" "Recording ran 3 min — stopped, nothing typed. Audio kept at dictate-failed.wav"
+    echo "$(date +%T) engine=watchdog audio=180s" >> "$LOG"
+) &
