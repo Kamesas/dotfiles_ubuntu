@@ -151,16 +151,21 @@ rec_pid=$!
 echo "$rec_pid" > "$PIDFILE"
 set_state rec
 
-# Watchdog: a recording running this long was forgotten (missed release,
-# stray waybar click). Stop it and keep the audio instead of transcribing
-# a huge accidental clip.
+# Watchdog: a recording running this long was forgotten. A push-to-talk
+# hold (Alt+r) can miss its key release and stick — through kanata's
+# tap-hold mods, Alt often lifts just before r, so Sway sees a plain r
+# release, matches no binding, and the stop never runs. Hold mode gets a
+# short limit so a stuck recording heals in seconds; the waybar-click
+# toggle keeps a long limit because that mode is meant for long dictation.
+# Either way the clip is dropped, not transcribed.
+if [ "$ACTION" = start ]; then WATCHDOG=30; else WATCHDOG=180; fi
 (
-    sleep 180
+    sleep "$WATCHDOG"
     [ "$(cat "$PIDFILE" 2>/dev/null)" = "$rec_pid" ] || exit 0
     kill -INT "$rec_pid"
     rm -f "$PIDFILE"
     mv -f "$WAV" "$XDG_RUNTIME_DIR/dictate-failed.wav"
     set_state ""
-    notify-send -u critical -t 6000 "Dictation" "Recording ran 3 min — stopped, nothing typed. Audio kept at dictate-failed.wav"
-    echo "$(date +%T) engine=watchdog audio=180s" >> "$LOG"
+    notify-send -u critical -t 6000 "Dictation" "Recording ran ${WATCHDOG}s — stopped, nothing typed. Audio kept at dictate-failed.wav"
+    echo "$(date +%T) engine=watchdog audio=${WATCHDOG}s" >> "$LOG"
 ) &

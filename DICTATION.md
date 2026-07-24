@@ -21,9 +21,12 @@ Guards against accidental recordings:
 
 - A tap shorter than half a second is dropped silently — nothing is
   transcribed or typed.
-- Any recording still running after **3 minutes** is stopped by a
-  watchdog: nothing is typed, a notification appears, and the audio is
-  kept at `/run/user/1000/dictate-failed.wav` in case it was wanted.
+- A hold-to-talk recording (Alt+R) still running after **30 seconds** is
+  stopped by a watchdog. A held key sometimes misses its release and sticks,
+  so hold mode gets a short limit. The waybar-click toggle keeps a longer
+  **3-minute** limit for long dictation. Either way nothing is typed, a
+  notification appears, and the audio is kept at
+  `/run/user/1000/dictate-failed.wav` in case it was wanted.
 
 The keyboard layout also steers the language:
 
@@ -67,8 +70,9 @@ used), `dictate-failed.wav` (audio of the last empty result).
 
 1. Key press (`dictate start`): `pw-record` starts capturing the default
    mic to a 16 kHz mono WAV. A pidfile marks "recording". The script
-   refuses to start if the mic is muted. A background watchdog stops any
-   recording older than 3 minutes without transcribing it.
+   refuses to start if the mic is muted. A background watchdog stops a
+   forgotten recording without transcribing it: 30 s for a key hold (which
+   can miss its release and stick), 3 minutes for the waybar toggle.
 2. Key release (`dictate stop`): the recorder is stopped. Clips under
    half a second are dropped silently (accidental tap). Then the engine
    is chosen — forced
