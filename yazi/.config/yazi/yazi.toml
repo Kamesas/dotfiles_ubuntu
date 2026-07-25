@@ -1,3 +1,14 @@
 [mgr]
 ratio = [2, 3, 5]
 
+# Open images in imv instead of the browser
+[opener]
+image = [
+	{ run = 'imv "$@"', desc = "imv", orphan = true, for = "unix" },
+]
+
+[open]
+rules = [
+	{ mime = "image/*", use = "image" },
+]
+
