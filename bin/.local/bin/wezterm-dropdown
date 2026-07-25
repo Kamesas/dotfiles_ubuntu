@@ -75,7 +75,10 @@ for w in json.load(sys.stdin):
 if [ -n "$SWAYSOCK" ]; then
     HIDE_OTHER='[app_id="kitty-dropdown"] move scratchpad'
     if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
-        WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
+        # WAYLAND_DISPLAY must be empty only for WezTerm's own rendering (XWayland).
+        # Shells inside still need the real socket for wl-copy/wl-paste, so pass it
+        # along under another name; dropdown.lua restores it for spawned programs.
+        DROPDOWN_WAYLAND_DISPLAY="$WAYLAND_DISPLAY" WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
         for i in $(seq 1 50); do
             is_dropdown_mapped && break
             sleep 0.1
@@ -91,7 +94,8 @@ fi
 
 # Start WezTerm under XWayland if not already running
 if ! pgrep -f "wezterm.*dropdown.lua" > /dev/null; then
-    WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
+    # Same WAYLAND_DISPLAY hand-off as the Sway branch above.
+    DROPDOWN_WAYLAND_DISPLAY="$WAYLAND_DISPLAY" WAYLAND_DISPLAY= DISPLAY=:0 wezterm --config-file "$CONFIG" start --class "$WM_CLASS" &
     exit 0
 fi
 

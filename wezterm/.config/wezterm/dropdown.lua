@@ -36,6 +36,14 @@ config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 -- is first created, not on every resize after.
 config.adjust_window_size_when_changing_font_size = false
 
+-- WezTerm itself runs with WAYLAND_DISPLAY empty (XWayland mode; see the
+-- wezterm-dropdown launcher). Programs inside still need the real Wayland
+-- socket for wl-copy/wl-paste, so restore it from the launcher's hand-off.
+local real_wayland = os.getenv("DROPDOWN_WAYLAND_DISPLAY")
+if real_wayland and real_wayland ~= "" then
+	config.set_environment_variables = { WAYLAND_DISPLAY = real_wayland }
+end
+
 -- Attach to the persistent dropdown tmux session
 config.default_prog = { "tmux", "new-session", "-As", "dropdown" }
 
@@ -85,6 +93,11 @@ config.keys = {
 	{ key = "7", mods = "ALT", action = wezterm.action.SendKey({ key = "7", mods = "ALT" }) },
 	{ key = "8", mods = "ALT", action = wezterm.action.SendKey({ key = "8", mods = "ALT" }) },
 	{ key = "9", mods = "ALT", action = wezterm.action.SendKey({ key = "9", mods = "ALT" }) },
+	-- Encode Ctrl+punctuation as CSI-u so tmux/nvim can bind <C-.> <C-,> <C-;>.
+	-- Terminals send nothing useful for these by default; same trick as kitty.conf.
+	{ key = ".", mods = "CTRL", action = wezterm.action.SendString("\x1b[46;5u") },
+	{ key = ",", mods = "CTRL", action = wezterm.action.SendString("\x1b[44;5u") },
+	{ key = ";", mods = "CTRL", action = wezterm.action.SendString("\x1b[59;5u") },
 }
 
 -- WezTerm's own keytable has separate default entries for the "shifted" and
