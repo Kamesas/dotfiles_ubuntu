@@ -73,5 +73,8 @@ port=${label_to_port[$chosen]}
 
 pactl set-default-source "$src"
 [ -n "$port" ] && pactl set-source-port "$src" "$port"
+# Mute is saved per device. A source muted while it was default stays muted
+# with nothing to show it, so picking a mic here always unmutes it.
+pactl set-source-mute "$src" 0
 pkill -SIGRTMIN+9 waybar
 notify-send "Microphone" "Switched to ${chosen:2}"
