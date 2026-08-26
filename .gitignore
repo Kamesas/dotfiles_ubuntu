@@ -72,3 +72,12 @@ fish/.config/fish/fish_variables
 # Application-specific caches
 **/.config/*/Cache/
 **/.config/*/cache/
+
+# Stow can fold ~/.local into bin/.local when ~/.local does not exist yet. Then
+# everything written to ~/.local lands in this repo: nvim plugins, the trash,
+# zoxide's db, installed binaries. None of it belongs here.
+bin/.local/share/
+bin/.local/state/
+bin/.local/bin/claude
+bin/.local/bin/yazi
+bin/.local/bin/ya
