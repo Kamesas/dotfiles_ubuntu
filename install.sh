@@ -26,10 +26,12 @@ OPTIONAL_PACKAGES=("tmux" "wezterm" "kitty" "bin" "misc" "fish" "btop" "flamesho
 # Manual links — configs Stow can't manage:
 #  - nvim: a whole-folder link (the package is not laid out for Stow)
 #  - CLAUDE.md: one file inside ~/.claude, which also holds private files
+#  - skills: a whole-folder link into the same ~/.claude
 # Format: "source:destination"
 MANUAL_LINKS=(
     "$DOTFILES_DIR/nvim:$HOME/.config/nvim"
     "$DOTFILES_DIR/.claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
+    "$DOTFILES_DIR/.claude/skills:$HOME/.claude/skills"
 )
 
 print_header() {
