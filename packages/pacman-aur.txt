@@ -1,0 +1,11 @@
+duckstation-qt-bin
+fprintd-clients-git
+google-chrome
+kanata
+open-fprintd
+pcsx2-latest-bin
+python-validity
+slack-desktop
+wayfreeze-git
+wlogout
+yay-bin
