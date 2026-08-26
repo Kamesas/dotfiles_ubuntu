@@ -94,10 +94,10 @@ create_backup() {
                 cp -r "$source" "$dest"
                 print_success "Backed up: $item"
             fi
-            ((backed_up++))
+            backed_up=$((backed_up + 1))
         else
             print_warning "Skipped (not found): $item"
-            ((skipped++))
+            skipped=$((skipped + 1))
         fi
     done
     
@@ -212,7 +212,7 @@ restore_backup() {
             # Restore
             cp -r "$item" "$dest"
             print_success "Restored: $item"
-            ((restored++))
+            restored=$((restored + 1))
         fi
     done
     
@@ -257,7 +257,7 @@ clean_old_backups() {
         local backup="${backups[$i]}"
         rm -rf "$BACKUP_DIR/$backup"
         print_success "Deleted: $backup"
-        ((deleted++))
+        deleted=$((deleted + 1))
     done
     
     echo ""

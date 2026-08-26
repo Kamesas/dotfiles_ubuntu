@@ -3,6 +3,12 @@ return {
     "anurag3301/nvim-platformio.lua",
     -- Load shortly after startup so the <leader>p which-key menu is registered.
     event = "VeryLazy",
+    -- The plugin shells out to `pio` as soon as it loads, so skip it on
+    -- machines where PlatformIO is not installed.
+    cond = function()
+      return vim.fn.executable("pio") == 1
+        or vim.fn.isdirectory(vim.fn.expand("~/.platformio/penv/bin")) == 1
+    end,
     dependencies = {
       "akinsho/toggleterm.nvim",
       "nvim-telescope/telescope.nvim",

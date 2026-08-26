@@ -203,9 +203,9 @@ install_all() {
     for pkg in "${CORE_PACKAGES[@]}"; do
         if [ -d "$DOTFILES_DIR/$pkg" ]; then
             if install_package "$pkg"; then
-                ((installed++))
+                installed=$((installed + 1))
             else
-                ((failed++))
+                failed=$((failed + 1))
             fi
         fi
     done
@@ -216,9 +216,9 @@ install_all() {
     for pkg in "${OPTIONAL_PACKAGES[@]}"; do
         if [ -d "$DOTFILES_DIR/$pkg" ]; then
             if install_package "$pkg"; then
-                ((installed++))
+                installed=$((installed + 1))
             else
-                ((failed++))
+                failed=$((failed + 1))
             fi
         fi
     done
@@ -252,9 +252,9 @@ install_specific() {
     
     for pkg in "${packages[@]}"; do
         if install_package "$pkg"; then
-            ((installed++))
+            installed=$((installed + 1))
         else
-            ((failed++))
+            failed=$((failed + 1))
         fi
     done
     
@@ -288,7 +288,7 @@ uninstall_all() {
     for pkg in "${CORE_PACKAGES[@]}" "${OPTIONAL_PACKAGES[@]}"; do
         if [ -d "$DOTFILES_DIR/$pkg" ]; then
             if uninstall_package "$pkg"; then
-                ((uninstalled++))
+                uninstalled=$((uninstalled + 1))
             fi
         fi
     done

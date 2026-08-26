@@ -30,7 +30,7 @@ fi
 if [ -f "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
 fi
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 
 # Added by Antigravity CLI installer

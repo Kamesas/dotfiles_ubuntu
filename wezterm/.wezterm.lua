@@ -55,7 +55,16 @@ config.window_background_opacity = 0.95
 
 -- Remove decorations like Guake
 config.enable_tab_bar = false
-config.window_decorations = "NONE"
+
+-- Windows has no tiling compositor to move or resize the window, so it keeps a
+-- resize border. On Linux sway does that job and the border is not needed.
+local is_windows = wezterm.target_triple:find("windows") ~= nil
+config.window_decorations = is_windows and "RESIZE" or "NONE"
+
+-- On Windows the shell lives in WSL, so open there instead of PowerShell.
+if is_windows then
+	config.default_domain = "WSL:Ubuntu"
+end
 
 -- Remove padding
 config.window_padding = {
