@@ -26,6 +26,11 @@ works everywhere.
 | `~/.config/nvim` → `nvim/` | Neovim config (whole folder) |
 | `~/.claude/CLAUDE.md` → `.claude/CLAUDE.md` | Claude Code rules |
 
+**Windows** (`windows/`) — the AutoHotkey window manager, the dropdown terminals
+and the PowerShell profile that make Windows 11 behave like Sway. Not stowed:
+these are copies, moved either way by `sync-windows`. Read
+[WINDOWS-SETUP.md](WINDOWS-SETUP.md) first.
+
 ## Install
 
 Everything at once:

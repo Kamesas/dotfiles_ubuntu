@@ -1,15 +1,16 @@
 # Windows setup — the Sway-alike half
 
-This repo is `dotfiles_ubuntu` and predates the Windows machine, so nothing in
-this file is stowed by `install.sh` and none of the Windows paths below are
-symlinked from here. It is a map, not a managed config.
+The Windows half is in this repo, under `windows/`, but it is **not** stowed by
+`install.sh`. Stow makes symlinks, and a Windows symlink into `\\wsl.localhost`
+breaks whenever the distro is not running. So these are copies, kept honest by
+`sync-windows`. See "Files" below.
 
 The goal driving all of it: alex used Arch + Sway before this machine and wants
 Windows to feel the same — keyboard-first, no mouse, a Linux userland
 underneath. When choosing between "the Sway way" and "the idiomatic Windows
 way", Sway wins.
 
-Verified against the live machine on **2026-08-26**. Re-check anything before
+Verified against the live machine on **2026-08-27**. Re-check anything before
 relying on it.
 
 ---
@@ -79,15 +80,30 @@ empty desktop then `Alt+U` is the whole "open this somewhere new" flow.
 
 ---
 
-## Files (Windows side — unmanaged by this repo)
+## Files (Windows side)
 
-| Path | What |
+Every one of these is copied into this repo. `sync-windows` moves them either
+way — see "The Windows files are copies" at the bottom.
+
+| Live path | In the repo | What |
+|---|---|---|
+| `C:\Users\alex\.config\ahk\sway.ahk` | `windows/.config/ahk/sway.ahk` | All Windows-side behaviour: hotkeys, dropdown, workspace indicator |
+| `C:\Users\alex\.config\ahk\*-winl.reg` | `windows/.config/ahk/` | Frees Win+L, and the undo for it |
+| `C:\Users\alex\.wezterm.lua` | `wezterm/.wezterm.lua` | Terminal config, shared with Linux |
+| `C:\Users\alex\.wezterm-win.lua` | `windows/.wezterm-win.lua` | Read only by the Alt+E dropdown; adds WezTerm tabs and panes |
+| `C:\Users\alex\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | `windows/Documents/…` | Loaded by the Alt+E dropdown; defines the `ya` function |
+
+Two more pieces of the setup are not files, so no copy can carry them.
+`windows/install.ps1` creates both:
+
+| | What |
 |---|---|
-| `C:\Users\alex\.config\ahk\sway.ahk` | All Windows-side behaviour: hotkeys, dropdown, workspace indicator |
-| `C:\Users\alex\.wezterm.lua` | Terminal config — **not** the repo's copy, see Known drift |
-| `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\settings.json` | Alt+U |
-| `%APPDATA%\…\Start Menu\Programs\Startup\sway.ahk.lnk` | Runs `AutoHotkey64.exe "…\sway.ahk"` at login |
-| `C:\Users\alex\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | Loaded by the Alt+E dropdown; defines the `ya` function |
+| `%APPDATA%\…\Startup\sway.ahk.lnk` | Runs `AutoHotkey64.exe "…\sway.ahk"` at login |
+| `YAZI_FILE_ONE` (user env var) | Points yazi at `file.exe` for MIME detection |
+
+**Left out on purpose:** `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\settings.json`.
+PowerToys owns that file and rewrites it by itself, so tracking it would produce
+diffs nobody made. The only setting that matters is `Alt+U`, written down above.
 
 WSL side, symlinked from this repo as usual:
 `~/.config/tmux/tmux.conf` → `tmux/.config/tmux/tmux.conf`, and
@@ -382,23 +398,6 @@ global**, so their prefix is mandatory — typing `uninstall` bare matches nothi
 
 ## Deliberately not implemented
 
-**Version control for the Windows-side files.** Raised 2026-08-26 and
-**postponed by alex** — a known, accepted gap, not an oversight. Do not keep
-offering it; wait to be asked.
-
-These four carry real configuration and sit in no repository:
-
-| File | What would be lost |
-|---|---|
-| `.config\ahk\sway.ahk` | every keybinding, the workspace bar, the animation suppression |
-| `Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | the `ya` function |
-| `%APPDATA%\…\Startup\sway.ahk.lnk` | what starts it all at login |
-| `YAZI_FILE_ONE` (user env var) | yazi's MIME detection |
-
-Only `.wezterm.lua` is covered, by `sync-wezterm`. The shape of the fix is
-already proven: generalise that script into a `sync-windows` covering all of
-them, then one commit in this repo captures the lot.
-
 **Moving a window between desktops (`Win+J/K` in Sway).** Asked for on
 2026-08-26 and declined after measuring the options. Do not re-propose without
 new information.
@@ -424,28 +423,48 @@ alex says otherwise. Moving a window between desktops is a Task View job
 
 ---
 
-## The WezTerm config lives in two places
+## The Windows files are copies, not symlinks
 
-`wezterm/.wezterm.lua` in this repo and `C:\Users\alex\.wezterm.lua` on the
-Windows filesystem are **copies of the same file**, currently byte-identical.
+`windows/` in this repo and the live files under `C:\Users\alex` are copies of
+each other, currently byte-identical.
 
-They are not symlinked, on purpose: WezTerm reads its config at launch, and a
-Windows symlink into `\\wsl.localhost\…` fails whenever the distro is not yet
-running. A copy always works; it just has to be kept honest.
+They are not symlinked, on purpose: these files are read at launch, and a Windows
+symlink into `\\wsl.localhost\…` fails whenever the distro is not yet running.
+`sway.ahk` starts at login, before WSL is up. A copy always works; it just has to
+be kept honest.
+
+**Keeping them honest:** `sync-windows` (in `bin/.local/bin`, so it stows onto
+`$PATH`). Run it from WSL.
+
+```
+sync-windows          # show what drifted, change nothing
+sync-windows pull     # Windows -> repo, capturing edits made on Windows
+sync-windows push     # repo -> Windows, then reload sway.ahk / restart WezTerm
+```
+
+It assumes the WSL user name matches the Windows one. Set `WIN_HOME` if not.
+
+### Rebuilding this on a new machine
+
+1. Install the pieces:
+   `winget install AutoHotkey.AutoHotkey Git.Git Microsoft.PowerToys sxyazi.yazi wez.wezterm`
+   Git is wanted only for the Unix `file.exe` that yazi needs.
+2. Install WSL Ubuntu, clone this repo into it, run `./install.sh`.
+3. From WSL: `sync-windows push` — puts every config file in place.
+4. From PowerShell: `powershell -ExecutionPolicy Bypass -File windows\install.ps1`
+   — makes the login shortcut and sets `YAZI_FILE_ONE`.
+5. By hand: run `.config\ahk\enable-winl.reg` as admin and sign out, then bind
+   `Alt+U` in PowerToys Run settings.
+
+### Why .wezterm.lua is not in windows/
 
 One file serves both platforms — it branches on `wezterm.target_triple`, so
 `window_decorations` is `RESIZE` on Windows and `NONE` on Linux (where Sway drew
 the border), and `default_domain = "WSL:Ubuntu"` is set only on Windows. There is
-no per-platform version to keep apart.
+no per-platform version to keep apart, so it stays in the `wezterm` stow package:
+Linux gets it as a symlink, and `sync-windows` copies that same file to Windows.
 
-**Keeping them honest:** `sync-wezterm` (in `bin/.local/bin`, so it stows onto
-`$PATH`).
-
-```
-sync-wezterm          # show the difference, change nothing
-sync-wezterm pull     # Windows -> repo, capturing edits made on Windows
-sync-wezterm push     # repo -> Windows, then restart WezTerm
-```
+`.wezterm-win.lua` is genuinely Windows-only, so it does live in `windows/`.
 
 *History, so the same reasoning is not redone:* the repo copy sat 37 lines
 behind for a while — it was missing the `is_windows` branch, the WSL default

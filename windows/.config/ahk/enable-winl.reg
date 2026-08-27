@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+; Frees Win+L so sway.ahk can bind it to "next virtual desktop".
+; Locking moves to Win+Shift+L (bound in sway.ahk) and Ctrl+Alt+Del.
+; Undo with disable-winl.reg. Requires admin; takes effect after sign-out.
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System]
+"DisableLockWorkstation"=dword:00000001

@@ -50,9 +50,6 @@ config.colors = {
 	},
 }
 
--- Transparency (adjust value between 0.0 and 1.0)
-config.window_background_opacity = 0.95
-
 -- Remove decorations like Guake
 config.enable_tab_bar = false
 
@@ -73,8 +70,18 @@ config.window_padding = {
 	top = 0,
 	bottom = 0,
 }
--- Or use this to start in fullscreen
-wezterm.on("gui-startup", function()
+-- Start maximized. The handler must also honour a command passed on the command
+-- line: WezTerm hands it in as `cmd`, and once a gui-startup handler exists
+-- WezTerm stops spawning the initial window itself. Ignoring `cmd` therefore
+-- spawns the default (WSL) window *in addition to* the requested one -- which is
+-- how `wezterm start -- powershell.exe` ended up opening two windows, one zsh
+-- and one PowerShell. With no command, `cmd` is nil and this behaves as before.
+wezterm.on("gui-startup", function(cmd)
+	-- A command from the CLI is spawned by WezTerm itself; spawning it here as
+	-- well produces two windows. Stand aside and let it do that.
+	if cmd then
+		return
+	end
 	local tab, pane, window = wezterm.mux.spawn_window({})
 	window:gui_window():maximize()
 end)
@@ -99,8 +106,42 @@ local function reset_font_size(window)
 	window:set_config_overrides(overrides)
 end
 
+-- Send the Kitty keyboard protocol so combos like Ctrl+. and Ctrl+, reach
+-- apps distinctly. Without it, terminals fall back to clearing the top bits
+-- of the key's ASCII code, which makes Ctrl+. collide with Ctrl+N and
+-- Ctrl+, collide with Ctrl+L.
+--
+-- This only takes effect once the running app *asks* for the protocol, which
+-- Neovim does -- but only when it is talking to WezTerm directly. Under tmux
+-- the app on the other end is tmux, and tmux never asks for Kitty; it asks
+-- for xterm's modifyOtherKeys instead, which WezTerm does not answer. So in
+-- the WezTerm > WSL > tmux > Neovim stack nothing distinct was being sent and
+-- the keys silently did nothing. See CSI_U below.
+config.enable_kitty_keyboard = true
+
+-- Emit the CSI u encoding for a key ourselves, instead of waiting to be asked
+-- for it. CSI u spells a key out as <ESC>[<codepoint>;<mods>u, so Ctrl+. is
+-- ESC [46;5u (46 = ".", 5 = 1 + 4 for Ctrl).
+--
+-- tmux decodes these on input regardless of which protocol it negotiated
+-- upstream, then re-encodes them for Neovim in whatever format its
+-- extended-keys-format says -- so the whole chain works without depending on
+-- WezTerm and tmux agreeing on a protocol. Neovim reading WezTerm directly
+-- gets the same bytes the Kitty protocol would have produced, so nothing
+-- regresses outside tmux.
+local function csi_u(codepoint, mods)
+	return wezterm.action.SendString("\x1b[" .. codepoint .. ";" .. mods .. "u")
+end
+
+local CTRL = 5 -- 1 + 4
+
 -- Key bindings
 config.keys = {
+	-- Ctrl+. and Ctrl+, -- ToggleTerm in LazyVim.
+	{ key = ".", mods = "CTRL", action = csi_u(46, CTRL) },
+	{ key = ",", mods = "CTRL", action = csi_u(44, CTRL) },
+	-- Ctrl+; -- tmux copy-mode in a shell, exit terminal mode inside Neovim.
+	{ key = ";", mods = "CTRL", action = csi_u(59, CTRL) },
 	-- Map F11 to toggle fullscreen
 	{
 		key = "F11",

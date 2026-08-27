@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+; Undoes enable-winl.reg: Win+L locks the workstation again, and the #l
+; binding in sway.ahk goes back to never firing.
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System]
+"DisableLockWorkstation"=-

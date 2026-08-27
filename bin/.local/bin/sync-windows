@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# The Windows-side config files live on the Windows filesystem, outside this
+# repo. They cannot be symlinked the way stow links the Linux ones: a Windows
+# symlink into \\wsl.localhost breaks whenever the distro is not running, and
+# sway.ahk starts at login, before WSL is up. So they are copies, and copies
+# drift. This is how the drift gets noticed and closed.
+#
+#   sync-windows          show what drifted, change nothing
+#   sync-windows pull     Windows -> repo   (capture edits made on Windows)
+#   sync-windows push     repo -> Windows   (apply edits made in the repo)
+#
+# The Startup shortcut and the YAZI_FILE_ONE variable are not files, so they
+# are not listed here. windows/install.ps1 creates both.
+set -euo pipefail
+
+repo_root="$HOME/dotfiles"
+
+# The WSL user name is assumed to match the Windows one. Set WIN_HOME if not.
+win_home="${WIN_HOME:-/mnt/c/Users/$USER}"
+
+# repo path | windows path, each relative to the root above.
+# .wezterm.lua sits in the wezterm stow package rather than windows/, because
+# the same file is also stowed into the Linux home -- it branches on
+# wezterm.target_triple and serves both platforms.
+files=(
+  "wezterm/.wezterm.lua|.wezterm.lua"
+  "windows/.wezterm-win.lua|.wezterm-win.lua"
+  "windows/.config/ahk/sway.ahk|.config/ahk/sway.ahk"
+  "windows/.config/ahk/enable-winl.reg|.config/ahk/enable-winl.reg"
+  "windows/.config/ahk/disable-winl.reg|.config/ahk/disable-winl.reg"
+  "windows/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1|Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+)
+
+action="${1:-diff}"
+case "$action" in
+  diff|pull|push) ;;
+  *) echo "usage: sync-windows [diff|pull|push]" >&2; exit 2 ;;
+esac
+
+[ -d "$win_home" ] || {
+  echo "no $win_home -- not on the Windows machine, or the user name differs (set WIN_HOME)" >&2
+  exit 1
+}
+
+changed=0
+missing=0
+
+for pair in "${files[@]}"; do
+  rel_repo="${pair%%|*}"
+  rel_win="${pair##*|}"
+  repo="$repo_root/$rel_repo"
+  win="$win_home/$rel_win"
+
+  case "$action" in
+    diff)
+      if [ ! -f "$repo" ]; then
+        echo "MISSING IN REPO     $rel_repo"; missing=1
+      elif [ ! -f "$win" ]; then
+        echo "MISSING ON WINDOWS  $rel_win"; missing=1
+      elif ! diff -q "$repo" "$win" >/dev/null; then
+        echo "DIFFERENT           $rel_repo"
+        diff -u "$repo" "$win" || true
+        changed=1
+      fi
+      ;;
+    pull)
+      if [ ! -f "$win" ]; then
+        echo "skip (not on Windows) $rel_win"; missing=1
+      elif ! diff -q "$repo" "$win" >/dev/null 2>&1; then
+        mkdir -p "$(dirname "$repo")"
+        cp "$win" "$repo"
+        echo "pulled  $rel_repo"
+        changed=1
+      fi
+      ;;
+    push)
+      if [ ! -f "$repo" ]; then
+        echo "skip (not in repo) $rel_repo"; missing=1
+      elif ! diff -q "$repo" "$win" >/dev/null 2>&1; then
+        mkdir -p "$(dirname "$win")"
+        cp "$repo" "$win"
+        echo "pushed  $rel_win"
+        changed=1
+      fi
+      ;;
+  esac
+done
+
+if [ "$changed" = 0 ]; then
+  echo "in sync"
+elif [ "$action" = pull ]; then
+  echo "-- commit the result"
+elif [ "$action" = push ]; then
+  echo "-- reload sway.ahk and restart WezTerm to pick the changes up"
+fi
+
+[ "$missing" = 0 ] || exit 1
