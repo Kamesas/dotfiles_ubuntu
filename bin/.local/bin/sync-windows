@@ -5,6 +5,8 @@
 # sway.ahk starts at login, before WSL is up. So they are copies, and copies
 # drift. This is how the drift gets noticed and closed.
 #
+# Runs from WSL, and from Git Bash on a machine with no WSL at all.
+#
 #   sync-windows          show what drifted, change nothing
 #   sync-windows pull     Windows -> repo   (capture edits made on Windows)
 #   sync-windows push     repo -> Windows   (apply edits made in the repo)
@@ -13,10 +15,17 @@
 # are not listed here. windows/install.ps1 creates both.
 set -euo pipefail
 
-repo_root="$HOME/dotfiles"
+# Found from the script's own path, so the repo can be cloned anywhere. Under
+# WSL the script is reached through a stow symlink, hence readlink.
+repo_root="$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd)"
 
-# The WSL user name is assumed to match the Windows one. Set WIN_HOME if not.
-win_home="${WIN_HOME:-/mnt/c/Users/$USER}"
+if [ -d /mnt/c/Users ]; then
+    # WSL. The WSL user name is assumed to match the Windows one.
+    win_home="${WIN_HOME:-/mnt/c/Users/$USER}"
+else
+    # Git Bash, where $HOME already is the Windows home.
+    win_home="${WIN_HOME:-$HOME}"
+fi
 
 # repo path | windows path, each relative to the root above.
 # .wezterm.lua sits in the wezterm stow package rather than windows/, because
@@ -29,6 +38,9 @@ files=(
   "windows/.config/ahk/enable-winl.reg|.config/ahk/enable-winl.reg"
   "windows/.config/ahk/disable-winl.reg|.config/ahk/disable-winl.reg"
   "windows/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1|Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+  # kanata reads the same file on both platforms. It ignores the
+  # linux-dev-names-exclude block when it runs on Windows.
+  "kanata/.config/kanata/kanata.kbd|.config/kanata/kanata.kbd"
 )
 
 action="${1:-diff}"
@@ -38,7 +50,7 @@ case "$action" in
 esac
 
 [ -d "$win_home" ] || {
-  echo "no $win_home -- not on the Windows machine, or the user name differs (set WIN_HOME)" >&2
+  echo "no $win_home -- not on a Windows machine, or the user name differs (set WIN_HOME)" >&2
   exit 1
 }
 

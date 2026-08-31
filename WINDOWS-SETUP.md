@@ -92,6 +92,7 @@ way — see "The Windows files are copies" at the bottom.
 | `C:\Users\alex\.wezterm.lua` | `wezterm/.wezterm.lua` | Terminal config, shared with Linux |
 | `C:\Users\alex\.wezterm-win.lua` | `windows/.wezterm-win.lua` | Read only by the Alt+E dropdown; adds WezTerm tabs and panes |
 | `C:\Users\alex\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | `windows/Documents/…` | Loaded by the Alt+E dropdown; defines the `ya` function |
+| `C:\Users\alex\.config\kanata\kanata.kbd` | `kanata/.config/kanata/kanata.kbd` | The keyboard layout, shared with Linux |
 
 Two more pieces of the setup are not files, so no copy can carry them.
 `windows/install.ps1` creates both:
@@ -423,6 +424,75 @@ alex says otherwise. Moving a window between desktops is a Task View job
 
 ---
 
+## Kanata
+
+`winget install jtroo.kanata_gui` — 1.12.0. The package ships eight builds; the
+one used is **`kanata_windows_gui_winIOv2_x64.exe`**. `gui` means no console
+window, `winIOv2` means the plain Windows hook, with no driver to install.
+
+**The Linux config runs unchanged.** `kanata.kbd` keeps its
+`linux-dev-names-exclude` block and kanata simply ignores it on Windows —
+confirmed with `--check`, which reports `config file is valid`. So one file
+serves both platforms, carried across by `sync-windows` like the rest.
+
+Check it before trusting it:
+
+```
+kanata_windows_tty_winIOv2_x64.exe --cfg %USERPROFILE%\.config\kanata\kanata.kbd --check
+```
+
+The `tty` build is the same program with a console, which is what makes the
+output readable. Use it for `--check`, and the `gui` build to actually run.
+
+### Where the modifiers moved
+
+The base layer does not leave Alt where Windows expects it:
+
+| Physical key | Sends |
+|---|---|
+| Left Alt | tap = Backspace, hold = layer2 |
+| Right Alt | tap = Enter, hold = layer2 |
+| Right Ctrl | **Left Alt** — the only real Alt on the base layer |
+| Caps Lock | tap = Escape, hold = Ctrl |
+
+So every `Alt+` binding on this machine — `Alt+W`, `Alt+E`, `Alt+U`, and
+Windows' own `Alt+Tab` — is reached with **Right Ctrl**, not Alt.
+
+Layer2 lands on its feet, and it is worth knowing why. Holding Left Alt turns
+`q w e r t` into `M-1`…`M-5`, which is exactly the `Win+1..5` that `sway.ahk`
+binds to the five desktops. The Corne layout and the Windows window manager
+already agree, without either being changed.
+
+### Two limits of this build
+
+**No admin, no remapping in admin windows.** The Startup shortcut runs kanata
+unelevated, so any window running as administrator keeps the stock layout.
+Running it elevated needs a scheduled task, which is not set up.
+
+**External keyboards get remapped too — confirmed on 2026-08-27.** On Linux the
+Corne and the Ferris Sweep are skipped by name, because their own firmware
+already does this work. The `winIOv2` build cannot filter by device at all, so
+the Corne got the layout twice and alex turned kanata off. This is the reason
+kanata is not running on Windows.
+
+The fix is the `wintercept` build plus `windows-only-windows-interception-keyboard-hwids`,
+which needs the Interception **kernel driver** installed and a reboot. Not done:
+it is a third-party driver, and alex has preferred to go without rather than add
+one before.
+
+Hardware IDs read off this machine, so the list does not have to be re-derived:
+
+| Keyboard | Hardware ID |
+|---|---|
+| Built-in (the one kanata is *for*) | `ACPI\HPQ8001` |
+| Corne, ZMK | `HID\VID_1D50&PID_615E` |
+| Other HID keyboard | `HID\VID_25A7&PID_FA07` |
+
+`Get-PnpDevice -Class Keyboard -Status OK` lists them, and only shows what is
+plugged in at the time.
+
+---
+
 ## The Windows files are copies, not symlinks
 
 `windows/` in this repo and the live files under `C:\Users\alex` are copies of
@@ -447,14 +517,32 @@ It assumes the WSL user name matches the Windows one. Set `WIN_HOME` if not.
 ### Rebuilding this on a new machine
 
 1. Install the pieces:
-   `winget install AutoHotkey.AutoHotkey Git.Git Microsoft.PowerToys sxyazi.yazi wez.wezterm`
+   `winget install AutoHotkey.AutoHotkey Git.Git Microsoft.PowerToys sxyazi.yazi wez.wezterm jtroo.kanata_gui`
    Git is wanted only for the Unix `file.exe` that yazi needs.
-2. Install WSL Ubuntu, clone this repo into it, run `./install.sh`.
+2. Install WSL Ubuntu, clone this repo into it, run `./install.sh`. (WSL only)
 3. From WSL: `sync-windows push` — puts every config file in place.
+   No WSL? Clone the repo on Windows and run the same script under Git Bash.
 4. From PowerShell: `powershell -ExecutionPolicy Bypass -File windows\install.ps1`
    — makes the login shortcut and sets `YAZI_FILE_ONE`.
 5. By hand: run `.config\ahk\enable-winl.reg` as admin and sign out, then bind
    `Alt+U` in PowerToys Run settings.
+
+### On a machine with no WSL
+
+Only `Alt+W` needs WSL. Everything else is pure Windows and works on its own:
+`Alt+E`, the five desktops, `Win+H/L`, `Win+1..5`, `Win+C`, the workspace bar,
+`Alt+U`, yazi. Skip steps 2 and 3 below; `Alt+W` then opens a local shell
+instead of zsh.
+
+Two things keep that working:
+
+- `.wezterm.lua` sets `default_domain = "WSL:Ubuntu"` only when that distro is
+  really installed. Naming a domain that does not exist stops WezTerm opening
+  at all, so the check is not optional.
+- `sync-windows` also runs under Git Bash, which ships with Git for Windows.
+  Clone the repo on the Windows side and run
+  `bash bin/.local/bin/sync-windows push`. It finds the repo from its own path
+  and uses `$HOME` as the Windows home.
 
 ### Why .wezterm.lua is not in windows/
 

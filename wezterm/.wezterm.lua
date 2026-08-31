@@ -59,8 +59,15 @@ local is_windows = wezterm.target_triple:find("windows") ~= nil
 config.window_decorations = is_windows and "RESIZE" or "NONE"
 
 -- On Windows the shell lives in WSL, so open there instead of PowerShell.
+-- Only when that distro is actually installed: naming a domain that does not
+-- exist stops WezTerm opening at all, and not every machine has WSL.
 if is_windows then
-	config.default_domain = "WSL:Ubuntu"
+	for _, domain in ipairs(wezterm.default_wsl_domains()) do
+		if domain.name == "WSL:Ubuntu" then
+			config.default_domain = domain.name
+			break
+		end
+	end
 end
 
 -- Remove padding
