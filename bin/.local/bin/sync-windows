@@ -38,6 +38,8 @@ files=(
   "windows/.config/ahk/enable-winl.reg|.config/ahk/enable-winl.reg"
   "windows/.config/ahk/disable-winl.reg|.config/ahk/disable-winl.reg"
   "windows/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1|Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+  # WSL reads this at start, so a push needs 'wsl --shutdown' to take effect.
+  "windows/.wslconfig|.wslconfig"
   # kanata reads the same file on both platforms. It ignores the
   # linux-dev-names-exclude block when it runs on Windows.
   "kanata/.config/kanata/kanata.kbd|.config/kanata/kanata.kbd"

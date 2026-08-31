@@ -93,6 +93,7 @@ way — see "The Windows files are copies" at the bottom.
 | `C:\Users\alex\.wezterm-win.lua` | `windows/.wezterm-win.lua` | Read only by the Alt+E dropdown; adds WezTerm tabs and panes |
 | `C:\Users\alex\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | `windows/Documents/…` | Loaded by the Alt+E dropdown; defines the `ya` function |
 | `C:\Users\alex\.config\kanata\kanata.kbd` | `kanata/.config/kanata/kanata.kbd` | The keyboard layout, shared with Linux |
+| `C:\Users\alex\.wslconfig` | `windows/.wslconfig` | WSL mirrored networking, so a phone on the same Wi-Fi can reach a dev server |
 
 Two more pieces of the setup are not files, so no copy can carry them.
 `windows/install.ps1` creates both:
@@ -493,6 +494,61 @@ plugged in at the time.
 
 ---
 
+## Reaching WSL from a phone
+
+Expo/Metro runs inside WSL and serves on 8081. With the default NAT networking a
+phone cannot reach it at all: WSL gets a private address like `172.21.43.201`
+that nothing else on the LAN can route to. Three things fix that, and all three
+are needed.
+
+**Mirrored networking.** `C:\Users\alex\.wslconfig`, put in place by
+`sync-windows push`:
+
+```
+[wsl2]
+networkingMode=mirrored
+```
+
+WSL then shares the Windows adapters, so `hostname -I` in Ubuntu returns the
+same address as the Wi-Fi adapter. The file is read only when WSL starts, so a
+push needs `wsl --shutdown` after it. Needs WSL 2.0 or newer; verified on 2.7.12.
+
+**Both firewalls.** Windows Firewall is the obvious one. The Hyper-V firewall is
+the one that gets missed: WSL's VM creator defaults to `Block` for inbound, so
+the Windows rule on its own still leaves the port shut. Run as admin, safe to
+re-run:
+
+```powershell
+New-NetFirewallRule -DisplayName "Metro 8081" -Direction Inbound `
+    -LocalPort 8081 -Protocol TCP -Action Allow
+
+New-NetFirewallHyperVRule -Name "Metro8081" -DisplayName "Metro 8081" `
+    -Direction Inbound -VMCreatorId "{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}" `
+    -Protocol TCP -LocalPorts 8081 -Action Allow
+```
+
+That VMCreatorId is WSL's own, and is the same on every machine.
+`Get-NetFirewallHyperVVMSetting -PolicyStore ActiveStore` shows the default the
+second rule overrides. Both rules go to the persistent store, so they survive
+reboots.
+
+**The phone on the same network.** Same Wi-Fi, not mobile data, and not a guest
+network that blocks device-to-device traffic. A VPN on Windows also breaks
+mirrored mode.
+
+Two things that look like failures and are not. The address is a DHCP lease and
+changes, so read the one Expo prints rather than remembering it. And the
+`vEthernet (WSL (Hyper-V firewall))` adapter stays listed after the switch to
+mirrored mode.
+
+Checking the port from Windows while the server is up:
+
+```powershell
+Test-NetConnection <ip> -Port 8081
+```
+
+---
+
 ## The Windows files are copies, not symlinks
 
 `windows/` in this repo and the live files under `C:\Users\alex` are copies of
@@ -526,6 +582,8 @@ It assumes the WSL user name matches the Windows one. Set `WIN_HOME` if not.
    — makes the login shortcut and sets `YAZI_FILE_ONE`.
 5. By hand: run `.config\ahk\enable-winl.reg` as admin and sign out, then bind
    `Alt+U` in PowerToys Run settings.
+6. For a dev server a phone can reach: `wsl --shutdown`, then the two firewall
+   rules from "Reaching WSL from a phone" in an admin shell.
 
 ### On a machine with no WSL
 

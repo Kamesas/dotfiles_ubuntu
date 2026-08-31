@@ -79,6 +79,7 @@ if ($kanataExe -and (Test-Path $kanataCfg)) {
 Write-Output ""
 Write-Output "Still manual:"
 Write-Output "  Win+L as 'next desktop'  ->  run .config\ahk\enable-winl.reg as admin, then sign out"
+Write-Output "  Expo on a phone          ->  open port 8081, see WINDOWS-SETUP.md, needs admin"
 Write-Output "  Alt+U for PowerToys Run  ->  set it in PowerToys Run settings"
 Write-Output "  kanata does not reach windows running as admin unless it is admin too"
 Write-Output ""
