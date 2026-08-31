@@ -530,6 +530,10 @@ off to fix it -- that switch is one-way and needs a Windows reinstall to undo.
 `install-interception.exe /install` from the Interception zip, run as admin, then
 a reboot. `/uninstall` and another reboot undoes it.
 
+On this machine the unpacked download is kept at `D:\programs\Interception`, so
+both things that need it later are on disk: the installer for the undo, and
+`library\x64\interception.dll` to copy back after a kanata upgrade.
+
 It installs as **`keyboard.sys` and `mouse.sys`**, not `interception.sys`, so
 searching the drivers folder for "interception" finds nothing and looks like a
 failed install. Check for a running service named `keyboard` instead.
