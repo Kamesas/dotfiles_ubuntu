@@ -792,11 +792,20 @@ BarPlace() {
         return
     }
 
+    MonitorGet MonitorFromPoint(tl + tw // 2, tt + th // 2), &ml, &mt, &mr, &mb
+
     ; An auto-hidden taskbar parks itself all but a couple of pixels off the
     ; screen. Riding along would leave the numbers floating over the wallpaper,
     ; so drop out of sight with it.
-    MonitorGet MonitorFromPoint(tl + tw // 2, tt + th // 2), , , , &mb
     if (tt >= mb - 4) {
+        BarStash()
+        return
+    }
+
+    ; A full-screen game or video owns the whole monitor. The taskbar stays put
+    ; behind it, so its position tells us nothing -- the size of the foreground
+    ; window is what says the screen is taken.
+    if (IsFullScreen(ml, mt, mr, mb)) {
         BarStash()
         return
     }
@@ -871,6 +880,25 @@ SessionId() {
 ; scaled by hand.
 BarPx(n) {
     return Round(n * A_ScreenDPI / 96)
+}
+
+; True when the foreground window covers the given monitor edge to edge. The
+; wallpaper and the shell keep windows that big all the time, so they are ruled
+; out by class. The bar itself is WS_EX_NOACTIVATE and never foreground.
+IsFullScreen(ml, mt, mr, mb) {
+    if (!(fg := DllCall("user32\GetForegroundWindow", "ptr")))
+        return false
+
+    cls := ""
+    try cls := WinGetClass("ahk_id " fg)
+    if (cls = "Progman" || cls = "WorkerW" || cls = "Shell_TrayWnd")
+        return false
+
+    try WinGetPos &x, &y, &w, &h, "ahk_id " fg
+    catch
+        return false
+
+    return x <= ml && y <= mt && x + w >= mr && y + h >= mb
 }
 
 MonitorFromPoint(x, y) {
