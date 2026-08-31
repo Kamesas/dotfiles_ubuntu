@@ -464,33 +464,86 @@ Layer2 lands on its feet, and it is worth knowing why. Holding Left Alt turns
 binds to the five desktops. The Corne layout and the Windows window manager
 already agree, without either being changed.
 
-### Two limits of this build
+### Only the built-in keyboard is remapped
 
-**No admin, no remapping in admin windows.** The Startup shortcut runs kanata
-unelevated, so any window running as administrator keeps the stock layout.
-Running it elevated needs a scheduled task, which is not set up.
+The layout is for the built-in keyboard. The Corne and the Ferris Sweep already
+do this work in their own firmware, so kanata has to leave them alone. On Linux
+that is `linux-dev-names-exclude`, by name. Windows has no equivalent, and the
+`winIOv2` build cannot filter by device at all -- it remapped the Corne on top of
+its own firmware, which is why kanata stayed off here until 2026-08-31.
 
-**External keyboards get remapped too — confirmed on 2026-08-27.** On Linux the
-Corne and the Ferris Sweep are skipped by name, because their own firmware
-already does this work. The `winIOv2` build cannot filter by device at all, so
-the Corne got the layout twice and alex turned kanata off. This is the reason
-kanata is not running on Windows.
+What works is the **wintercept** build plus the Interception kernel driver, with
+`windows-interception-keyboard-hwids` in `kanata.kbd`. That option is an
+**allowlist**: kanata touches only the keyboards on it. The list holds the
+built-in keyboard and nothing else, so every other keyboard -- wired, dongle,
+Bluetooth, or one bought later -- is left alone and never has to be identified.
 
-The fix is the `wintercept` build plus `windows-only-windows-interception-keyboard-hwids`,
-which needs the Interception **kernel driver** installed and a reboot. Not done:
-it is a third-party driver, and alex has preferred to go without rather than add
-one before.
+Measured with the Corne plugged in:
 
-`windows-only-windows-interception-keyboard-hwids` is an **allowlist**: kanata
-touches only the keyboards on it. So it needs the built-in keyboard and nothing
-else, and every other keyboard -- wired, dongle, Bluetooth, or one bought later
--- is left alone without ever being identified. Interception reports ids in its
-own format, which is not always what Device Manager shows, so take the string
-from a `--debug` run rather than copying it from the table below.
+```
+device #1 (built-in, res 90)    intercepted: true
+device #4 (Corne,    res 316)   intercepted: false
+```
 
-Hardware IDs read off this machine, so the list does not have to be re-derived:
+### Getting the hwid right
 
-| Keyboard | Hardware ID |
+This is the part that costs an afternoon, so it is written down exactly.
+
+**`--list` is a trap.** `kanata --list` prints a "Configuration example" with
+each device's bytes in `[...]`. Both halves of it are wrong for this option:
+
+- it prints the **device path** (`\?\ACPI#HPQ8001#4&34ff65f&0#...`), but at
+  runtime kanata compares the **hardware id**, a different string. A config built
+  from `--list` validates fine and then silently matches nothing.
+- the parser rejects `[...]`. Entries are **quoted**, comma-separated numbers.
+
+**Where the real bytes come from.** Run the tty build with `--debug`, press a key
+on the keyboard you want, and copy the array out of the `include check` line:
+
+```
+include check - res 90; device #1 is intercepted: false; hwid [65, 0, 67, 0, ...]
+```
+
+`res` says how many bytes count. Take exactly that many from the front and drop
+the zero padding. For the built-in keyboard `res` is 90, which decodes to the
+usual null-separated hardware id list:
+
+```
+ACPI\VEN_HPQ&DEV_8001 \0 ACPI\HPQ8001 \0 *HPQ8001 \0 \0
+```
+
+### Two things the wintercept build needs
+
+**`interception.dll` beside the exe.** From the Interception zip, `library\x64\`.
+Without it kanata exits immediately with `0xC0000135` and prints nothing at all.
+A kanata upgrade replaces the winget package folder and takes the dll with it, so
+it has to be copied back. `windows/install.ps1` refuses to make the login
+shortcut when the dll is missing, rather than making one that silently fails.
+
+**Smart App Control tolerance.** It is on, and every kanata build is unsigned. It
+blocked the wintercept exe the first time it ran, then allowed it, and has not
+blocked since. Expect the same after an update. Do **not** turn Smart App Control
+off to fix it -- that switch is one-way and needs a Windows reinstall to undo.
+
+### The driver
+
+`install-interception.exe /install` from the Interception zip, run as admin, then
+a reboot. `/uninstall` and another reboot undoes it.
+
+It installs as **`keyboard.sys` and `mouse.sys`**, not `interception.sys`, so
+searching the drivers folder for "interception" finds nothing and looks like a
+failed install. Check for a running service named `keyboard` instead.
+
+Release v1.0.1, May 2017, is still the current one. The installer exe is
+unsigned; the driver it installs is signed (`CN=Francisco Lopes da Silva`) and
+loads with memory integrity on.
+
+The old winIOv2 limit -- no remapping inside windows running as administrator --
+should not apply any more, since the driver sits below user mode. Not measured.
+
+### Keyboards seen on this machine
+
+| Keyboard | Device Manager ID |
 |---|---|
 | Built-in (the one kanata is *for*) | `ACPI\HPQ8001` |
 | Corne, ZMK | `HID\VID_1D50&PID_615E` |
@@ -498,9 +551,12 @@ Hardware IDs read off this machine, so the list does not have to be re-derived:
 | Seen but never attached since | `HID\VID_342D&PID_E491` |
 | Seen but never attached since | `HID\VID_2DC8&PID_310A` |
 
+These are the Device Manager ids, handy for telling the hardware apart. They are
+**not** what goes in `kanata.kbd` -- see "Getting the hwid right".
+
 `Get-PnpDevice -Class Keyboard -Status OK` lists what is plugged in right now.
 Drop `-Status OK` to see every keyboard Windows still remembers; the ones that
-are away show as `Unknown`.
+are away show as `Unknown`. `kanata --list` shows what kanata itself can see.
 
 ---
 

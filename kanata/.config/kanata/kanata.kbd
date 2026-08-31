@@ -14,6 +14,17 @@
     "Corne Handwired Mouse"
     "ZMK Project Corne Handwired Keyboard"
   )
+  ;; Windows has no equivalent of the exclude list above. This is an allowlist
+  ;; instead: only the built-in keyboard gets this layout, so the Corne and the
+  ;; Ferris Sweep keep what their own firmware applies. Needs the wintercept
+  ;; build and the Interception driver. The bytes are the hardware id as a wide
+  ;; string, null separated. Do not take them from --list: that prints the device
+  ;; path, which is a different string and never matches. Run with --debug and
+  ;; copy the array from the 'include check' line. This one is the built-in
+  ;; keyboard, ACPI\VEN_HPQ&DEV_8001.
+  windows-interception-keyboard-hwids (
+    "65, 0, 67, 0, 80, 0, 73, 0, 92, 0, 86, 0, 69, 0, 78, 0, 95, 0, 72, 0, 80, 0, 81, 0, 38, 0, 68, 0, 69, 0, 86, 0, 95, 0, 56, 0, 48, 0, 48, 0, 49, 0, 0, 0, 65, 0, 67, 0, 80, 0, 73, 0, 92, 0, 72, 0, 80, 0, 81, 0, 56, 0, 48, 0, 48, 0, 49, 0, 0, 0, 42, 0, 72, 0, 80, 0, 81, 0, 56, 0, 48, 0, 48, 0, 49, 0, 0, 0, 0, 0"
+  )
 )
 
 ;; Define source layout - your physical keyboard
