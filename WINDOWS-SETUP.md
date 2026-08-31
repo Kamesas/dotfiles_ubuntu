@@ -481,6 +481,13 @@ which needs the Interception **kernel driver** installed and a reboot. Not done:
 it is a third-party driver, and alex has preferred to go without rather than add
 one before.
 
+`windows-only-windows-interception-keyboard-hwids` is an **allowlist**: kanata
+touches only the keyboards on it. So it needs the built-in keyboard and nothing
+else, and every other keyboard -- wired, dongle, Bluetooth, or one bought later
+-- is left alone without ever being identified. Interception reports ids in its
+own format, which is not always what Device Manager shows, so take the string
+from a `--debug` run rather than copying it from the table below.
+
 Hardware IDs read off this machine, so the list does not have to be re-derived:
 
 | Keyboard | Hardware ID |
@@ -488,9 +495,12 @@ Hardware IDs read off this machine, so the list does not have to be re-derived:
 | Built-in (the one kanata is *for*) | `ACPI\HPQ8001` |
 | Corne, ZMK | `HID\VID_1D50&PID_615E` |
 | Other HID keyboard | `HID\VID_25A7&PID_FA07` |
+| Seen but never attached since | `HID\VID_342D&PID_E491` |
+| Seen but never attached since | `HID\VID_2DC8&PID_310A` |
 
-`Get-PnpDevice -Class Keyboard -Status OK` lists them, and only shows what is
-plugged in at the time.
+`Get-PnpDevice -Class Keyboard -Status OK` lists what is plugged in right now.
+Drop `-Status OK` to see every keyboard Windows still remembers; the ones that
+are away show as `Unknown`.
 
 ---
 

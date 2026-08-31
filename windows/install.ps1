@@ -51,28 +51,11 @@ if (Test-Path $fileExe) {
 
 # --- kanata: the keyboard layout ----------------------------------------
 
-# winget puts the package folder itself on PATH, with no shim, so the exe is
-# found by name rather than by a hardcoded path.
-# winIOv2 is the plain build. The wintercept builds need the Interception
-# driver, and are only worth it to stop kanata remapping an external keyboard
-# that already has its own firmware.
-$kanataExe = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Recurse `
-    -Filter "kanata_windows_gui_winIOv2_x64.exe" -ErrorAction SilentlyContinue |
-    Select-Object -First 1 -ExpandProperty FullName
-$kanataCfg = "$env:USERPROFILE\.config\kanata\kanata.kbd"
-
-if ($kanataExe -and (Test-Path $kanataCfg)) {
-    $klnk = $shell.CreateShortcut("$(Split-Path $startup)\kanata.lnk")
-    $klnk.TargetPath       = $kanataExe
-    $klnk.Arguments        = '--cfg "' + $kanataCfg + '"'
-    $klnk.WorkingDirectory = Split-Path $kanataExe
-    $klnk.Save()
-    Write-Output "kanata startup   -> $(Split-Path $startup)\kanata.lnk"
-} elseif (-not $kanataExe) {
-    Write-Output "skipped kanata: not installed (winget install jtroo.kanata_gui)"
-} else {
-    Write-Output "skipped kanata: no $kanataCfg (run 'sync-windows push' in WSL)"
-}
+# No login shortcut, on purpose. The layout is built for the built-in keyboard,
+# but the winIOv2 build cannot filter by device, so it remaps the Corne and the
+# Ferris Sweep too, on top of the layout their own firmware already applies.
+# The way out is the wintercept build with an allowlist, which needs the
+# Interception driver. See "Kanata" in WINDOWS-SETUP.md.
 
 # --- left for you to decide ---------------------------------------------
 
@@ -81,7 +64,7 @@ Write-Output "Still manual:"
 Write-Output "  Win+L as 'next desktop'  ->  run .config\ahk\enable-winl.reg as admin, then sign out"
 Write-Output "  Expo on a phone          ->  open port 8081, see WINDOWS-SETUP.md, needs admin"
 Write-Output "  Alt+U for PowerToys Run  ->  set it in PowerToys Run settings"
-Write-Output "  kanata does not reach windows running as admin unless it is admin too"
+Write-Output "  kanata is not started at login  ->  see 'Kanata' in WINDOWS-SETUP.md"
 Write-Output ""
 Write-Output "Start it now without waiting for a login:"
 Write-Output "  & '$ahkExe' '$ahkScript'"
