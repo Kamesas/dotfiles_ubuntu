@@ -64,7 +64,11 @@ return {
         ]]
         tailwindcss = {
           on_attach = function(_, bufnr)
-            vim.lsp.document_color.enable(false, { bufnr = bufnr })
+            -- Turn off the color swatches tailwindcss sends. The API only
+            -- exists on nvim 0.12+, so 0.11 has nothing to turn off.
+            if vim.lsp.document_color then
+              vim.lsp.document_color.enable(false, { bufnr = bufnr })
+            end
           end,
           settings = {
             tailwindCSS = {
@@ -179,18 +183,7 @@ return {
     opts = {},
   },
 
-  -- Color highlighter
-  {
-    "NvChad/nvim-colorizer.lua",
-    event = "BufReadPre",
-    opts = {
-      filetypes = { "*" },
-      user_default_options = {
-        tailwind = false,
-        css = false,
-      },
-    },
-  },
+  -- Color highlighter lives in plugins/colorizer.lua
 
   -- Git blame inline
   {
