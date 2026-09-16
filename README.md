@@ -31,6 +31,14 @@ and the PowerShell profile that make Windows 11 behave like Sway. Not stowed:
 these are copies, moved either way by `sync-windows`. Read
 [WINDOWS-SETUP.md](WINDOWS-SETUP.md) first.
 
+**Machine rebuilds** — what to install, beyond the configs:
+
+| Doc | Covers |
+|-----|--------|
+| [WSL-SETUP.md](WSL-SETUP.md) | Ubuntu on WSL2: packages, Docker, and the credential files kept out of this repo |
+| [WINDOWS-SETUP.md](WINDOWS-SETUP.md) | the Windows half — WezTerm, AutoHotkey, kanata |
+| [packages/](packages/) | package lists for Arch and Ubuntu |
+
 ## Install
 
 Everything at once:

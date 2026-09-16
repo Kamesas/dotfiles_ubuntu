@@ -1,8 +1,9 @@
 # Package and service lists
 
-What was installed on the Arch + Sway machine (ThinkPad T480), so the system can be
-rebuilt. Configs live in the stow packages; this folder is only the "what to install"
-half.
+What was installed, so a machine can be rebuilt. Configs live in the stow packages;
+this folder is only the "what to install" half. Two machines are covered.
+
+**Arch + Sway (ThinkPad T480)**
 
 | File | What it holds |
 |------|---------------|
@@ -13,6 +14,20 @@ half.
 
 Only packages installed **on purpose** are listed. Dependencies are left out — pacman
 pulls those in by itself.
+
+**Ubuntu on WSL2**
+
+| File | What it holds |
+|------|---------------|
+| `apt-manual.txt` | every package marked manual (42) |
+
+apt has no clean way to drop base packages from that list, so it keeps a few like
+`coreutils`. Reinstalling them is a no-op. The rest of the WSL rebuild — nvm, rustup,
+Docker, oh-my-zsh — is in [WSL-SETUP.md](../WSL-SETUP.md).
+
+```bash
+xargs -a packages/apt-manual.txt sudo apt install -y
+```
 
 ## Rebuild
 
@@ -59,11 +74,19 @@ Skip the ones Arch already enables: `getty@`, `remote-fs.target`, `systemd-times
 
 ## Regenerate
 
-Run on the machine itself, then commit:
+Run on the machine itself, then commit.
+
+Arch:
 
 ```bash
 pacman -Qqen > packages/pacman-repo.txt
 pacman -Qqem > packages/pacman-aur.txt
 systemctl list-unit-files --state=enabled --no-legend | awk '{print $1}' | sort > packages/services-system.txt
 systemctl --user list-unit-files --state=enabled --no-legend | awk '{print $1}' | sort > packages/services-user.txt
+```
+
+Ubuntu:
+
+```bash
+apt-mark showmanual | sort > packages/apt-manual.txt
 ```
