@@ -82,14 +82,6 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # ============================================================================
-# DATABASE CONNECTIONS (pgcli)
-# ============================================================================
-alias pgcli-basic='pgcli postgresql://alex:secret@localhost:5432/basic'
-alias pgcli-mydb='pgcli postgresql://alex:secret@localhost:5432/mydb'
-alias pgcli-so='pgcli postgresql://alex:secret@localhost:5432/stackoverflow'
-alias pgcli-p='pgcli postgresql://alex:secret@localhost:5432/postgres'
-
-# ============================================================================
 # NVM (Node Version Manager)
 # ============================================================================
 export NVM_DIR="$HOME/.nvm"
