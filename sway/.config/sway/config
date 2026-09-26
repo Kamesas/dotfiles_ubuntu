@@ -1,4 +1,4 @@
-# Sway config — T480
+# Sway config
 # Mod = Super (Win) key
 set $mod Mod4
 set $left h

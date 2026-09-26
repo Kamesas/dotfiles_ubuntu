@@ -33,6 +33,17 @@ Brightness keys need the `video` group (then log out and back in):
 sudo usermod -aG video $USER
 ```
 
+Lid close: does nothing on power, suspends on battery (the default). With an
+external monitor connected it also does nothing (system default):
+
+```bash
+sudo mkdir -p /etc/systemd/logind.conf.d
+printf '[Login]\nHandleLidSwitchExternalPower=ignore\n' \
+    | sudo tee /etc/systemd/logind.conf.d/lid.conf
+```
+
+Takes effect after a reboot.
+
 Wallpapers: put images in `~/Pictures/Wallpapers`, then pick one with Alt+o.
 The images are not in this repo. The current ones are from
 `github.com/zhichaoh/catppuccin-wallpapers` (MIT license, `landscapes/` folder).
