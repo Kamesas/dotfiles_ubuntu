@@ -1,8 +1,9 @@
 #!/bin/bash
-# Rofi picker for wallpapers (awww), Alt+o in Sway. Lists images from
-# ~/Pictures/Wallpapers with thumbnail previews, sends the pick to the awww daemon.
+# Rofi picker for wallpapers (swaybg), Alt+o in Sway. Lists images from
+# ~/Pictures/Wallpapers with thumbnail previews, sets the pick on all screens.
 
 dir="$HOME/Pictures/Wallpapers"
+current="$HOME/.local/state/wallpaper"
 thumb_dir="$HOME/.cache/wallpaper-menu/thumbs"
 mkdir -p "$thumb_dir"
 
@@ -40,4 +41,6 @@ chosen=$(build_menu | rofi -dmenu -show-icons -p "wallpaper" -theme-str '
 ')
 [ -z "$chosen" ] && exit 0
 
-awww img "$dir/$chosen"
+# Link the pick so the sway config shows it again after a restart.
+ln -sf "$dir/$chosen" "$current"
+swaymsg output '*' bg "$current" fill

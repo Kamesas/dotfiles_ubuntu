@@ -40,6 +40,17 @@ Pick one, depending on the machine:
   pick their display backend) crash instead of falling back to X11 — also forcing
   `XDG_SESSION_TYPE=x11` keeps the whole environment consistent so they start normally.
 
+### Brightness keys (Sway)
+
+`brightnessctl` needs write access to the screen backlight. Add your user to the
+`video` group, then log out and back in:
+
+```bash
+sudo usermod -aG video $USER
+```
+
+Without it, the brightness popup shows but the level does not change.
+
 ---
 
 ## GNOME settings (manual, stored in dconf)

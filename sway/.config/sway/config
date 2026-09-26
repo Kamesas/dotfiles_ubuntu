@@ -58,6 +58,9 @@ input type:keyboard {
 output "Lenovo Group Limited R27qe UP3359FZ" position 0 0
 output eDP-1 position 320 1440
 
+# Wallpaper: a link to the last pick from wallpaper-menu (Alt+o).
+output * bg ~/.local/state/wallpaper fill
+
 ### Autostart
 exec wl-paste --watch cliphist store
 exec blueman-applet
@@ -65,7 +68,6 @@ exec mako
 exec /usr/libexec/polkit-mate-authentication-agent-1
 # Auto-mount USB drives (Kindle etc.) to /run/media/alex/<label>
 exec udiskie
-exec awww-daemon
 exec swayidle -w timeout 1200 ~/.local/bin/idle-suspend-on-battery
 exec ~/.local/bin/display-guard
 exec ~/.local/bin/battery-notify
