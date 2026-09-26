@@ -12,15 +12,16 @@ if makoctl mode 2>/dev/null | grep -qx "do-not-disturb"; then
     dnd=1
 fi
 
-makoctl list -j 2>/dev/null | python3 -c "
+# Plain-text list: -j (JSON) is missing in older mako versions.
+makoctl list 2>/dev/null | python3 -c "
 import json, sys
 
 dnd = $dnd
 bell = '$BELL'
 bell_slash = '$BELL_SLASH'
 
-data = json.load(sys.stdin)
-apps = sorted(set(n['app_name'] for n in data if n['app_name'] != 'OSD'))
+names = [l.split(':', 1)[1].strip() for l in sys.stdin if l.strip().startswith('App name:')]
+apps = sorted(set(n for n in names if n != 'OSD'))
 
 if dnd:
     tooltip = 'Do not disturb is ON'

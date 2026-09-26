@@ -93,7 +93,6 @@ bindsym --to-code Alt+n exec ~/.local/bin/wifi-menu
 bindsym --to-code Alt+m exec ~/.local/bin/mic-menu
 bindsym --to-code Alt+a exec ~/.local/bin/sink-menu
 bindsym --to-code Alt+s exec ~/.local/bin/display-menu
-bindsym --to-code Alt+b exec ~/.local/bin/battery-menu
 bindsym --to-code Alt+d exec makoctl mode -t do-not-disturb && pkill -SIGRTMIN+8 waybar
 bindsym --to-code Alt+p exec ~/.local/bin/clipboard-menu
 bindsym --to-code Alt+o exec ~/.local/bin/wallpaper-menu

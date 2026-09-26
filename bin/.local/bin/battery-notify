@@ -1,7 +1,7 @@
 #!/bin/bash
 # Low-battery warnings + safety suspend. Sway has no power daemon, so nothing
 # warns you the battery is dying — this fills that gap. Polls the combined
-# battery (UPower's DisplayDevice, which sums the T480's two cells) every
+# battery (UPower's DisplayDevice, which sums all batteries) every
 # minute and, while discharging:
 #   - 20%  normal notification
 #   - 10%  urgent, sticky notification
@@ -22,6 +22,11 @@ read_battery() {  # sets $pct (integer) and $state
     pct=$(printf '%s\n' "$info" | awk '/percentage:/ {gsub("%","",$2); print int($2)}')
     state=$(printf '%s\n' "$info" | awk '/state:/ {print $2}')
 }
+
+# Keep one copy: stop the one left running from an earlier login.
+pidfile="$XDG_RUNTIME_DIR/battery-notify.pid"
+[ -f "$pidfile" ] && kill "$(cat "$pidfile")" 2>/dev/null
+echo $$ > "$pidfile"
 
 while true; do
     read_battery
