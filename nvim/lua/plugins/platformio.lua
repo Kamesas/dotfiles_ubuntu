@@ -3,8 +3,7 @@ return {
     "anurag3301/nvim-platformio.lua",
     -- Load shortly after startup so the <leader>p which-key menu is registered.
     event = "VeryLazy",
-    -- The plugin shells out to `pio` as soon as it loads, so skip it on
-    -- machines where PlatformIO is not installed.
+    -- The plugin runs `pio` when it loads. Skip it where PlatformIO is not installed.
     cond = function()
       return vim.fn.executable("pio") == 1
         or vim.fn.isdirectory(vim.fn.expand("~/.platformio/penv/bin")) == 1
@@ -17,15 +16,12 @@ return {
       "folke/which-key.nvim",
     },
     keys = {
-      -- Regenerate compile_commands.json (runs `pio run -t compiledb`,
-      -- gitignores it, and restarts the LSP). Run after editing lib_deps.
+      -- Runs `pio run -t compiledb`, gitignores compile_commands.json, restarts the LSP.
       { "<leader>pi", "<cmd>PioLSP<cr>", desc = "PlatformIO: Regen LSP DB (compiledb)" },
     },
-    -- Runs at startup, BEFORE the plugin loads. Must be here (not in `config`)
-    -- because the plugin's plugin/ script shells out to `pio` the moment it is
-    -- sourced — which Lazy does before running `config`. The `pio` CLI ships
-    -- under PlatformIO's bundled venv and is usually not on PATH, so make sure
-    -- Neovim's child processes can find it however nvim was launched.
+    -- Add the PlatformIO installer's venv to PATH, for machines where `pio` is
+    -- not in ~/.local/bin. This is in `init`, not `config`, because the plugin
+    -- runs `pio` before `config` runs.
     init = function()
       local pio_bin = vim.fn.expand("~/.platformio/penv/bin")
       if vim.fn.isdirectory(pio_bin) == 1 and not string.find(vim.env.PATH, pio_bin, 1, true) then
@@ -34,15 +30,9 @@ return {
     end,
     config = function()
       require("platformio").setup({
-        -- We use clangd (LazyVim clangd extra), fed by compile_commands.json.
         lsp = "clangd",
         clangd_source = "compiledb",
-        -- Registers a full which-key menu under <leader>p:
-        --   pg → General (build/upload/monitor/clean/fullclean/devices)
-        --   pp → Platform (buildfs/size/uploadfs/erase)
-        --   pd → Dependencies   pa → Advanced (test/check/debug/compiledb)
-        --   pr → Remote         pm → Misc
-        --   pl → List terminals pt → Terminal core CLI
+        -- The full menu is listed in nvim/Platformio.md.
         menu_key = "<leader>p",
         menu_name = "PlatformIO",
       })

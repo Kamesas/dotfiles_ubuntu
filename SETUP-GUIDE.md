@@ -160,13 +160,13 @@ tokens, saved memory) stay out of git on purpose.
 
 ## ESP32 / PlatformIO development
 
-Full editor docs live in `nvim/Platformio.md` (keybindings, troubleshooting).
-This is the machine setup — what to do on a fresh OS or laptop.
+What to do on a new machine. Editor keys and troubleshooting are in
+`nvim/Platformio.md`.
 
 **1. Install the PlatformIO CLI:**
 
 ```bash
-pip install --user platformio     # puts `pio` in ~/.local/bin
+pipx install platformio     # puts `pio` in ~/.local/bin
 ```
 
 **2. Link the clangd config:**
@@ -175,33 +175,31 @@ pip install --user platformio     # puts `pio` in ~/.local/bin
 cd ~/dotfiles && stow clangd
 ```
 
-This links `~/.config/clangd/config.yaml`. It strips GCC-only build flags
-(`-mlongcalls` and friends) that clang rejects. Without it, every ESP32 file
-shows "Unknown argument" warnings and clangd stops finding system headers.
+This links `~/.config/clangd/config.yaml`. It removes GCC-only flags that clang
+rejects. Without it, clangd shows "Unknown argument" and cannot find system headers.
 
-**3. Neovim does the rest itself.** On first start, Mason installs clangd, and
-`nvim/lua/plugins/clangd.lua` already passes `--query-driver` so clangd can ask
-the ESP32 compilers for their built-in include paths.
+**3. Start Neovim.** Mason installs clangd. `nvim/lua/plugins/clangd.lua`
+already has the `--query-driver` option for the ESP32 compilers.
 
-**4. In each project, build once and generate the editor database:**
+**4. In each project, build once and make the clangd database:**
 
 ```bash
 cd <project>
-pio run                # downloads toolchain + framework + libraries
+pio run                # downloads toolchain, framework and libraries
 pio run -t compiledb   # writes compile_commands.json for clangd
 ```
 
-Or from inside Neovim: `:PioLSP` (does the compiledb step), then `:LspRestart`.
+Or in Neovim: `<leader>pi` (`:PioLSP`).
+
+Do this even if the project already has a `compile_commands.json`. A copy from
+another machine has wrong paths.
 
 Notes:
 
-- `~/.platformio/` is only a cache. Do not back it up or migrate it —
-  `pio run` rebuilds it on any machine.
-- `compile_commands.json` stores absolute paths. After moving a project
-  folder, run `pio run -t compiledb` there again.
-- Serial upload works out of the box on Arch (systemd gives the logged-in
-  user access to USB serial). If upload fails with "permission denied":
-  `sudo usermod -aG uucp $USER` on Arch, `dialout` on Ubuntu, then re-login.
+- `~/.platformio/` and `<project>/.pio/` are only download caches. Do not copy
+  them to a new machine. `pio run` downloads them again.
+- If upload fails with "permission denied", add yourself to the serial group,
+  then log out and in: `sudo usermod -aG dialout $USER` on Ubuntu, `uucp` on Arch.
 
 ---
 
