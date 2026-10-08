@@ -41,7 +41,7 @@
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
   tab  @qm  @w_ch @e_ch @r_ch t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
-  lsft @z_s @x_ch @c_ch @v_g @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
+  lsft @z_c @x_ch @c_ch v    @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
@@ -95,7 +95,7 @@
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   @cec a    s    d    f    @g_nm @h_nm j   k    l    ;    '    ret
-  lsft @z_s @nm_xc @nm_ca @nm_vg @pb_ch @pn_ch @m_g @co_a @dt_c @sl_s rsft  up
+  lsft @z_c @nm_xa @nm_cg v      @pb_ch @pn_ch @m_g @co_a @dt_c @sl_s rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
@@ -119,11 +119,10 @@
   ;; Right Alt: tap=Enter, hold=Layer 2 (matching Corne lt LAYER2 RET)
   ar2 (tap-hold 200 200 ret (layer-toggle layer2))
 
-  ;; Bottom row mod-taps - left hand (matching Corne: SHFT/Z, CTRL/X, ALT/C, GUI/V)
-  z_s (tap-hold 200 200 z lsft)
-  x_c (tap-hold 200 200 x lctl)
-  c_a (tap-hold 200 200 c lalt)
-  v_g (tap-hold 200 200 v lmet)
+  ;; Bottom row mod-taps - left hand (CTRL/Z, ALT/X, GUI/C)
+  z_c (tap-hold 200 200 z lctl)
+  x_a (tap-hold 200 200 x lalt)
+  c_g (tap-hold 200 200 c lmet)
 
   ;; Bottom row mod-taps - right hand (matching Corne: GUI/M, ALT/,, CTRL/., SHFT//)
   m_g (tap-hold 200 200 m lmet)
@@ -147,10 +146,9 @@
   f_ch (chord home_row_chords f)
   g_ch (chord home_row_chords g)
 
-  ;; native_mods layer: x, c, v with mod-taps at their real key positions
-  nm_xc (tap-hold 200 200 x lctl)
-  nm_ca (tap-hold 200 200 c lalt)
-  nm_vg (tap-hold 200 200 v lmet)
+  ;; native_mods layer: x, c with mod-taps at their real key positions
+  nm_xa (tap-hold 200 200 x lalt)
+  nm_cg (tap-hold 200 200 c lmet)
 
   ;; native_mods layer: g+h exits back to base
   g_nm (chord gh_exit_chords g)
@@ -243,8 +241,8 @@
 
 ;; Bottom row left chords: x, c
 (defchords xc_chords 50
-  (x)     @x_c       ;; x alone → tap-hold for CTRL
-  (c)     @c_a       ;; c alone → tap-hold for ALT
+  (x)     @x_a       ;; x alone → tap-hold for ALT
+  (c)     @c_g       ;; c alone → tap-hold for WIN
   (x c)   -          ;; x+c → minus
 )
 
