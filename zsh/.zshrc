@@ -126,3 +126,8 @@ bindkey '^[[3;5~' kill-word
 # Added by Antigravity CLI installer
 export PATH="/home/alex/.local/bin:$PATH"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Android builds (Shoty mobile). adb itself runs on Windows: adb.exe
+export JAVA_HOME="$HOME/.jdks/jdk-17.0.20.1+1"
+export ANDROID_HOME="$HOME/Android/Sdk"
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
