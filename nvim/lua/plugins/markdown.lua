@@ -22,7 +22,6 @@ return {
         tables = true,
         yaml = false,
       },
-      filetypes = { md = true, rmd = true, markdown = true },
       create_dirs = true,
       perspective = {
         priority = "root", -- use root directory perspective
@@ -54,13 +53,6 @@ return {
       },
       new_file_template = {
         use_template = false,
-      },
-      to_do = {
-        symbols = { " ", "-", "X" }, -- unchecked, in-progress, checked
-        update_parents = true,
-        not_started = " ",
-        in_progress = "-",
-        complete = "X",
       },
       tables = {
         trim_whitespace = true,
@@ -108,9 +100,6 @@ return {
         MkdnUnfoldSection = { "n", "<leader>mF" },
       },
     },
-    config = function(_, opts)
-      require("mkdnflow").setup(opts)
-    end,
     init = function()
       -- Daily notes functionality - set up in init so it's always available
       local function open_daily_note()
