@@ -22,6 +22,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      inlay_hints = { enabled = false },
       servers = {
         -- Disable VTSLS from LazyVim TypeScript extras - using typescript-tools.nvim instead
         vtsls = {
@@ -31,37 +32,6 @@ return {
         ts_ls = {
           enabled = false,
         },
-        -- Keep old ts_ls settings in case needed
-        --[[
-        ts_ls = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "none",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = false,
-                includeInlayVariableTypeHints = false,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayPropertyDeclarationTypeHints = false,
-                includeInlayFunctionLikeReturnTypeHints = false,
-                includeInlayEnumMemberValueHints = false,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "none",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = false,
-                includeInlayVariableTypeHints = false,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayPropertyDeclarationTypeHints = false,
-                includeInlayFunctionLikeReturnTypeHints = false,
-                includeInlayEnumMemberValueHints = false,
-              },
-            },
-          },
-        },
-        ]]
         tailwindcss = {
           on_attach = function(_, bufnr)
             -- Turn off the color swatches tailwindcss sends. The API only
@@ -78,13 +48,7 @@ return {
               experimental = {
                 classRegex = {
                   { "cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
-
-                  -- Base classes for cva
                   { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]" },
-
-                  -- Variant classes inside cva's options object
-                  { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]" },
-                  { "cva\\(([^\\)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]" },
                 },
               },
             },
@@ -95,15 +59,6 @@ return {
         emmet_ls = {
           filetypes = { "html", "typescriptreact", "javascriptreact", "css" },
         },
-      },
-      setup = {
-        -- Skip setup for these servers (using typescript-tools.nvim instead)
-        vtsls = function()
-          return true
-        end,
-        ts_ls = function()
-          return true
-        end,
       },
     },
   },
@@ -130,31 +85,6 @@ return {
         -- Projects without an alias fall back to relative paths on their own.
         tsserver_file_preferences = {
           importModuleSpecifierPreference = "non-relative",
-        },
-        -- Disable inlay hints (keep them off)
-        typescript = {
-          inlayHints = {
-            includeInlayParameterNameHints = "none",
-            includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-            includeInlayFunctionParameterTypeHints = false,
-            includeInlayVariableTypeHints = false,
-            includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-            includeInlayPropertyDeclarationTypeHints = false,
-            includeInlayFunctionLikeReturnTypeHints = false,
-            includeInlayEnumMemberValueHints = false,
-          },
-        },
-        javascript = {
-          inlayHints = {
-            includeInlayParameterNameHints = "none",
-            includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-            includeInlayFunctionParameterTypeHints = false,
-            includeInlayVariableTypeHints = false,
-            includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-            includeInlayPropertyDeclarationTypeHints = false,
-            includeInlayFunctionLikeReturnTypeHints = false,
-            includeInlayEnumMemberValueHints = false,
-          },
         },
       },
     },
