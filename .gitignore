@@ -55,6 +55,7 @@ __pycache__/
 *.pyc
 .cache/
 cache/
+.claude/skills/synced/
 
 # Node modules (if any)
 node_modules/
