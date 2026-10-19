@@ -5,9 +5,8 @@
 -- Disable inlay hints by default (LazyVim setting)
 vim.g.lazyvim_inlay_hints_enabled = false
 
--- Keep the eslint LSP for diagnostics only. Its format-on-save is synchronous
--- and freezes the cursor; eslint fixes run async via eslint_d instead
--- (see autocmds.lua).
+-- Keep the eslint LSP for diagnostics only. Its format-on-save is slow and
+-- freezes the cursor. eslint_d runs the fixes instead (see plugins/conform.lua).
 vim.g.lazyvim_eslint_auto_format = false
 
 vim.o.relativenumber = false

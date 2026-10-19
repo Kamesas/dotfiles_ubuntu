@@ -6,15 +6,23 @@ return {
       ".prettierrc.json", ".prettierrc.yaml", ".prettierrc.yml",
       "prettier.config.js", "prettier.config.mjs", "prettier.config.cjs",
     }
-    local eslint_files = require("config.functions").eslint_config_files
+    local eslint_files = {
+      "eslint.config.js", "eslint.config.mjs", "eslint.config.cjs",
+      ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml",
+      ".eslintrc.json", ".eslintrc",
+    }
     local function js_formatters(bufnr)
       local has_prettier = vim.fs.root(bufnr, prettier_files)
       local has_eslint = vim.fs.root(bufnr, eslint_files)
+      local formatters = {}
+      if has_eslint then
+        table.insert(formatters, "eslint_d")
+      end
       -- use prettierd when: project has prettier config, or no eslint config (default fallback)
       if has_prettier or not has_eslint then
-        return { "prettierd" }
+        table.insert(formatters, "prettierd")
       end
-      return {}
+      return formatters
     end
 
     opts.formatters_by_ft = vim.tbl_deep_extend("force", opts.formatters_by_ft or {}, {
@@ -27,6 +35,6 @@ return {
       scss = { "prettierd" },
       less = { "prettierd" },
     })
-    opts.default_format_opts = { lsp_format = "never" }
+    opts.default_format_opts.lsp_format = "never"
   end,
 }

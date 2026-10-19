@@ -25,26 +25,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
--- eslint_d auto-fix after save (async so cursor never freezes)
-vim.api.nvim_create_autocmd("BufWritePost", {
-  group = vim.api.nvim_create_augroup("eslint_d_async", { clear = true }),
-  pattern = { "*.ts", "*.tsx", "*.js", "*.jsx" },
-  callback = function(args)
-    if vim.g.autoformat == false or vim.b[args.buf].autoformat == false then
-      return
-    end
-    if not vim.fs.root(args.buf, require("config.functions").eslint_config_files) then
-      return
-    end
-    require("conform").format({
-      bufnr = args.buf,
-      formatters = { "eslint_d" },
-      async = true,
-      lsp_format = "never",
-    })
-  end,
-})
-
 -- Enable spell checking for specific filetypes
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("enable_spell_check", { clear = true }),
