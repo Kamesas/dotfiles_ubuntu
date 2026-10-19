@@ -1,11 +1,9 @@
 return {
-  -- Mason: Auto-install LSPs, formatters, linters
   {
     "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
-        -- No typescript-language-server here: typescript-tools.nvim spawns
-        -- tsserver itself, ts_ls/vtsls are disabled below.
+        -- No typescript-language-server: typescript-tools.nvim starts tsserver itself.
         "tailwindcss-language-server",
         "css-lsp",
         "html-lsp",
@@ -18,20 +16,13 @@ return {
     },
   },
 
-  -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
     opts = {
       inlay_hints = { enabled = false },
       servers = {
-        -- Disable VTSLS from LazyVim TypeScript extras - using typescript-tools.nvim instead
-        vtsls = {
-          enabled = false,
-        },
-        -- Disable ts_ls as well
-        ts_ls = {
-          enabled = false,
-        },
+        vtsls = { enabled = false },
+        ts_ls = { enabled = false },
         tailwindcss = {
           on_attach = function(_, bufnr)
             -- Turn off the color swatches tailwindcss sends. The API only
@@ -63,7 +54,7 @@ return {
     },
   },
 
-  -- TypeScript Tools - replacement for VTSLS with willRenameFiles support
+  -- Used instead of vtsls because it updates imports when a file is renamed (willRenameFiles)
   {
     "pmizio/typescript-tools.nvim",
     dependencies = {
@@ -81,8 +72,7 @@ return {
         )
       end,
       settings = {
-        -- Prefer the path alias (@/...) over relative imports on auto-import.
-        -- Projects without an alias fall back to relative paths on their own.
+        -- Auto-import uses the path alias (@/...). Projects without one get relative paths.
         tsserver_file_preferences = {
           importModuleSpecifierPreference = "non-relative",
         },
@@ -90,22 +80,13 @@ return {
     },
   },
 
-  -- Treesitter parsers
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "tsx",
-        "typescript",
-        "javascript",
-        "css",
-        "html",
-        "json",
-      })
+      vim.list_extend(opts.ensure_installed, { "css" })
     end,
   },
 
-  -- Package.json version info
   {
     "vuki656/package-info.nvim",
     event = "BufRead package.json",
@@ -113,15 +94,12 @@ return {
     opts = {},
   },
 
-  -- Color highlighter lives in plugins/colorizer.lua
-
-  -- Git blame inline
   {
     "lewis6991/gitsigns.nvim",
     opts = {
       current_line_blame = true,
       current_line_blame_opts = {
-        delay = 100, -- Show blame after 100ms (was 500ms)
+        delay = 100,
       },
     },
   },

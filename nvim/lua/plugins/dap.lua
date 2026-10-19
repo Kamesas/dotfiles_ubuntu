@@ -3,7 +3,7 @@ return {
     "folke/which-key.nvim",
     opts = {
       spec = {
-        { "<leader>d", group = "dad bod", icon = "󰆼" },
+        { "<leader>d", group = "database", icon = "󰆼" },
         { "<leader>D", group = "debug", icon = " " },
       },
     },
@@ -12,7 +12,7 @@ return {
     "mfussenegger/nvim-dap",
     -- stylua: ignore
     keys = {
-      -- Disable LazyVim's default <leader>d bindings
+      -- <leader>d is for the database, so debug moves to <leader>D
       { "<leader>dB", false },
       { "<leader>db", false },
       { "<leader>dc", false },
@@ -30,7 +30,7 @@ return {
       { "<leader>ds", false },
       { "<leader>dt", false },
       { "<leader>dw", false },
-      -- Our <leader>D bindings
+
       { "<leader>Db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
       { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: ")) end, desc = "Breakpoint Condition" },
       { "<leader>Dc", function() require("dap").continue() end, desc = "Continue" },

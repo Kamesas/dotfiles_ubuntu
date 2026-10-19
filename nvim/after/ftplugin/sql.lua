@@ -1,4 +1,3 @@
--- SQL-specific keymaps for dadbod database queries
 if vim.fn.exists(":DB") == 0 then
   return
 end

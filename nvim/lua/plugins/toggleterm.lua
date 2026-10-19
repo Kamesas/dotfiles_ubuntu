@@ -1,8 +1,8 @@
 return {
   "akinsho/toggleterm.nvim",
   keys = {
-    { "<C-.>", "<cmd>1ToggleTerm direction=float<cr>", desc = "Toggle floating terminal", mode = { "n", "t" } },
-    { "<C-,>", "<cmd>2ToggleTerm direction=float<cr>", desc = "Toggle floating terminal", mode = { "n", "t" } },
+    { "<C-.>", "<cmd>1ToggleTerm direction=float<cr>", desc = "Toggle floating terminal 1", mode = { "n", "t" } },
+    { "<C-,>", "<cmd>2ToggleTerm direction=float<cr>", desc = "Toggle floating terminal 2", mode = { "n", "t" } },
   },
   opts = {
     size = function(term)
@@ -25,7 +25,6 @@ return {
     },
     on_open = function(term)
       vim.cmd("startinsert!")
-      -- Ctrl+Backspace to delete word in terminal mode
       vim.keymap.set("t", "<C-BS>", "<C-w>", { buffer = term.bufnr, desc = "Delete word backward" })
       vim.keymap.set("t", "<C-H>", "<C-w>", { buffer = term.bufnr, desc = "Delete word backward" })
       vim.keymap.set("t", "<C-;>", [[<C-\><C-n>]], { buffer = term.bufnr, desc = "Exit terminal mode" })

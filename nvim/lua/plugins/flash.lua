@@ -3,11 +3,19 @@ return {
   opts = {
     modes = {
       char = {
-        keys = { "F", "t", "T", ";", "," }, -- removed "f" from char mode
+        -- No "f": it is flash jump (keys below)
+        keys = { "F", "t", "T", ";", "," },
       },
     },
   },
   keys = {
-    { "f", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+    {
+      "f",
+      mode = { "n", "x", "o" },
+      function()
+        require("flash").jump()
+      end,
+      desc = "Flash",
+    },
   },
 }

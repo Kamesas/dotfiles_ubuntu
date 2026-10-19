@@ -1,78 +1,46 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
 local fn = require("config.functions")
--- 1. Fast escape from insert mode
+
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 
 vim.keymap.set({ "n", "x", "o" }, "gh", "^", { desc = "Go to beginning of line" })
 vim.keymap.set({ "n", "x", "o" }, "gl", "$", { desc = "Go to end of line" })
 
--- Move lines up/down in normal and visual mode
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
 vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
-vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- Buffer reordering
 vim.keymap.set("n", "<leader>bh", "<cmd>BufferLineMovePrev<CR>", { desc = "Move Buffer Left" })
 vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineMoveNext<CR>", { desc = "Move Buffer Right" })
 
--- Add empty line below/above
--- vim.keymap.set("n", "<C-m>", "O<Esc>", { desc = "Add line above" })
 vim.keymap.set("n", "<C-Enter>", "o<Esc>", { desc = "Add line below" })
 
--- Delete and change without saving to register
 vim.keymap.set({ "n", "x" }, "d", '"_d', { desc = "Delete without yanking" })
 vim.keymap.set({ "n", "x" }, "c", '"_c', { desc = "Change without yanking" })
-
--- Cut to clipboard
 vim.keymap.set({ "n", "x" }, "<C-x>", '"+d', { desc = "Cut to clipboard" })
 
--- Save current session
 vim.keymap.set("n", "<leader>qw", function()
   require("persistence").save()
 end, { desc = "Write Session" })
 
--- Disables the default Ctrl+z behavior which suspends Neovim and sends it to background (you'd need fg command to bring it back)
-vim.keymap.set("n", "<C-z>", "<nop>")
+vim.keymap.set("n", "<C-z>", "<nop>", { desc = "Do not suspend nvim" })
 
--- Go to definition in vertical split
 vim.keymap.set("n", "gV", function()
   vim.cmd("vsplit")
   vim.lsp.buf.definition()
 end, { desc = "Go to Definition (vsplit)" })
 
--- Console log word under cursor (inserts line below)
 vim.keymap.set("n", "<leader>l", fn.console_log, { desc = "Console log" })
 vim.keymap.set("n", "<leader>cj", fn.console_log_json, { desc = "Console log JSON" })
 vim.keymap.set("n", "<leader>cx", ":%g/console.log/d<CR>", { desc = "Clear all console.logs" })
 
--- Copy selection to clipboard for Claude Code
 vim.keymap.set("v", "<leader>cs", fn.copy_for_claude, { desc = "Copy for Claude Code (Send)" })
-
--- Add TODO comment with your name and date
 vim.keymap.set("n", "<leader>ct", fn.add_todo, { desc = "Add TODO" })
-
--- Insert comment block separator
 vim.keymap.set("n", "gcb", fn.comment_block, { desc = "Go Comment Block" })
-
--- Zoom/maximize current window (toggle)
 vim.keymap.set("n", "<leader>wz", fn.zoom_toggle, { desc = "Toggle zoom window" })
 
--- Enter / arrow keys for completion are configured in blink itself
--- (lua/plugins/blink.lua) — its "fallback" runs other insert-mode
--- mappings correctly, e.g. mini.pairs on Enter between brackets.
-
--- Ctrl+Backspace to delete word backward in insert mode
+-- <C-H> is what most terminals send for Ctrl+Backspace
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })
 vim.keymap.set("i", "<C-H>", "<C-w>", { desc = "Delete word backward" })
-
--- Neotest keymaps
-vim.keymap.set("n", "<leader>tr", function() require("neotest").run.run() end, { desc = "Run Nearest Test" })
-vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, { desc = "Run File Tests" })
-vim.keymap.set("n", "<leader>ts", function() require("neotest").summary.toggle() end, { desc = "Toggle Test Summary" })
-vim.keymap.set("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, { desc = "Show Test Output" })
-vim.keymap.set("n", "<leader>tp", function() require("neotest").output_panel.toggle() end, { desc = "Toggle Output Panel" })
-vim.keymap.set("n", "<leader>tl", function() require("neotest").run.run_last() end, { desc = "Run Last Test" })
-vim.keymap.set("n", "<leader>tx", function() require("neotest").run.stop() end, { desc = "Stop Test" })

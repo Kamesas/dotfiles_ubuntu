@@ -6,112 +6,49 @@ return {
     opts = {},
   },
   {
+    -- https://github.com/jakewvincent/mkdnflow.nvim
     "jakewvincent/mkdnflow.nvim",
-    ft = "markdown", -- only load for markdown files
+    ft = "markdown",
     opts = {
       modules = {
         bib = false,
-        buffers = true,
-        conceal = false, -- keep it minimal, no concealment
-        cursor = true,
-        folds = false,
-        links = true,
-        lists = true,
-        maps = true,
-        paths = true,
-        tables = true,
-        yaml = false,
-      },
-      create_dirs = true,
-      perspective = {
-        priority = "root", -- use root directory perspective
-        fallback = "current",
-        -- Vault root = the folder that holds .git. mkdnflow searches up for this
-        -- marker, so [[full/path]] links resolve from the root in every note,
-        -- not just the top-level index.
-        root_tell = ".git",
-        nvim_wd_heel = false,
-      },
-      wrap = false,
-      bib = {
-        default_path = nil,
-        find_in_root = true,
-      },
-      silent = false,
-      links = {
-        style = "markdown", -- use standard markdown links
-        name_is_source = false,
         conceal = false,
-        context = 0,
-        implicit_extension = nil,
-        transform_implicit = false,
-        transform_explicit = function(text)
-          text = text:gsub(" ", "-")
-          text = text:lower()
-          return text
+        folds = false,
+      },
+      -- The vault root is the folder with .git, so [[full/path]] links work from every note.
+      path_resolution = {
+        primary = "root",
+        root_marker = ".git",
+      },
+      links = {
+        transform_on_create = function(text)
+          return text:gsub(" ", "-"):lower()
         end,
       },
-      new_file_template = {
-        use_template = false,
-      },
-      tables = {
-        trim_whitespace = true,
-        format_on_move = true,
-        auto_extend_rows = false,
-        auto_extend_cols = false,
-      },
-      yaml = {
-        bib = { override = false },
-      },
       mappings = {
-        MkdnEnter = { { "n", "v" }, "<CR>" }, -- follow/create link
-        MkdnTab = false, -- disable tab in favor of default behavior
-        MkdnSTab = false,
-        MkdnNextLink = { "n", "<Tab>" }, -- jump to next link
-        MkdnPrevLink = { "n", "<S-Tab>" }, -- jump to previous link
-        MkdnGoBack = { "n", "<BS>" }, -- go back
-        MkdnGoForward = { "n", "<Del>" }, -- go forward
-        MkdnCreateLink = false, -- use default <leader>l behavior if needed
-        MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>ml" }, -- create link from clipboard
-        MkdnFollowLink = false, -- handled by Enter
-        MkdnDestroyLink = { "n", "<leader>md" }, -- destroy link
-        MkdnTagSpan = { "v", "<M-CR>" },
-        MkdnMoveSource = { "n", "<F2>" }, -- rename file and update links
-        MkdnYankAnchorLink = { "n", "yaa" },
-        MkdnYankFileAnchorLink = { "n", "yfa" },
+        MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>ml" },
+        MkdnDestroyLink = { "n", "<leader>md" },
         MkdnIncreaseHeading = { "n", "+" },
         MkdnDecreaseHeading = { "n", "-" },
-        -- Toggle checkbox. Not <C-Space>: that is the tmux leader and never reaches nvim.
+        -- Not the default <C-Space>: that is the tmux leader and never reaches nvim.
         MkdnToggleToDo = { { "n", "v" }, "<leader>mt" },
-        MkdnNewListItem = false,
-        MkdnNewListItemBelowInsert = { "n", "o" },
-        MkdnNewListItemAboveInsert = { "n", "O" },
-        MkdnExtendList = false,
         MkdnUpdateNumbering = { "n", "<leader>mn" },
         MkdnTableNextCell = false,
         MkdnTablePrevCell = false,
-        MkdnTableNextRow = false,
         MkdnTablePrevRow = false,
         MkdnTableNewRowBelow = { "n", "<leader>mir" },
         MkdnTableNewRowAbove = { "n", "<leader>miR" },
         MkdnTableNewColAfter = { "n", "<leader>mic" },
         MkdnTableNewColBefore = { "n", "<leader>miC" },
-        MkdnFoldSection = { "n", "<leader>mf" },
-        MkdnUnfoldSection = { "n", "<leader>mF" },
       },
     },
+    -- In init, not config: the key must work before a markdown file loads the plugin.
     init = function()
-      -- Daily notes functionality - set up in init so it's always available
-      local function open_daily_note()
+      vim.keymap.set("n", "<leader>wn", function()
         local notes_dir = vim.fn.expand("~/Documents/notes/diary")
         vim.fn.mkdir(notes_dir, "p")
-        local date = os.date("%Y-%m-%d")
-        local filename = notes_dir .. "/" .. date .. ".md"
-        vim.cmd("edit " .. filename)
-      end
-
-      -- Keybinding for daily notes (similar to vimwiki)
-      vim.keymap.set("n", "<leader>wn", open_daily_note, { desc = "Open daily note" })
+        vim.cmd("edit " .. notes_dir .. "/" .. os.date("%Y-%m-%d") .. ".md")
+      end, { desc = "Open daily note" })
     end,
   },
 }

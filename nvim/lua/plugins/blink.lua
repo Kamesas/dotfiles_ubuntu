@@ -4,10 +4,9 @@ return {
     opts = {
       keymap = {
         preset = "default",
-        -- <C-space> is the tmux leader key, so C-x triggers completion manually instead
+        -- <C-space> is the tmux leader, so <C-x> opens completion
         ["<C-x>"] = { "show", "show_documentation", "hide_documentation" },
-        -- "fallback" passes the key on to other mappings when the menu is
-        -- closed (e.g. mini.pairs handles Enter between brackets).
+        -- "fallback": when the menu is closed, the key goes to other mappings (mini.pairs on Enter)
         ["<CR>"] = { "accept", "fallback" },
         ["<Up>"] = { "select_prev", "fallback" },
         ["<Down>"] = { "select_next", "fallback" },

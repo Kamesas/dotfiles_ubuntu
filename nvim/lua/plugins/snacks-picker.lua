@@ -1,37 +1,28 @@
 return {
-  "folke/snacks.nvim",
-  init = function()
-    -- Inside tmux, $TERM/$TERM_PROGRAM are masked to "tmux", so snacks.image
-    -- can't detect the outer terminal and wrongly reports "no kitty graphics
-    -- protocol". WezTerm (which DOES support it) sets $WEZTERM_PANE, which
-    -- survives tmux — use it to force snacks' wezterm detection on.
-    if vim.env.WEZTERM_PANE and not vim.env.SNACKS_WEZTERM then
-      vim.env.SNACKS_WEZTERM = "1"
-    end
-  end,
-  opts = {
-    -- Image preview: shows image files when opened, renders images inline in
-    -- markdown, and powers image previews in the picker. Uses the terminal
-    -- graphics protocol (WezTerm/Kitty). Inside tmux this needs
-    -- `allow-passthrough on` (set in ~/.config/tmux/tmux.conf).
-    image = {
-      enabled = true,
-      -- Don't pop up a preview just because the cursor moved over an image
-      -- reference (e.g. <Image src="..."> in jsx/tsx). Without this it
-      -- shows a floating preview on every hover.
-      doc = { float = false },
-    },
-    picker = {
-      -- Start every picker with the preview pane hidden. This stops images
-      -- (and other files) from being previewed as you move the cursor.
-      -- Press <a-p> (Alt+p) inside the picker to show the preview when you
-      -- actually want it.
-      layout = { hidden = { "preview" } },
-      sources = {
-        -- Show dotfiles and gitignored entries in the file tree (e.g. notes/).
-        explorer = { hidden = false, ignored = true },
-        -- files = { hidden = true, ignored = true },
-        grep = { hidden = true, ignored = true },
+  { "nvim-telescope/telescope.nvim", enabled = false },
+  {
+    "folke/snacks.nvim",
+    init = function()
+      -- Inside tmux, snacks.image cannot see the outer terminal. WezTerm sets
+      -- $WEZTERM_PANE, which tmux keeps, so use it to turn on WezTerm support.
+      if vim.env.WEZTERM_PANE and not vim.env.SNACKS_WEZTERM then
+        vim.env.SNACKS_WEZTERM = "1"
+      end
+    end,
+    opts = {
+      -- Inside tmux this needs `allow-passthrough on` (tmux.conf).
+      image = {
+        enabled = true,
+        -- No preview window when the cursor is on an image path, like <Image src="..."> in tsx
+        doc = { float = false },
+      },
+      picker = {
+        -- Preview is hidden at start. <a-p> shows it.
+        layout = { hidden = { "preview" } },
+        sources = {
+          explorer = { hidden = false, ignored = true },
+          grep = { hidden = true, ignored = true },
+        },
       },
     },
   },
