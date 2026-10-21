@@ -428,8 +428,8 @@ alex says otherwise. Moving a window between desktops is a Task View job
 ## Kanata
 
 `winget install jtroo.kanata_gui` — 1.12.0. The package ships eight builds; the
-one used is **`kanata_windows_gui_winIOv2_x64.exe`**. `gui` means no console
-window, `winIOv2` means the plain Windows hook, with no driver to install.
+one used is **`kanata_windows_gui_wintercept_x64.exe`**. `gui` means no console
+window, `wintercept` means it uses the Interception driver (see below).
 
 **The Linux config runs unchanged.** `kanata.kbd` keeps its
 `linux-dev-names-exclude` block and kanata simply ignores it on Windows —
@@ -439,7 +439,7 @@ serves both platforms, carried across by `sync-windows` like the rest.
 Check it before trusting it:
 
 ```
-kanata_windows_tty_winIOv2_x64.exe --cfg %USERPROFILE%\.config\kanata\kanata.kbd --check
+kanata_windows_tty_wintercept_x64.exe --cfg %USERPROFILE%\.config\kanata\kanata.kbd --check
 ```
 
 The `tty` build is the same program with a console, which is what makes the
@@ -520,10 +520,10 @@ A kanata upgrade replaces the winget package folder and takes the dll with it, s
 it has to be copied back. `windows/install.ps1` refuses to make the login
 shortcut when the dll is missing, rather than making one that silently fails.
 
-**Smart App Control tolerance.** It is on, and every kanata build is unsigned. It
-blocked the wintercept exe the first time it ran, then allowed it, and has not
-blocked since. Expect the same after an update. Do **not** turn Smart App Control
-off to fix it -- that switch is one-way and needs a Windows reinstall to undo.
+**Smart App Control off.** Every kanata build is unsigned. Smart App Control
+blocks kanata at login and shows nothing. Turn it off: Windows Security → App &
+browser control → Smart App Control settings → Off. Since the April 2026 update
+it can be turned back on there, with no reinstall.
 
 ### The driver
 
