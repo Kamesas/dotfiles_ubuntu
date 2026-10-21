@@ -24,6 +24,12 @@ config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 config.tab_max_width = 24
 
+-- Kitty keyboard protocol, off. WezTerm 20240203 -- the last stable release --
+-- mis-encodes shifted keys once an app asks for the protocol, and then uppercase
+-- letters never arrive. Apps in this window ask for it; tmux in the WSL window
+-- asks for xterm's modifyOtherKeys instead, so only this side is affected.
+config.enable_kitty_keyboard = false
+
 -- The shared config forwards Alt+<number> to tmux. Nothing to forward to here,
 -- so drop those and give the keys to tab switching below.
 local keys = {}

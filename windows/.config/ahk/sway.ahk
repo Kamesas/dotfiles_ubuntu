@@ -470,7 +470,9 @@ global PROTECTED := Map(
     "XamlExplorerHostIslandWindow",  true,   ; Task View / Alt-Tab
     "MultitaskingViewFrame",         true)
 
-#c::CloseActive()
+; Win+C is also the Copilot app's shortcut. $ forces the keyboard hook, and a
+; hook hotkey always beats a registered one, so the close wins.
+$#c::CloseActive()
 
 ; sway's kill. WinClose sends WM_CLOSE, so an app still runs its own shutdown
 ; path -- unsaved-changes prompts and the like -- instead of being killed.
