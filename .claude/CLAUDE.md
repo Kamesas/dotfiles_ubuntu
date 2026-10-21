@@ -181,20 +181,19 @@ assertion, or sharpen a tentative claim into a confident one. Fix clarity, gramm
 — never the level of certainty. The claim is theirs to make, especially in first-person messages
 to other people.
 
-## 11 — Don't start long-running app servers unless the user asks
-Never launch a long-running dev/app server on your own — `storybook`, `dev`, `start`, `preview`,
-`serve`, watch processes, or anything that holds a port and stays up. The user runs these in their
-own terminal where they can see and reload them. Two reasons: a server I start is invisible to the
-user and can silently hold the port (they then can't start their own); and they prefer to drive the
-running app themselves. If a change needs to be seen in the running app, ask the user to run it
-(e.g. suggest `! npm run storybook`) and tell them what to look at.
-If the user does ask me to start a server, check the port first. If something already listens
-there, say so and stop — never start a second copy. One dev script often starts several watchers,
-so a second copy fights the first over the same build folder and can freeze the machine.
-Start it with the tool's own background mode. Never background it by hand with `&` or `disown`:
-that process cannot be tracked or stopped later, and it holds the port as a ghost.
-Then say which port it is on and how to stop it. One-shot commands that exit on their own
-(`build`, `lint`, `test`, `tsc`) are fine to run without asking.
+## 11 — Servers I start for testing: other port, stop them after
+I may start a dev/app server (`dev`, `start`, `storybook`, `preview`, `serve`) when I need it to
+test something. No need to ask. Rules:
+- Use a port that is not the project's default, so it does not take Alex's port. Check that the
+  port is free first.
+- Don't start a second copy of a script that writes the same build folder (e.g. `tsc -w` into
+  `dist/`) while Alex's copy runs. Two copies fight over that folder and can freeze the machine.
+  Run a one-shot build and start without watch instead.
+- Start it with the tool's own background mode. Never use `&` or `disown`: that process cannot be
+  stopped later and keeps holding the port.
+- When testing is done, stop every server I started. Check the port is free again.
+If Alex should see a change in his own running app, tell him what to look at.
+One-shot commands (`build`, `lint`, `test`, `tsc`) are fine to run any time.
 
 ## 12 — Never add complexity; write the problem down instead
 The simplest thing that works wins. If a fix needs a new config value, a new column, a migration, a
