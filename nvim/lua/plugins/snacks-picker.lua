@@ -9,6 +9,10 @@ return {
         vim.env.SNACKS_WEZTERM = "1"
       end
     end,
+    keys = {
+      { "<leader>fr", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Recent (cwd)" },
+      { "<leader>fR", LazyVim.pick("oldfiles"), desc = "Recent (all)" },
+    },
     opts = {
       -- Inside tmux this needs `allow-passthrough on` (tmux.conf).
       image = {
