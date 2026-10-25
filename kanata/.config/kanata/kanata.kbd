@@ -39,9 +39,9 @@
 ;; Layer 0 - Base layer (matched to Corne default_layer)
 (deflayer base
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
-  tab  @qm  @w_ch @e_ch @r_ch t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
+  tab  @qm  w     e     r     t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
-  lsft @z_c @x_ch @c_ch v    @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
+  @z_s @x_c  @c_a  @v_g  b    @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
 )
 
@@ -90,7 +90,7 @@
   _    _    _              _              _    _         _    _    _
 )
 
-;; Layer 6 - Native mods (all keys at real positions; bottom row has mod-taps; g+h exits back to base)
+;; Layer 6 - Native mods (all keys at real positions; bottom row has mod-taps; g+h or b+n exits back to base)
 (deflayer native_mods
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
@@ -119,10 +119,11 @@
   ;; Right Alt: tap=Enter, hold=Layer 2 (matching Corne lt LAYER2 RET)
   ar2 (tap-hold 200 200 ret (layer-toggle layer2))
 
-  ;; Bottom row mod-taps - left hand (CTRL/Z, ALT/X, GUI/C)
-  z_c (tap-hold 200 200 z lctl)
-  x_a (tap-hold 200 200 x lalt)
-  c_g (tap-hold 200 200 c lmet)
+  ;; Bottom row mod-taps - left hand (matching Corne: SHFT/Z, CTRL/X, ALT/C, GUI/V)
+  z_s (tap-hold 200 200 z lsft)
+  x_c (tap-hold 200 200 x lctl)
+  c_a (tap-hold 200 200 c lalt)
+  v_g (tap-hold 200 200 v lmet)
 
   ;; Bottom row mod-taps - right hand (matching Corne: GUI/M, ALT/,, CTRL/., SHFT//)
   m_g (tap-hold 200 200 m lmet)
@@ -146,7 +147,8 @@
   f_ch (chord home_row_chords f)
   g_ch (chord home_row_chords g)
 
-  ;; native_mods layer: x, c with mod-taps at their real key positions
+  ;; native_mods layer: z, x, c with mod-taps at their real key positions
+  z_c (tap-hold 200 200 z lctl)
   nm_xa (tap-hold 200 200 x lalt)
   nm_cg (tap-hold 200 200 c lmet)
 
@@ -154,21 +156,12 @@
   g_nm (chord gh_exit_chords g)
   h_nm (chord gh_exit_chords h)
 
-  ;; Chord participants - top row left (w, e, r)
-  w_ch (chord wer_chords w)
-  e_ch (chord wer_chords e)
-  r_ch (chord wer_chords r)
-
   ;; Chord participants - top row right (y, u, i, o, p)
   y_ch (chord yuiop_chords y)
   u_ch (chord yuiop_chords u)
   i_ch (chord yuiop_chords i)
   o_ch (chord yuiop_chords o)
   p_ch (chord yuiop_chords p)
-
-  ;; Chord participants - bottom row left (x, c)
-  x_ch (chord xc_chords x)
-  c_ch (chord xc_chords c)
 
   ;; Chord participants - bottom row right (b for layer combo, n, m)
   b_ch  (chord bnm_chords b)
@@ -217,15 +210,6 @@
   (g h)    (layer-switch native_mods)  ;; g+h → native_mods layer
 )
 
-;; Top row left chords: w, e, r
-(defchords wer_chords 50
-  (w)     w          ;; w alone
-  (e)     e          ;; e alone
-  (r)     r          ;; r alone
-  (w e)   S-9        ;; w+e → (
-  (e r)   [          ;; e+r → [
-)
-
 ;; Top row right chords: y, u, i, o, p
 (defchords yuiop_chords 50
   (y)     y          ;; y alone
@@ -237,13 +221,6 @@
   (u i)   ]          ;; u+i → ]
   (i o)   S-0        ;; i+o → )
   (o p)   S-'        ;; o+p → "
-)
-
-;; Bottom row left chords: x, c
-(defchords xc_chords 50
-  (x)     @x_a       ;; x alone → tap-hold for ALT
-  (c)     @c_g       ;; c alone → tap-hold for WIN
-  (x c)   -          ;; x+c → minus
 )
 
 ;; Bottom row right chords: b (for layer toggle), n, m
