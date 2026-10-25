@@ -63,7 +63,7 @@
   _    _    _              _              _    _         _    _    _
 )
 
-;; Layer 4 - Plain mode (no tap-holds, no chords, no angled-b; b+n switches back)
+;; Layer 3 - Plain mode (no tap-holds, no chords, no angled-b; b+n switches back)
 (deflayer plain
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
@@ -72,7 +72,7 @@
   lctl lmet lalt           @psp           ralt rctl      left  down  rght
 )
 
-;; Layer 5 - Plain nav (active while space held in plain mode; hjkl → arrows)
+;; Layer 4 - Plain nav (active while space held in plain mode; hjkl → arrows)
 (deflayer plain_nav
   _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
@@ -81,7 +81,7 @@
   _    _    _              _              _    _         _    _    _
 )
 
-;; Layer 6 - Native mods (all keys at real positions; bottom row has mod-taps; g+h or b+n exits back to base)
+;; Layer 5 - Native mods (all keys at real positions; bottom row has mod-taps; g+h or b+n exits back to base)
 (deflayer native_mods
   esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc  del
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
