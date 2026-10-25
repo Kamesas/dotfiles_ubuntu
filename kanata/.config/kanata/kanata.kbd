@@ -39,7 +39,7 @@
 ;; Layer 0 - Base layer (matched to Corne default_layer)
 (deflayer base
   esc  1    2    3    4    5    6    7     8     9     0       -     =     bspc  del
-  tab  @qm  w     e     r     t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
+  tab  q    w     e     r     t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
   @z_s @x_c  @c_a  @v_g  b    @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
   lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
@@ -61,15 +61,6 @@
   _    A-1  A-2  A-3  A-4  A-5  =    4    5    6    S-8  _    _
   _    lsft _    _    _    _    -    1    2    3    S--  _    _
   _    _    _              _              _    _         _    _    _
-)
-
-;; Layer 3 - Media (Corne layer3, activated by Q/P hold)
-(deflayer media
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    brup _    _    next volu _    _    _    _    _    _    _    _
-  _    lmet lalt lctl lsft mute _    lsft lctl lalt lmet _    _
-  _    brdn _    _    prev vold _    _    _    _    _    _    _
-  _    _    _              pp             _    _         _    _    _
 )
 
 ;; Layer 4 - Plain mode (no tap-holds, no chords, no angled-b; b+n switches back)
@@ -101,12 +92,6 @@
 
 ;; Aliases
 (defalias
-  ;; Q: tap=q, hold=media layer (matching Corne lt LAYER3 Q)
-  qm (tap-hold 200 200 q (layer-toggle media))
-
-  ;; P: tap=p, hold=media layer (matching Corne lt LAYER3 P)
-  pm (tap-hold 200 200 p (layer-toggle media))
-
   ;; Caps Lock: tap=Escape, hold=Ctrl (matching Corne mt LCTRL ESC)
   cec (tap-hold 200 200 esc lctl)
 
@@ -216,7 +201,7 @@
   (u)     u          ;; u alone
   (i)     i          ;; i alone
   (o)     o          ;; o alone
-  (p)     @pm        ;; p alone → tap-hold for media layer
+  (p)     p          ;; p alone
   (y u)   S-=        ;; y+u → +
   (u i)   ]          ;; u+i → ]
   (i o)   S-0        ;; i+o → )
