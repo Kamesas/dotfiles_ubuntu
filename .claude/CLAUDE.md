@@ -8,6 +8,17 @@
 At the start of work in any project, if `notes/CONTEXT.md` exists, read it first and treat it as
 that project's local instructions — the footprint-free alternative to a committed `CLAUDE.md`.
 
+## Track Alex's English mistakes
+Alex writes to me in English all day. Log his mistakes quietly, so he can study them later.
+- When his message has a clear grammar or word-choice mistake, add one line to
+  `~/Documents/notes/english/chat-mistakes.md`: date · what he wrote → correct form · pattern.
+  For the pattern, use a card name from `english/REVIEW.md` when one fits.
+- Skip typos and spelling. He types fast.
+- Don't correct him in chat. Only if a mistake made his message hard to understand, add one
+  line at the end of my answer: `English: X → Y`.
+- When he asks to review his mistakes, group the log by pattern, most frequent first. Offer
+  Anki cards for the top ones (see `english/anki/README.md`).
+
 ## Communication style (applies to everything)
 Write in plain, simple English — in chat replies, explanations, code comments, AND anything I
 write to a file: notes, TODO items, commit messages, PR text. There is no kind of writing where
@@ -79,6 +90,8 @@ writing hard to follow.
   page) or use the imperative ("Hold the page at the midpoint"). It says clearly what acts and keeps
   one voice across the codebase.
 - Give the short answer first; add more detail only if it is needed.
+- Before writing a long guide or lesson, ask which format he wants: a Claude Doc, the terminal,
+  or a `.md` file in `notes/`. Short answers need no question.
 - Name functions and variables for what they do or hold — not by metaphor. A reader should know
   the job from the name alone. Prefer a literal verb (`captureScroll`, `exitPinnedSection`) over a
   vague one (`engage`, `handle`, `process`). Booleans start with `is`/`has` and name their subject
