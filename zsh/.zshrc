@@ -63,6 +63,7 @@ alias lgn='lazygains'
 # Default editor (used by Claude Code Ctrl+G, git, etc.)
 export EDITOR='nvim'
 export VISUAL='nvim'
+export LESS='-FRX'
 
 # ============================================================================
 # UTILITY ALIASES
