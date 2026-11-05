@@ -10,6 +10,7 @@ return {
         "emmet-ls",
         "eslint-lsp",
         "prettierd",
+        "prettier",
         "eslint_d",
         "js-debug-adapter",
       },

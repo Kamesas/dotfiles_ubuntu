@@ -45,7 +45,12 @@ return {
       css = { "prettierd" },
       scss = { "prettierd" },
       less = { "prettierd" },
+      markdown = { "prettier" },
     })
+    opts.formatters = opts.formatters or {}
+    opts.formatters.prettier = {
+      prepend_args = { "--prose-wrap", "preserve", "--ignore-path", "/dev/null" },
+    }
     opts.default_format_opts.lsp_format = "never"
   end,
 }

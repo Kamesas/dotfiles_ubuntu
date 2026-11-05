@@ -7,6 +7,8 @@ vim.g.lazyvim_eslint_auto_format = false
 
 vim.o.relativenumber = false
 vim.opt.spelllang = { "en_us" }
+vim.o.breakindent = true
+vim.o.breakindentopt = "list:-1"
 
 -- Write in place. Otherwise the file is gone for a moment on save, and Metro crashes with ENOENT.
 vim.o.backupcopy = "yes"
