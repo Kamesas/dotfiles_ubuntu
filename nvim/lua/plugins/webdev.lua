@@ -46,6 +46,9 @@ return {
             },
           },
         },
+        eslint = {
+          flags = { allow_incremental_sync = false },
+        },
         html = {},
         cssls = {},
         emmet_ls = {
