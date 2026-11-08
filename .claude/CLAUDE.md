@@ -105,6 +105,20 @@ writing hard to follow.
   block reads as a unit. Declare a variable right where it is first used, not early out of habit —
   declare-near-use keeps each group self-contained.
 
+## Editor
+Alex uses LazyVim (Neovim) everywhere, never VS Code. Give editor steps for LazyVim.
+Config: `~/dotfiles/nvim` (`~/.config/nvim` links to it). TypeScript server: typescript-tools.nvim.
+Reload types: `:LspRestart`, or reopen nvim.
+
+## "Navigate me" flow
+When Alex says "navigate me", he types the code and I guide him:
+- One step at a time: the code, plus a short explanation of what it does.
+- Before I give him code, I check that it compiles: a throwaway file, `tsc` and lint, then I delete the file.
+- I wait until he says he added it. Then I check his file and give the next step.
+- I never edit the real files myself in this flow.
+- Exception: when he asks me to add something myself ("add it", "you do it"), I add only that one thing. Then the flow goes on as before.
+The flow lasts until the task is done or he says to stop.
+
 ## 1 — No AI footprint in repos
 Leave zero assistant trace in any repository: no `.claude/` folder, no "claude"/AI mentions in
 `.gitignore` or any tracked or untracked file, no co-author trailers in commits or PRs. Any
