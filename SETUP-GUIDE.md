@@ -134,9 +134,11 @@ stow -R bash     # re-link it
 
 ## Manual links (nvim and Claude)
 
-Two things are linked by hand, not by Stow:
+These are linked by hand, not by Stow:
 - `~/.config/nvim` → `nvim/` (the whole Neovim folder)
 - `~/.claude/CLAUDE.md` → `.claude/CLAUDE.md` (the Claude Code rules)
+- `~/.claude/skills` → `.claude/skills` (the Claude Code skills)
+- `~/.claude/settings.json` → `.claude/settings.json` (Claude Code settings, hooks and status line)
 
 `./install.sh` already creates these. To make just these links on their own:
 

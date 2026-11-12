@@ -18,6 +18,7 @@ works everywhere.
 | `wezterm` | WezTerm terminal |
 | `misc` | small dotfiles (`.dircolors`) |
 | `fish`, `btop`, `flameshot`, `kanata` | optional tools |
+| `claude` | Claude Code keybindings (`.claude/keybindings.json`) |
 
 **Manual links** (Stow can't manage these — see below):
 
@@ -25,6 +26,7 @@ works everywhere.
 |------|------------|
 | `~/.config/nvim` → `nvim/` | Neovim config (whole folder) |
 | `~/.claude/CLAUDE.md` → `.claude/CLAUDE.md` | Claude Code rules |
+| `~/.claude/settings.json` → `.claude/settings.json` | Claude Code settings, hooks and status line (needs `jq`) |
 
 **Windows** (`windows/`) — the AutoHotkey window manager, the dropdown terminals
 and the PowerShell profile that make Windows 11 behave like Sway. Not stowed:

@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(~/Documents/notes/english/chat-mistakes.md)"
+    ],
+    "defaultMode": "default"
+  },
+  "model": "fable",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"UserPromptSubmit\\\",\\\"additionalContext\\\":\\\"PLAIN ENGLISH RULE (from CLAUDE.md): Alex is not a native English speaker. Write the SHORTEST version he still understands - not fewer words, not more. If he has to ask what it means it was too short; twelve comment lines over sixteen code lines is too long. A fragment is fine when it is clear alone, so do not pad a line into a sentence. Use common words. No metaphors, no idioms, no clever phrasing. Avoid words like load-bearing, the other way round, common thread, greppable, breaks quietly, worth your attention. Give the short answer first, then the reason. Use a plain list instead of a table when the cells hold sentences.\\\"},\\\"suppressOutput\\\":true}\""
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "figma@claude-plugins-official": true
+  },
+  "modelSettings": {
+    "claude-fable-5-2": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "tui": "fullscreen",
+  "theme": "dark",
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); ctx=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); five=$(echo \"$input\" | jq -r '.rate_limits.five_hour.used_percentage // empty'); week=$(echo \"$input\" | jq -r '.rate_limits.seven_day.used_percentage // empty'); effort=$(echo \"$input\" | jq -r '.effort.level // empty'); out=\"$model\"; [ -n \"$effort\" ] && out=\"$out ($effort)\"; [ -n \"$ctx\" ] && out=\"$out | Context: $(printf '%.0f' \"$ctx\")%\"; [ -n \"$five\" ] && out=\"$out | 5h: $(printf '%.0f' \"$five\")%\"; [ -n \"$week\" ] && out=\"$out | 7d: $(printf '%.0f' \"$week\")%\"; echo \"$out\""
+  },
+  "agentPushNotifEnabled": true
+}

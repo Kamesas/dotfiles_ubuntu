@@ -21,17 +21,19 @@ NC='\033[0m'
 
 # Available packages (managed by Stow)
 CORE_PACKAGES=("bash" "git")
-OPTIONAL_PACKAGES=("tmux" "wezterm" "kitty" "bin" "misc" "fish" "btop" "flameshot" "kanata" "keyb" "rofi" "fastfetch")
+OPTIONAL_PACKAGES=("tmux" "wezterm" "kitty" "bin" "misc" "fish" "btop" "flameshot" "kanata" "keyb" "rofi" "fastfetch" "claude")
 
 # Manual links — configs Stow can't manage:
 #  - nvim: a whole-folder link (the package is not laid out for Stow)
 #  - CLAUDE.md: one file inside ~/.claude, which also holds private files
 #  - skills: a whole-folder link into the same ~/.claude
+#  - settings.json: one file inside ~/.claude
 # Format: "source:destination"
 MANUAL_LINKS=(
     "$DOTFILES_DIR/nvim:$HOME/.config/nvim"
     "$DOTFILES_DIR/.claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
     "$DOTFILES_DIR/.claude/skills:$HOME/.claude/skills"
+    "$DOTFILES_DIR/.claude/settings.json:$HOME/.claude/settings.json"
 )
 
 print_header() {

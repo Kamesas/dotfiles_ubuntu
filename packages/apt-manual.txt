@@ -21,6 +21,7 @@ grep
 gzip
 hostname
 init
+jq
 lazygit
 libasound2t64
 libattr1
