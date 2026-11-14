@@ -98,6 +98,7 @@ bindsym --to-code Alt+p exec ~/.local/bin/clipboard-menu
 bindsym --to-code Alt+o exec ~/.local/bin/wallpaper-menu
 bindsym --to-code Alt+y exec ~/.local/bin/waybar-toggle
 bindsym Print exec grim -g "$(slurp)" /tmp/screenshot.png && swappy -f /tmp/screenshot.png
+bindsym --to-code Ctrl+q exec grim -g "$(slurp)" /tmp/screenshot.png && swappy -f /tmp/screenshot.png
 
 ### Keybindings — focus
 bindsym --to-code $mod+Shift+h focus left
