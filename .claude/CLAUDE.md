@@ -119,6 +119,14 @@ When Alex says "navigate me", he types the code and I guide him:
 - Exception: when he asks me to add something myself ("add it", "you do it"), I add only that one thing. Then the flow goes on as before.
 The flow lasts until the task is done or he says to stop.
 
+## "Show me" flow
+Like "navigate me", but I edit the files and he only reads:
+- One step at a time: the current code, then the new code, then a short "how it works".
+- Before I show new code, I check it: a throwaway file, `tsc` and lint, then I delete the file.
+- I wait. He asks questions, or says "do it". Then I edit only that step and run `tsc`, lint and prettier.
+- Then I show the next step. He may pick which step comes next.
+The flow lasts until the task is done or he says to stop.
+
 ## 1 — No AI footprint in repos
 Leave zero assistant trace in any repository: no `.claude/` folder, no "claude"/AI mentions in
 `.gitignore` or any tracked or untracked file, no co-author trailers in commits or PRs. Any

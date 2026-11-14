@@ -32,6 +32,5 @@ if [ -f "$HOME/.bashrc" ]; then
 fi
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-
 # Added by Antigravity CLI installer
 export PATH="/home/alex/.local/bin:$PATH"

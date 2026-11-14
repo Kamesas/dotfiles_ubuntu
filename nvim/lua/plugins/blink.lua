@@ -22,9 +22,9 @@ return {
 
       sources = {
         per_filetype = {
-          sql = { inherit_defaults = true, "dadbod" },
-          mysql = { inherit_defaults = true, "dadbod" },
-          plsql = { inherit_defaults = true, "dadbod" },
+          sql = { "dadbod" },
+          mysql = { "dadbod" },
+          plsql = { "dadbod" },
         },
         providers = {
           dadbod = {
