@@ -83,7 +83,10 @@ alias egrep='egrep --color=auto'
 # NVM (Node Version Manager)
 # ============================================================================
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
+node_bin=("$NVM_DIR"/versions/node/v$(<"$NVM_DIR/alias/default")*/bin(Nn[-1]))
+[ -n "$node_bin" ] && export PATH="$node_bin:$PATH"
+unset node_bin
 [ -s "$NVM_DIR/nvm_completion" ] && \. "$NVM_DIR/nvm_completion"
 
 # ============================================================================
