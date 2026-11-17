@@ -6,6 +6,10 @@ return {
     "kristijanhusak/vim-dadbod-completion",
     dependencies = { "tpope/vim-dadbod" },
     ft = { "sql", "mysql", "plsql" },
+    config = function()
+      vim.cmd([[call extend(vim_dadbod_completion#reserved_keywords#get(),
+        \ ['RETURNING', 'CONFLICT', 'EXCLUDED', 'CHECK', 'JSONB', 'TIMESTAMPTZ'])]])
+    end,
   },
   {
     "kristijanhusak/vim-dadbod-ui",
