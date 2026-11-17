@@ -1,3 +1,40 @@
+local function find_css_var_lines(root, names)
+  local lines = {}
+  for _, file in ipairs(vim.fn.systemlist({ "rg", "--files", "--glob", "*.css", root })) do
+    local selector = ""
+    for line in io.lines(file) do
+      selector = line:match("^%s*([^{}]-)%s*{%s*$") or selector
+      for _, name in ipairs(names) do
+        local value = line:match("^%s*%-%-" .. vim.pesc(name) .. ":%s*([^;]+);")
+        if value then
+          table.insert(lines, ("--%s: %s; /* %s */"):format(name, value, selector))
+        end
+      end
+    end
+  end
+  return lines
+end
+
+local function add_css_var_values(result, root)
+  local contents = result and result.contents
+  if type(contents) ~= "table" or type(contents.value) ~= "string" then
+    return
+  end
+
+  local names, seen = {}, {}
+  for name in contents.value:gmatch("var%(%-%-([%w-]+)") do
+    if not seen[name] then
+      seen[name] = true
+      table.insert(names, name)
+    end
+  end
+
+  local lines = #names > 0 and find_css_var_lines(root, names) or {}
+  if #lines > 0 then
+    contents.value = contents.value .. "\n" .. table.concat(lines, "\n")
+  end
+end
+
 return {
   {
     "mason-org/mason.nvim",
@@ -25,6 +62,19 @@ return {
         vtsls = { enabled = false },
         ts_ls = { enabled = false },
         tailwindcss = {
+          on_init = function(client)
+            local request = client.request
+            client.request = function(self, method, params, handler, bufnr)
+              if method == "textDocument/hover" and handler then
+                local hover_handler = handler
+                handler = function(err, result, ctx, config)
+                  add_css_var_values(result, self.root_dir)
+                  return hover_handler(err, result, ctx, config)
+                end
+              end
+              return request(self, method, params, handler, bufnr)
+            end
+          end,
           on_attach = function(_, bufnr)
             -- Turn off the color swatches tailwindcss sends. The API only
             -- exists on nvim 0.12+, so 0.11 has nothing to turn off.

@@ -37,6 +37,7 @@ return {
       return {
         filetypes = { "*" },
         options = {
+          always_update = true,
           parsers = {
             css = false,
             tailwind = { enable = false },
