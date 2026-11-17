@@ -24,11 +24,26 @@ return {
       ".eslintrc.json",
       ".eslintrc",
     }
+    -- After a WSL restart, eslint_d hangs on the dead port saved in this file.
+    local function remove_stale_eslint_d_file(root)
+      local path = root .. "/node_modules/eslint/.eslint_d"
+      local file = io.open(path)
+      if not file then
+        return
+      end
+      local pid = tonumber(vim.split(file:read("*l") or "", " ")[3])
+      file:close()
+      if pid and not vim.uv.kill(pid, 0) then
+        os.remove(path)
+      end
+    end
+
     local function js_formatters(bufnr)
       local has_prettier = vim.fs.root(bufnr, prettier_files)
       local has_eslint = vim.fs.root(bufnr, eslint_files)
       local formatters = {}
       if has_eslint then
+        remove_stale_eslint_d_file(has_eslint)
         table.insert(formatters, "eslint_d")
       end
       if has_prettier or not has_eslint then
