@@ -428,8 +428,8 @@ alex says otherwise. Moving a window between desktops is a Task View job
 ## Kanata
 
 `winget install jtroo.kanata_gui` — 1.12.0. The package ships eight builds; the
-one used is **`kanata_windows_gui_wintercept_x64.exe`**. `gui` means no console
-window, `wintercept` means it uses the Interception driver (see below).
+one used is **`kanata_windows_gui_winIOv2_x64.exe`**. `gui` means no console
+window. `winIOv2` means it uses a normal Windows keyboard hook. No driver needed.
 
 **The Linux config runs unchanged.** `kanata.kbd` keeps its
 `linux-dev-names-exclude` block and kanata simply ignores it on Windows —
@@ -439,11 +439,16 @@ serves both platforms, carried across by `sync-windows` like the rest.
 Check it before trusting it:
 
 ```
-kanata_windows_tty_wintercept_x64.exe --cfg %USERPROFILE%\.config\kanata\kanata.kbd --check
+kanata_windows_tty_winIOv2_x64.exe --cfg %USERPROFILE%\.config\kanata\kanata.kbd --check
 ```
 
 The `tty` build is the same program with a console, which is what makes the
 output readable. Use it for `--check`, and the `gui` build to actually run.
+
+**Smart App Control off.** Every kanata build is unsigned. Smart App Control
+blocks kanata at login and shows nothing. Turn it off: Windows Security → App &
+browser control → Smart App Control settings → Off. Since the April 2026 update
+it can be turned back on there, with no reinstall.
 
 ### Where the modifiers moved
 
@@ -453,7 +458,7 @@ The base layer does not leave Alt where Windows expects it:
 |---|---|
 | Left Alt | tap = Backspace, hold = layer2 |
 | Right Alt | tap = Enter, hold = layer2 |
-| Right Ctrl | **Left Alt** — the only real Alt on the base layer |
+| Right Ctrl | tap alone = kanata off; with another key = **Left Alt** |
 | Caps Lock | tap = Escape, hold = Ctrl |
 
 So every `Alt+` binding on this machine — `Alt+W`, `Alt+E`, `Alt+U`, and
@@ -464,103 +469,52 @@ Layer2 lands on its feet, and it is worth knowing why. Holding Left Alt turns
 binds to the five desktops. The Corne layout and the Windows window manager
 already agree, without either being changed.
 
-### Only the built-in keyboard is remapped
+### Corne and Ferris Sweep: tap Right Ctrl
 
-The layout is for the built-in keyboard. The Corne and the Ferris Sweep already
-do this work in their own firmware, so kanata has to leave them alone. On Linux
-that is `linux-dev-names-exclude`, by name. Windows has no equivalent, and the
-`winIOv2` build cannot filter by device at all -- it remapped the Corne on top of
-its own firmware, which is why kanata stayed off here until 2026-08-31.
+`winIOv2` remaps every keyboard. Windows has no way to tell kanata which
+keyboard a key came from. The Corne and the Ferris Sweep already have the
+layout in their firmware, so kanata would remap them a second time.
 
-What works is the **wintercept** build plus the Interception kernel driver, with
-`windows-interception-keyboard-hwids` in `kanata.kbd`. That option is an
-**allowlist**: kanata touches only the keyboards on it. The list holds the
-built-in keyboard and nothing else, so every other keyboard -- wired, dongle,
-Bluetooth, or one bought later -- is left alone and never has to be identified.
+So kanata has an `off` layer where every key types itself:
 
-Measured with the Corne plugged in:
+- Tap Right Ctrl on the laptop: kanata goes to `off`. Use the Corne.
+- Tap Right Ctrl again: back to `base`. Use the laptop keyboard.
 
-```
-device #1 (built-in, res 90)    intercepted: true
-device #4 (Corne,    res 316)   intercepted: false
-```
+The Corne never sends Right Ctrl, so it cannot switch kanata by mistake.
+Kanata always starts in `base`. If the Corne is plugged in at login, tap Right
+Ctrl once.
 
-### Getting the hwid right
+### Why not Interception
 
-This is the part that costs an afternoon, so it is written down exactly.
+The `wintercept` build plus the Interception driver can remap only the built-in
+keyboard, so no switch is needed. It was used from 2026-08-31 to 2026-11-17 and
+then dropped.
 
-**`--list` is a trap.** `kanata --list` prints a "Configuration example" with
-each device's bytes in `[...]`. Both halves of it are wrong for this option:
+The driver has 10 keyboard slots and 10 mouse slots. Every reconnect or wake
+from sleep takes a new slot, and old slots are never freed. When they run out,
+every USB and Bluetooth keyboard and mouse stops sending input. Only a Windows
+restart helps. https://github.com/oblitum/Interception/issues/25
 
-- it prints the **device path** (`\?\ACPI#HPQ8001#4&34ff65f&0#...`), but at
-  runtime kanata compares the **hardware id**, a different string. A config built
-  from `--list` validates fine and then silently matches nothing.
-- the parser rejects `[...]`. Entries are **quoted**, comma-separated numbers.
+Kanata cannot use the keyboard part of the driver alone. It refuses to start
+without the mouse part too.
 
-**Where the real bytes come from.** Run the tty build with `--debug`, press a key
-on the keyboard you want, and copy the array out of the `include check` line:
-
-```
-include check - res 90; device #1 is intercepted: false; hwid [65, 0, 67, 0, ...]
-```
-
-`res` says how many bytes count. Take exactly that many from the front and drop
-the zero padding. For the built-in keyboard `res` is 90, which decodes to the
-usual null-separated hardware id list:
-
-```
-ACPI\VEN_HPQ&DEV_8001 \0 ACPI\HPQ8001 \0 *HPQ8001 \0 \0
-```
-
-### Two things the wintercept build needs
-
-**`interception.dll` beside the exe.** From the Interception zip, `library\x64\`.
-Without it kanata exits immediately with `0xC0000135` and prints nothing at all.
-A kanata upgrade replaces the winget package folder and takes the dll with it, so
-it has to be copied back. `windows/install.ps1` refuses to make the login
-shortcut when the dll is missing, rather than making one that silently fails.
-
-**Smart App Control off.** Every kanata build is unsigned. Smart App Control
-blocks kanata at login and shows nothing. Turn it off: Windows Security → App &
-browser control → Smart App Control settings → Off. Since the April 2026 update
-it can be turned back on there, with no reinstall.
-
-### The driver
-
-`install-interception.exe /install` from the Interception zip, run as admin, then
-a reboot. `/uninstall` and another reboot undoes it.
-
-On this machine the unpacked download is kept at `D:\programs\Interception`, so
-both things that need it later are on disk: the installer for the undo, and
-`library\x64\interception.dll` to copy back after a kanata upgrade.
-
-It installs as **`keyboard.sys` and `mouse.sys`**, not `interception.sys`, so
-searching the drivers folder for "interception" finds nothing and looks like a
-failed install. Check for a running service named `keyboard` instead.
-
-Release v1.0.1, May 2017, is still the current one. The installer exe is
-unsigned; the driver it installs is signed (`CN=Francisco Lopes da Silva`) and
-loads with memory integrity on.
-
-The old winIOv2 limit -- no remapping inside windows running as administrator --
-should not apply any more, since the driver sits below user mode. Not measured.
+To remove the driver: `.\install-interception.exe /uninstall` as admin, from
+`D:\programs\Interception\command line installer`, then restart. It installs as `keyboard.sys` and
+`mouse.sys`. A running service named `keyboard` means it is still there.
 
 ### Keyboards seen on this machine
 
 | Keyboard | Device Manager ID |
 |---|---|
-| Built-in (the one kanata is *for*) | `ACPI\HPQ8001` |
+| Built-in | `ACPI\HPQ8001` |
 | Corne, ZMK | `HID\VID_1D50&PID_615E` |
 | Other HID keyboard | `HID\VID_25A7&PID_FA07` |
 | Seen but never attached since | `HID\VID_342D&PID_E491` |
 | Seen but never attached since | `HID\VID_2DC8&PID_310A` |
 
-These are the Device Manager ids, handy for telling the hardware apart. They are
-**not** what goes in `kanata.kbd` -- see "Getting the hwid right".
-
 `Get-PnpDevice -Class Keyboard -Status OK` lists what is plugged in right now.
 Drop `-Status OK` to see every keyboard Windows still remembers; the ones that
-are away show as `Unknown`. `kanata --list` shows what kanata itself can see.
+are away show as `Unknown`.
 
 ---
 

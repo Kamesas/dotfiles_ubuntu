@@ -51,13 +51,8 @@ if (Test-Path $fileExe) {
 
 # --- kanata: the keyboard layout ----------------------------------------
 
-# The wintercept build, not winIOv2: only it can limit kanata to the built-in
-# keyboard, leaving the Corne and the Ferris Sweep on the layout their own
-# firmware applies. The allowlist itself lives in kanata.kbd. Needs the
-# Interception driver and interception.dll beside the exe -- see "Kanata" in
-# WINDOWS-SETUP.md.
 $kanataExe = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Recurse `
-    -Filter "kanata_windows_gui_wintercept_x64.exe" -ErrorAction SilentlyContinue |
+    -Filter "kanata_windows_gui_winIOv2_x64.exe" -ErrorAction SilentlyContinue |
     Select-Object -First 1 -ExpandProperty FullName
 $kanataCfg = "$env:USERPROFILE\.config\kanata\kanata.kbd"
 
@@ -65,13 +60,6 @@ if (-not $kanataExe) {
     Write-Output "skipped kanata: not installed (winget install jtroo.kanata_gui)"
 } elseif (-not (Test-Path $kanataCfg)) {
     Write-Output "skipped kanata: no $kanataCfg (run 'sync-windows push' in WSL)"
-} elseif (-not (Test-Path (Join-Path (Split-Path $kanataExe) "interception.dll"))) {
-    # A kanata upgrade replaces the package folder and takes the dll with it.
-    # Without it kanata exits with 0xC0000135 and prints nothing, so no shortcut
-    # is better than one that fails silently at every login.
-    Write-Output "skipped kanata: no interception.dll beside the exe"
-    Write-Output "  copy library\x64\interception.dll from the Interception zip to:"
-    Write-Output "  $(Split-Path $kanataExe)"
 } else {
     $klnk = $shell.CreateShortcut("$(Split-Path $startup)\kanata.lnk")
     $klnk.TargetPath       = $kanataExe
@@ -88,7 +76,6 @@ Write-Output "Still manual:"
 Write-Output "  Win+L as 'next desktop'  ->  run .config\ahk\enable-winl.reg as admin, then sign out"
 Write-Output "  Expo on a phone          ->  open port 8081, see WINDOWS-SETUP.md, needs admin"
 Write-Output "  Alt+U for PowerToys Run  ->  set it in PowerToys Run settings"
-Write-Output "  kanata needs the Interception driver  ->  see 'Kanata' in WINDOWS-SETUP.md"
 Write-Output ""
 Write-Output "Start it now without waiting for a login:"
 Write-Output "  & '$ahkExe' '$ahkScript'"

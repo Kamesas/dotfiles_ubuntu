@@ -14,17 +14,6 @@
     "Corne Handwired Mouse"
     "ZMK Project Corne Handwired Keyboard"
   )
-  ;; Windows has no equivalent of the exclude list above. This is an allowlist
-  ;; instead: only the built-in keyboard gets this layout, so the Corne and the
-  ;; Ferris Sweep keep what their own firmware applies. Needs the wintercept
-  ;; build and the Interception driver. The bytes are the hardware id as a wide
-  ;; string, null separated. Do not take them from --list: that prints the device
-  ;; path, which is a different string and never matches. Run with --debug and
-  ;; copy the array from the 'include check' line. This one is the built-in
-  ;; keyboard, ACPI\VEN_HPQ&DEV_8001.
-  windows-interception-keyboard-hwids (
-    "65, 0, 67, 0, 80, 0, 73, 0, 92, 0, 86, 0, 69, 0, 78, 0, 95, 0, 72, 0, 80, 0, 81, 0, 38, 0, 68, 0, 69, 0, 86, 0, 95, 0, 56, 0, 48, 0, 48, 0, 49, 0, 0, 0, 65, 0, 67, 0, 80, 0, 73, 0, 92, 0, 72, 0, 80, 0, 81, 0, 56, 0, 48, 0, 48, 0, 49, 0, 0, 0, 42, 0, 72, 0, 80, 0, 81, 0, 56, 0, 48, 0, 48, 0, 49, 0, 0, 0, 0, 0"
-  )
 )
 
 ;; Define source layout - your physical keyboard
@@ -42,7 +31,7 @@
   tab  q    w     e     r     t    @y_ch @u_ch @i_ch @o_ch @p_ch   [     ]     \
   @cec a    @s_ch @d_ch @f_ch @g_ch @h_ch @j_ch @k_ch @l_ch @sc_ch  '     ret
   @z_s @x_c  @c_a  @v_g  b    @b_ch @n_ch @m_ch @co_ch @dt_ch @sl_s  rsft  up
-  lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
+  lctl lmet @al2           @sp1            @ar2  @rck          left  down  rght
 )
 
 ;; Layer 1 - Symbols and Navigation (Corne layer1, activated by holding Space)
@@ -87,7 +76,15 @@
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   @cec a    s    d    f    @g_nm @h_nm j   k    l    ;    '    ret
   lsft @z_c @nm_xa @nm_cg v      @pb_ch @pn_ch @m_g @co_a @dt_c @sl_s rsft  up
-  lctl lmet @al2           @sp1            @ar2  lalt          left  down  rght
+  lctl lmet @al2           @sp1            @ar2  @rck          left  down  rght
+)
+
+(deflayer off
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    (layer-switch base) _    _    _
 )
 
 ;; Aliases
@@ -103,6 +100,8 @@
 
   ;; Right Alt: tap=Enter, hold=Layer 2 (matching Corne lt LAYER2 RET)
   ar2 (tap-hold 200 200 ret (layer-toggle layer2))
+
+  rck (tap-hold-press 200 200 (layer-switch off) lalt)
 
   ;; Bottom row mod-taps - left hand (matching Corne: SHFT/Z, CTRL/X, ALT/C, GUI/V)
   z_s (tap-hold 200 200 z lsft)
