@@ -12,6 +12,7 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+export LS_COLORS="$LS_COLORS:ow=38;5;75:tw=38;5;75"
 
 # ============================================================================
 # WAYLAND DISPLAY SELF-HEAL

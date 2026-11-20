@@ -10,7 +10,13 @@ return {
       end
     end,
     keys = {
-      { "<leader>fr", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Recent (cwd)" },
+      {
+        "<leader>fr",
+        function()
+          Snacks.picker.recent({ filter = { cwd = true } })
+        end,
+        desc = "Recent (cwd)",
+      },
       { "<leader>fR", LazyVim.pick("oldfiles"), desc = "Recent (all)" },
     },
     opts = {
@@ -23,6 +29,11 @@ return {
       picker = {
         -- Preview is hidden at start. <a-p> shows it.
         layout = { hidden = { "preview" } },
+        win = {
+          input = { keys = { ["<a-o>"] = { "cycle_win", mode = { "i", "n" } } } },
+          list = { keys = { ["<a-o>"] = "cycle_win" } },
+          preview = { keys = { ["<a-o>"] = "cycle_win" } },
+        },
         sources = {
           explorer = { hidden = false, ignored = true },
           grep = { hidden = true, ignored = true },
