@@ -27,12 +27,10 @@ return {
         doc = { float = false },
       },
       picker = {
-        -- Preview is hidden at start. <a-p> shows it.
-        layout = { hidden = { "preview" } },
         win = {
-          input = { keys = { ["<a-o>"] = { "cycle_win", mode = { "i", "n" } } } },
-          list = { keys = { ["<a-o>"] = "cycle_win" } },
-          preview = { keys = { ["<a-o>"] = "cycle_win" } },
+          input = { keys = { ["<a-Tab>"] = { "cycle_win", mode = { "i", "n" } } } },
+          list = { keys = { ["<a-Tab>"] = "cycle_win" } },
+          preview = { keys = { ["<a-Tab>"] = "cycle_win" } },
         },
         sources = {
           explorer = { hidden = false, ignored = true },
