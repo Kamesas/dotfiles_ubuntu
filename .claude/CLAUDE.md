@@ -127,6 +127,18 @@ Like "navigate me", but I edit the files and he only reads:
 - Then I show the next step. He may pick which step comes next.
 The flow lasts until the task is done or he says to stop.
 
+## "Let me try" flow
+Alex writes the code and makes the choices. I plan, give hints and review:
+- Plan: the steps, the files and the APIs to use. Docs links when they help. No code.
+- Hints only when he asks. One at a time, smallest first: where to look, then what to use.
+  A code snippet only if he asks for it.
+- Bugs: don't tell him the cause unless he asks. "Look at file X" or "check what Y is here" is fine.
+- When he says "check": run `tsc`, lint and prettier, and test on the phone if it is UI. Then tell
+  him what works, each mistake and why, and a better solution if there is one, as text.
+- He fixes it. I never edit his files in this flow, unless he says "you do it".
+- I still add the i18n JSON keys myself.
+The flow lasts until the task is done or he says to stop.
+
 ## 1 — No AI footprint in repos
 Leave zero assistant trace in any repository: no `.claude/` folder, no "claude"/AI mentions in
 `.gitignore` or any tracked or untracked file, no co-author trailers in commits or PRs. Any
