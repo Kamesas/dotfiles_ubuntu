@@ -10,7 +10,7 @@ Claude gives tasks and checks the result.
 
 Files:
 - Progress: `/home/alex/Documents/notes/tech/linux/drill.md`. Two lists: "I know" and "To learn (most useful first)".
-  "To learn" has three parts: Windows files in WSL, nvim, Terminal.
+  "To learn" has two parts: Windows files in WSL, Terminal. nvim has its own drill: `/nvim-drill`.
 - Practice folder: `~/terminal-practice`. All tasks happen there. Never use the notes repo.
   Tasks may copy files in from the Windows Downloads, but never change or delete files there.
 
@@ -31,7 +31,6 @@ On other machines, skip that part.
 - One task at a time. 2–4 small steps per task.
 - A session is about 6 tasks.
 - Take new commands from the top of each "To learn" part. Mix the parts in one session.
-- nvim tasks use files in the practice folder. Check the result with `cat` after he saves.
 - Mix in commands from "I know" too. About half of each task is review.
 - Use the files that are already in the practice folder. Build on what he made before.
 - Skip tasks that write text into a file from the terminal (`echo >`). Alex uses nvim for that.
