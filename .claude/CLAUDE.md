@@ -14,8 +14,10 @@ Alex writes to me in English all day. Log his mistakes quietly, so he can study 
   `~/Documents/notes/english/chat-mistakes.md`: date · what he wrote → correct form · pattern.
   For the pattern, use a card name from `english/REVIEW.md` when one fits.
 - Skip typos and spelling. He types fast.
-- Don't correct him in chat. Only if a mistake made his message hard to understand, add one
-  line at the end of my answer: `English: X → Y`.
+- When the same mistake is already in `chat-mistakes.md` (he made it before), add one line at
+  the end of my answer: `English: X → Y`. Seeing it right away builds the habit. Max two lines.
+- Other mistakes: don't correct him in chat. Add the line only if the mistake made his message
+  hard to understand.
 - When he asks to review his mistakes, group the log by pattern, most frequent first. Offer
   Anki cards for the top ones (see `english/anki/README.md`).
 
