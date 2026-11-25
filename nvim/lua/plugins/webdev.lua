@@ -1,3 +1,18 @@
+local function hsl_to_hex(value)
+  local h, s, l = value:match("^([%d.]+)%s+([%d.]+)%%%s+([%d.]+)%%$")
+  if not h then
+    return nil
+  end
+
+  h, s, l = h / 360, s / 100, l / 100
+  local function channel(n)
+    local k = (n + h * 12) % 12
+    local c = l - s * math.min(l, 1 - l) * math.max(-1, math.min(k - 3, 9 - k, 1))
+    return math.floor(c * 255 + 0.5)
+  end
+  return ("#%02X%02X%02X"):format(channel(0), channel(8), channel(4))
+end
+
 local function find_css_var_lines(root, names)
   local lines = {}
   for _, file in ipairs(vim.fn.systemlist({ "rg", "--files", "--glob", "*.css", root })) do
@@ -5,9 +20,13 @@ local function find_css_var_lines(root, names)
     for line in io.lines(file) do
       selector = line:match("^%s*([^{}]-)%s*{%s*$") or selector
       for _, name in ipairs(names) do
-        local value = line:match("^%s*%-%-" .. vim.pesc(name) .. ":%s*([^;]+);")
+        local value, rest = line:match("^%s*%-%-" .. vim.pesc(name) .. ":%s*([^;]+);(.*)")
         if value then
-          table.insert(lines, ("--%s: %s; /* %s */"):format(name, value, selector))
+          local parts = { ("--%s: %s;"):format(name, value) }
+          table.insert(parts, hsl_to_hex(value))
+          table.insert(parts, rest:match("/%*%s*(.-)%s*%*/"))
+          table.insert(parts, ("/* %s */"):format(selector))
+          table.insert(lines, table.concat(parts, " "))
         end
       end
     end
