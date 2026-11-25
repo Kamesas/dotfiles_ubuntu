@@ -199,6 +199,9 @@ exact command and let the user run it themselves, unless they clearly tell me to
   fix, then wait. If I made the mess, the safest undo is usually the user's call.
 - Prefer the smallest, most reversible step. Stage, then stop and let the user commit, unless they
   asked me to commit too.
+- Exception: `~/dotfiles` and `~/Documents/notes`. Alex uses them on several machines, so keep them
+  synced. Pull before I change them. After a change, commit and push all changes, also his own.
+  No need to ask or show the title first. Rule 7 (secrets) and the history rule above still apply.
 
 ## 9 — Report what you skipped
 If you intentionally left something out of scope (a related bug, a refactor you noticed, a test
