@@ -15,8 +15,7 @@ local function find_css_var_lines(root, names)
   return lines
 end
 
-local function add_css_var_values(result, root)
-  local contents = result and result.contents
+local function add_css_var_values(contents, root)
   if type(contents) ~= "table" or type(contents.value) ~= "string" then
     return
   end
@@ -65,11 +64,12 @@ return {
           on_init = function(client)
             local request = client.request
             client.request = function(self, method, params, handler, bufnr)
-              if method == "textDocument/hover" and handler then
-                local hover_handler = handler
+              local field = ({ ["textDocument/hover"] = "contents", ["completionItem/resolve"] = "documentation" })[method]
+              if field and handler then
+                local original_handler = handler
                 handler = function(err, result, ctx, config)
-                  add_css_var_values(result, self.root_dir)
-                  return hover_handler(err, result, ctx, config)
+                  add_css_var_values(result and result[field], self.root_dir)
+                  return original_handler(err, result, ctx, config)
                 end
               end
               return request(self, method, params, handler, bufnr)
