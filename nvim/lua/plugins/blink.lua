@@ -35,4 +35,13 @@ return {
       },
     },
   },
+  {
+    "saghen/blink.cmp",
+    opts = function()
+      require("blink.cmp.sources.snippets.default.builtin").lazy.FILENAME_PASCAL = function()
+        local name = vim.fn.expand("%:t:r")
+        return (name:gsub("^%l", string.upper):gsub("[-_](%w)", string.upper))
+      end
+    end,
+  },
 }

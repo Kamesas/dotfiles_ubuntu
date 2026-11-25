@@ -72,11 +72,11 @@
   "React Function Component": {
     "prefix": "rfc",
     "body": [
-      "type ${1:Props} = {};",
+      "type ${FILENAME_PASCAL}${1:Props} = {};",
       "",
-      "export const ${2:Component} = ({}: ${1:Props}) => {",
+      "export const ${2:$FILENAME_PASCAL} = ({}: ${FILENAME_PASCAL}${1:Props}) => {",
       "  return (",
-      "    <div>${2:Component}</div>",
+      "    <div>${2:$FILENAME_PASCAL}</div>",
       "  );",
       "};"
     ],
