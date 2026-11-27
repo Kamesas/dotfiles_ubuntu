@@ -17,6 +17,8 @@ local config = dofile(wezterm.home_dir .. "/.wezterm.lua")
 -- so editing it still refreshes this window.
 wezterm.add_to_config_reload_watch_list(wezterm.home_dir .. "/.wezterm.lua")
 
+config.default_prog = { "powershell.exe", "-NoLogo" }
+
 -- The shared config hides the tab bar. Here it is the only way to see tabs.
 -- Set hide_tab_bar_if_only_one_tab to false to keep it on screen always.
 config.enable_tab_bar = true
@@ -57,6 +59,10 @@ end
 -- splits sit on the two keys that draw the line they make.
 bind("-", "ALT", act.SplitVertical({ domain = "CurrentPaneDomain" }))
 bind("\\", "ALT", act.SplitHorizontal({ domain = "CurrentPaneDomain" }))
+
+config.leader = { key = "Space", mods = "CTRL" }
+bind("s", "LEADER", act.SplitVertical({ domain = "CurrentPaneDomain" }))
+bind("v", "LEADER", act.SplitHorizontal({ domain = "CurrentPaneDomain" }))
 
 bind("h", "ALT", act.ActivatePaneDirection("Left"))
 bind("j", "ALT", act.ActivatePaneDirection("Down"))
