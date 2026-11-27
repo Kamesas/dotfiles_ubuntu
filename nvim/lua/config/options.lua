@@ -10,5 +10,8 @@ vim.opt.spelllang = { "en_us" }
 vim.o.breakindent = true
 vim.o.breakindentopt = "list:-1"
 
+vim.o.langmap = "ЙЦУКЕНГШЩЗФІВАПРОЛДЯЧСМИТЬ;QWERTYUIOPASDFGHJKLZXCVBNM,"
+  .. "йцукенгшщзфівапролдячсмить;qwertyuiopasdfghjklzxcvbnm"
+
 -- Write in place. Otherwise the file is gone for a moment on save, and Metro crashes with ENOENT.
 vim.o.backupcopy = "yes"

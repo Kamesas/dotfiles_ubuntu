@@ -148,6 +148,10 @@ global BarGeom  := ""
 ; highlight where it was instead of blanking the bar.
 global BarIndex := 1
 
+global AnimDepth := 0
+global AnimWas   := 1
+global AnimSince := 0
+
 Log(msg) {
     if (!DEBUG)
         return
@@ -172,8 +176,8 @@ VdEnsure()
 
 ; ---------------------------------------------------------------- dropdown -
 
-!w::ToggleTerm(DROPS["wsl"])      ; Linux: WSL Ubuntu, zsh, tmux
-!e::ToggleTerm(DROPS["win"])      ; Windows: PowerShell
+!SC011::ToggleTerm(DROPS["wsl"])      ; Linux: WSL Ubuntu, zsh, tmux
+!SC012::ToggleTerm(DROPS["win"])      ; Windows: PowerShell
 
 ToggleTerm(d) {
     hwnd := FindTerm(d)
@@ -440,7 +444,7 @@ MonitorUnderMouse() {
 
 ; ---------------------------------------------------------------- rescue ---
 
-#+w::UnhideAll()
+#+SC011::UnhideAll()
 
 ; Covers both dropdowns -- whichever one got stranded, this is the way back.
 UnhideAll() {
@@ -472,7 +476,7 @@ global PROTECTED := Map(
 
 ; Win+C is also the Copilot app's shortcut. $ forces the keyboard hook, and a
 ; hook hotkey always beats a registered one, so the close wins.
-$#c::CloseActive()
+$#SC02E::CloseActive()
 
 ; sway's kill. WinClose sends WM_CLOSE, so an app still runs its own shutdown
 ; path -- unsaved-changes prompts and the like -- instead of being killed.
@@ -511,8 +515,10 @@ CloseActive() {
 ;                       is offered and none is faked here: from desktop 5,
 ;                       Win+1 is a better way home than four Win+H presses.
 
-#h::VdGoto(ReadDesktops().index - 1)
-#l::VdGoto(ReadDesktops().index + 1)
+#HotIf VD_DESKTOPS
+#SC023::VdGoto(ReadDesktops().index - 1)
+#SC026::VdGoto(ReadDesktops().index + 1)
+#HotIf
 
 ; Hotkey() passes the key name to its callback, hence the ignored parameter.
 VdJump(n, *) {
@@ -620,10 +626,6 @@ VdSend(keys) {
 ; Measured here: 402ms of slide with it on, 0ms with it quietly off, Chrome
 ; unaffected in both cases.
 
-global AnimDepth := 0
-global AnimWas   := 1
-global AnimSince := 0
-
 AnimGet() {
     v := 0
     DllCall("user32\SystemParametersInfoW", "uint", 0x1042    ; GETCLIENTAREAANIMATION
@@ -687,7 +689,7 @@ AnimWatchdog() {
     }
 }
 
-#+l::DllCall("user32\LockWorkStation")
+#+SC026::DllCall("user32\LockWorkStation")
 
 ; ---------------------------------------------------------------- workspace -
 

@@ -37,9 +37,9 @@
 ;; Layer 1 - Symbols and Navigation (Corne layer1, activated by holding Space)
 (deflayer layer1
   _     f1   f2    f3   f4   f5    f6   f7   f8   f9   f10  f11  f12  _    _
-  _     prnt _    del   grv  S-grv S-6  S-9  S-0  [    ]    [    ]    \
-  _     S-1  S-2   S-3  S-4  S-5   left down up   rght '    '    ret
-  _     _    _     _    _    _     \    S-\  S-7  S-[  S-]  _    _
+  _     prnt _    del   @bq  @tld  @crt S-9  S-0  @lbr @rbr @lbr @rbr \
+  _     S-1  @at   @hsh @dlr S-5   left down up   rght @apo @apo ret
+  _     _    _     _    _    _     \    @pip @amp @lcb @rcb _    _
   _     _    _               _               _    _         _    _    _
 )
 
@@ -115,9 +115,6 @@
   dt_c (tap-hold 200 200 . lctl)
   sl_s (tap-hold 200 200 / lsft)
 
-  ;; Fat arrow macro
-  fat (macro = S-.)
-
   ;; Chord participants - right home row (h, j, k, l, ;)
   h_ch (chord home_row_chords h)
   j_ch (chord home_row_chords j)
@@ -171,6 +168,47 @@
   pn_ch (chord plain_toggle_chords n)
 )
 
+(platform (win winiov2 wintercept)
+  (defalias
+    ;; Fat arrow macro
+    fat (macro = (unicode >))
+    bq  (unicode `)
+    tld (unicode ~)
+    crt (unicode ^)
+    at  (unicode @)
+    hsh (unicode #)
+    dlr (unicode $)
+    amp (unicode &)
+    pip (unicode |)
+    lbr (unicode [)
+    rbr (unicode ])
+    lcb (unicode {)
+    rcb (unicode })
+    apo (unicode ')
+    dqt (unicode r#"""#)
+  )
+)
+
+(platform (linux)
+  (defalias
+    fat (macro = S-.)
+    bq  grv
+    tld S-grv
+    crt S-6
+    at  S-2
+    hsh S-3
+    dlr S-4
+    amp S-7
+    pip S-\
+    lbr [
+    rbr ]
+    lcb S-[
+    rcb S-]
+    apo '
+    dqt S-'
+  )
+)
+
 ;; Home row chords: s, d, f, g (left) and h, j, k, l, ; (right)
 ;; Merged into one group so g+h can trigger the native_mods layer
 (defchords home_row_chords 50
@@ -189,7 +227,7 @@
   (h j)    =          ;; h+j → equal
   (j k)    esc        ;; j+k → escape
   (k l)    bspc       ;; k+l → backspace
-  (l semi) '          ;; l+; → single quote
+  (l semi) @apo       ;; l+; → single quote
   (j l)    ret        ;; j+l → enter
   (g h)    (layer-switch native_mods)  ;; g+h → native_mods layer
 )
@@ -202,9 +240,9 @@
   (o)     o          ;; o alone
   (p)     p          ;; p alone
   (y u)   S-=        ;; y+u → +
-  (u i)   ]          ;; u+i → ]
+  (u i)   @rbr       ;; u+i → ]
   (i o)   S-0        ;; i+o → )
-  (o p)   S-'        ;; o+p → "
+  (o p)   @dqt       ;; o+p → "
 )
 
 ;; Bottom row right chords: b (for layer toggle), n, m
